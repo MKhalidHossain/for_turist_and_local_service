@@ -1,72 +1,52 @@
 class RegistrationResponseModel {
-  bool? status;
   int? statusCode;
+  bool? success;
   String? message;
-  User? user;
+  Data? data;
 
   RegistrationResponseModel(
-      {this.status, this.statusCode, this.message, this.user});
+      {this.statusCode, this.success, this.message, this.data});
 
   RegistrationResponseModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
     statusCode = json['statusCode'];
+    success = json['success'];
     message = json['message'];
-    user = json['user'] != null ?  User.fromJson(json['user']) : null;
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['statusCode'] = statusCode;
-    data['message'] = message;
-    if (user != null) {
-      data['user'] = user!.toJson();
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['statusCode'] = this.statusCode;
+    data['success'] = this.success;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
     return data;
   }
 }
 
-class User {
-  String? name;
+class Data {
+  String? accessToken;
+  String? refreshToken;
+  String? userId;
   String? email;
-  String? password;
-  String? role;
-  String? sId;
-  String? createdAt;
-  String? updatedAt;
-  int? iV;
 
-  User(
-      {this.name,
-      this.email,
-      this.password,
-      this.role,
-      this.sId,
-      this.createdAt,
-      this.updatedAt,
-      this.iV});
+  Data({this.accessToken, this.refreshToken, this.userId, this.email});
 
-  User.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
+  Data.fromJson(Map<String, dynamic> json) {
+    accessToken = json['accessToken'];
+    refreshToken = json['refreshToken'];
+    userId = json['userId'];
     email = json['email'];
-    password = json['password'];
-    role = json['role'];
-    sId = json['_id'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['name'] = name;
-    data['email'] = email;
-    data['password'] = password;
-    data['role'] = role;
-    data['_id'] = sId;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['__v'] = iV;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['accessToken'] = this.accessToken;
+    data['refreshToken'] = this.refreshToken;
+    data['userId'] = this.userId;
+    data['email'] = this.email;
     return data;
   }
 }

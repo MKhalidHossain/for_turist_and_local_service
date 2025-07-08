@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 extension TextStylingExtension on String {
   // Font family
-  static const String _fontFamily = 'outfit';
+  static const String _fontFamily = 'Poppins';
 
   // TextSize 24
   Text text24DarkGreen() => Text(

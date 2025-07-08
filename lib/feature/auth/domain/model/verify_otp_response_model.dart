@@ -1,25 +1,43 @@
 class VerifyCodeResponseModel {
-  bool? status;
   int? statusCode;
+  bool? success;
   String? message;
-  String? accessToken;
+  Data? data;
 
   VerifyCodeResponseModel(
-      {this.status, this.statusCode, this.message, this.accessToken});
+      {this.statusCode, this.success, this.message, this.data});
 
   VerifyCodeResponseModel.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
     statusCode = json['statusCode'];
+    success = json['success'];
     message = json['message'];
-    accessToken = json['accessToken'];
+    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['status'] = status;
-    data['statusCode'] = statusCode;
-    data['message'] = message;
-    data['accessToken'] = accessToken;
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['statusCode'] = this.statusCode;
+    data['success'] = this.success;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
+    }
+    return data;
+  }
+}
+
+class Data {
+  String? email;
+
+  Data({this.email});
+
+  Data.fromJson(Map<String, dynamic> json) {
+    email = json['email'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['email'] = this.email;
     return data;
   }
 }

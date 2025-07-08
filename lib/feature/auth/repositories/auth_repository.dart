@@ -1,151 +1,156 @@
-// import 'package:shared_preferences/shared_preferences.dart';
-// import '../../../core/constants/urls.dart';
-// import '../../../helpers/remote/data/api_client.dart';
-// import 'auth_repository_interface.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/constants/urls.dart';
+import '../../../helpers/remote/data/api_client.dart';
+import '../../../utils/app_constants.dart';
+import 'auth_repository_interface.dart';
 
-// class AuthRepository implements AuthRepositoryInterface {
-//   final ApiClient apiClient;
+class AuthRepository implements AuthRepositoryInterface {
+  final ApiClient apiClient;
 
-//   final SharedPreferences sharedPreferences;
-//   AuthRepository({required this.apiClient, required this.sharedPreferences});
+  final SharedPreferences sharedPreferences;
+  AuthRepository({required this.apiClient, required this.sharedPreferences});
 
-//   @override
-//   Future register(
-//     String fullName,
-//     String email,
-//     String password,
-//     String confirmPassword,
-//   ) async {
-//     return await apiClient.postData(Urls.register, {
-//       "name": fullName,
-//       "email": email,
-//       "password": password,
-//       "confirmPassword": confirmPassword,
-//     });
-//   }
+  @override
+  Future register(
 
-//   @override
-//   Future accessAndRefreshToken(String refreshToken) async {
-//     return await apiClient.postData(Urls.refreshAccessToken, {
-//       "refreshToken": refreshToken,
-//     });
-//   }
+    String email,
+    String password,
+    String confirmPassword,
+  ) async {
+    return await apiClient.postData(Urls.register, {
+      "email": email,
+      "password": password,
+      "confirmPassword": confirmPassword,
+    });
+  }
 
-//   @override
-//   Future login(String email, String password) async {
-//     return await apiClient.postData(Urls.login, {
-//       "email": email,
-//       "password": password,
-//     });
-//   }
+  @override
+  Future accessAndRefreshToken(String refreshToken) async {
+    return await apiClient.postData(Urls.refreshAccessToken, {
+      "refreshToken": refreshToken,
+    });
+  }
 
-//   @override
-//   Future forgetPassword(String? email) async {
-//     return await apiClient.postData(Urls.forgetPassword, {"email": email});
-//   }
+  @override
+  Future login(String email, String password) async {
+    return await apiClient.postData(Urls.login, {
+      "email": email,
+      "password": password,
+    });
+  }
 
-//   @override
-//   Future verifyCode(String otp, String email) async {
-//     return await apiClient.postData(Urls.verifyCode, {
-//       "otp": int.tryParse(otp),
-//       "email": email,
-//     });
-//   }
+  @override
+  Future forgetPassword(String? email) async {
+    return await apiClient.postData(Urls.forgetPassword, {"email": email});
+  }
 
-//   @override
-//   Future resetPassword(String newPassword, String confirmNewPassword) async {
-//     return await apiClient.postData(Urls.resetPassword, {
-//       "newPassword": newPassword,
-//       "confirmNewPassword": confirmNewPassword,
-//     });
-//   }
+  @override
+  Future verifyCode(String otp, String email) async {
+    return await apiClient.postData(Urls.verifyCode, {
+      "otp": int.tryParse(otp),
+      "email": email,
+    });
+  }
 
-//   @override
-//   bool isLoggedIn() {
-//     sharedPreferences.getString(AppConstants.token);
-//     bool isLoggedIn = sharedPreferences.getBool('IsLoggedIn') ?? false;
-//     if (isLoggedIn) {
-//       return true;
-//     }
-//     return false;
-//   }
+  @override
+  Future resetPassword(String email ,String newPassword, String confirmNewPassword) async {
+    return await apiClient.postData(Urls.resetPassword, {
+      "email": email,
+      "newPassword": newPassword,
+      "confirmNewPassword": confirmNewPassword,
+    });
+  }
 
-//   @override
-//   Future logout() {
-//     sharedPreferences.setBool('IsLoggedIn', false);
-//     return apiClient.postData(AppConstants.logout, {});
-//   }
+  @override
+  bool isLoggedIn() {
+    sharedPreferences.getString(AppConstants.token);
+    bool isLoggedIn = sharedPreferences.getBool('IsLoggedIn') ?? false;
+    if (isLoggedIn) {
+      return true;
+    }
+    return false;
+  }
 
-//   @override
-//   Future<bool?> saveUserToken(String token, String refreshToken) async {
-//     print(
-//       'User Token ${token.toString()} ================================== from Repository ',
-//     );
-//     apiClient.token = token;
-//     apiClient.updateHeader(token);
-//     await sharedPreferences.setString(AppConstants.refreshToken, token);
-//     return await sharedPreferences.setString(AppConstants.token, token);
-//   }
+  @override
+  Future logout() {
+    sharedPreferences.setBool('IsLoggedIn', false);
+    return apiClient.postData(AppConstants.logout, {});
+  }
 
-//   @override
-//   bool isFirstTimeInstall() {
-//     if (sharedPreferences.getBool('firstTimeInstall') == true) {
-//       return true;
-//     } else {
-//       return false;
-//     }
-//   }
+  @override
+  Future<bool?> saveUserToken(String token, String refreshToken) async {
+    print(
+      'User Token ${token.toString()} ================================== from Repository ',
+    );
+    apiClient.token = token;
+    apiClient.updateHeader(token);
+    await sharedPreferences.setString(AppConstants.refreshToken, token);
+    return await sharedPreferences.setString(AppConstants.token, token);
+  }
 
-//   @override
-//   void setFirstTimeInstall() {
-//     sharedPreferences.setBool('firstTimeInstall', true);
-//   }
+  @override
+  bool isFirstTimeInstall() {
+    if (sharedPreferences.getBool('firstTimeInstall') == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-//   @override
-//   bool clearSharedAddress() {
-//     throw UnimplementedError();
-//   }
+  @override
+  void setFirstTimeInstall() {
+    sharedPreferences.setBool('firstTimeInstall', true);
+  }
 
-//   @override
-//   Future<bool> clearUserCredentials() {
-//     throw UnimplementedError();
-//   }
+  @override
+  bool clearSharedAddress() {
+    throw UnimplementedError();
+  }
 
-//   @override
-//   String getUserToken() {
-//     throw UnimplementedError();
-//   }
+  @override
+  Future<bool> clearUserCredentials() {
+    throw UnimplementedError();
+  }
 
-//   @override
-//   Future resendOtp(String email) {
-//     return apiClient.postData(Urls.forgetPassword, {"email": email});
-//   }
+  @override
+  String getUserToken() {
+    throw UnimplementedError();
+  }
 
-//   @override
-//   Future sendOtp({required String phone}) {
-//     throw UnimplementedError();
-//   }
+  @override
+  Future resendOtp(String email) {
+    return apiClient.postData(Urls.forgetPassword, {"email": email});
+  }
 
-//   @override
-//   Future updateToken() {
-//     throw UnimplementedError();
-//   }
+  @override
+  Future sendOtp({required String phone}) {
+    throw UnimplementedError();
+  }
 
-//   @override
-//   Future changePassword(
-//     String currentPassword,
-//     String newPassword,
-//     String confirmPassword,
-//   ) async {
-//     return await apiClient.putData(Urls.changePassword, {
-//       "currentPassword": currentPassword,
-//       "newPassword": newPassword,
-//       "confirmNewPassword": confirmPassword,
-//     });
-//   }
+  @override
+  Future updateToken() {
+    throw UnimplementedError();
+  }
 
-//   @override
-//   Future updateAccessAndRefreshToken() {
-//     throw UnimplementedError();
-//   }
-// }
+  @override
+  Future changePassword(
+    String currentPassword,
+    String newPassword,
+    String confirmPassword,
+  ) async {
+    return await apiClient.putData(Urls.changePassword, {
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+      "confirmNewPassword": confirmPassword,
+    });
+  }
+
+  @override
+  Future updateAccessAndRefreshToken() {
+    throw UnimplementedError();
+  }
+   @override
+  Future chooseRole(String role) async{
+   return await apiClient.postData(Urls.chooseRole, {"role": role});
+  }
+}

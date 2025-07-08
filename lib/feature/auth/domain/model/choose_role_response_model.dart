@@ -1,13 +1,13 @@
-class ForgetPasswordResponseModel {
+class ChooseRoleResponseModel {
   int? statusCode;
   bool? success;
   String? message;
   Data? data;
 
-  ForgetPasswordResponseModel(
+  ChooseRoleResponseModel(
       {this.statusCode, this.success, this.message, this.data});
 
-  ForgetPasswordResponseModel.fromJson(Map<String, dynamic> json) {
+  ChooseRoleResponseModel.fromJson(Map<String, dynamic> json) {
     statusCode = json['statusCode'];
     success = json['success'];
     message = json['message'];
@@ -27,20 +27,23 @@ class ForgetPasswordResponseModel {
 }
 
 class Data {
+  String? userId;
   String? email;
-  int? otpExpiry;
+  String? role;
 
-  Data({this.email, this.otpExpiry});
+  Data({this.userId, this.email, this.role});
 
   Data.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
     email = json['email'];
-    otpExpiry = json['otpExpiry'];
+    role = json['role'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['userId'] = this.userId;
     data['email'] = this.email;
-    data['otpExpiry'] = this.otpExpiry;
+    data['role'] = this.role;
     return data;
   }
 }

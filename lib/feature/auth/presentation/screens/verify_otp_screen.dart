@@ -3,7 +3,7 @@ import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/constants/app_colors.dart';
 import 'package:pinput/pinput.dart';
 
-class EnterOtp extends StatelessWidget {
+class VerifyOtpScreen extends StatelessWidget {
   final TextEditingController pinController = TextEditingController();
   final FocusNode focusNode = FocusNode();
 

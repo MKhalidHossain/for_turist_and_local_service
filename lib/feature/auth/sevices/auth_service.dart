@@ -8,13 +8,11 @@ class AuthService implements AuthServiceInterface {
 
   @override
   Future register(
-    String name,
     String email,
     String password,
     String confirmPassword,
   ) async {
     return await authRepositoryInterface.register(
-      name,
       email,
       password,
       confirmPassword,
@@ -51,8 +49,8 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future resetPassword(String newPassword, String confirmNewPassword) async {
-    return await authRepositoryInterface.resetPassword(newPassword, confirmNewPassword);
+  Future resetPassword(String email, String newPassword, String confirmNewPassword) async {
+    return await authRepositoryInterface.resetPassword(email, newPassword, confirmNewPassword);
   }
 
   @override
@@ -120,5 +118,10 @@ class AuthService implements AuthServiceInterface {
   Future updateToken() {
     // TODO: implement updateToken
     throw UnimplementedError();
+  }
+
+  @override
+  Future chooseRole(String role) async{
+   return await authRepositoryInterface.chooseRole(role);
   }
 }

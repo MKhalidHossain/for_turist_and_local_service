@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'enterotp_screen.dart';
+import 'verify_otp_screen.dart';
 
 class TouristORLocal extends StatefulWidget {
   const TouristORLocal({super.key});
@@ -150,7 +150,9 @@ class _TouristORLocalState extends State<TouristORLocal> {
                   if (_selectedProfile != null) {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EnterOtp()),
+                      MaterialPageRoute(
+                        builder: (context) => VerifyOtpScreen(),
+                      ),
                     );
                   } else {
                     setState(() {
