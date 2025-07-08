@@ -62,6 +62,8 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                         ),
                         const SizedBox(height: 12),
 
+                        const SizedBox(height: 12),
+
                         /// Email
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
