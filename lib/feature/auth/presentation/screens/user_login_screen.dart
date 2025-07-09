@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/constants/app_colors.dart';
+import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import '../../../../core/validation/validators.dart';
 import '../../../../core/widgets/app_logo.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/or_divider_with_circle_widget.dart';
 import '../../../../helpers/custom_snackbar.dart';
+import 'forgot_password_screen.dart';
 import 'user_signup_screen.dart';
 
 //import '../widgets/app_scaffold.dart';
@@ -29,8 +30,6 @@ class UserLoginScreenState extends State<UserLoginScreen> {
 
   @override
   void initState() {
-    _emailFocus.requestFocus();
-    _passwordFocus.requestFocus();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     super.initState();
@@ -74,9 +73,9 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                               child: Text(
                                 'Welcome back',
                                 style: TextStyle(
-                                  color:
-                                      AppColors.context(context).primaryColor,
+                                  color: AppColors.context(context).textColor,
                                   fontWeight: FontWeight.w700,
+                                  fontSize: 24,
                                 ),
                               ),
                             ),
@@ -84,9 +83,9 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                               child: Text(
                                 'sign in to access your account',
                                 style: TextStyle(
-                                  color:
-                                      AppColors.context(context).primaryColor,
-                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
                                 ),
                               ),
                             ),
@@ -166,6 +165,18 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                               ),
                               autofillHints: const [AutofillHints.email],
                             ),
+                            const SizedBox(height: 12),
+
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () {
+                                  Get.to(ForgotPasswordScreen());
+                                },
+                                child: 'Forgot Password ?'.text14Red(),
+                              ),
+                            ),
+
                             const SizedBox(height: 12),
 
                             /// Login button
@@ -279,7 +290,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an account? ",
+                      "Don't have an account? ",
                       style: TextStyle(
                         color: AppColors.primaryTextBlack,
                         fontSize: 14,
@@ -296,7 +307,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                         );
                       },
                       child: Text(
-                        'Sign in',
+                        'Sign up',
                         style: TextStyle(
                           color: AppColors.context(context).primaryColor,
                           fontWeight: FontWeight.w400,

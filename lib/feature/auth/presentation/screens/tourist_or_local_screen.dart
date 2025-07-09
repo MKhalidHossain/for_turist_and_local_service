@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import '../../../../core/constants/app_colors.dart';
-import 'verify_otp_screen.dart';
-
 class TouristORLocal extends StatefulWidget {
   const TouristORLocal({super.key});
 
@@ -148,12 +146,12 @@ class _TouristORLocalState extends State<TouristORLocal> {
               child: context.primaryButton(
                 onPressed: () {
                   if (_selectedProfile != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => VerifyOtpScreen(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => VerifyOtpScreen(email: ,),
+                    //   ),
+                    // );
                   } else {
                     setState(() {
                       _showProfileError = true;
