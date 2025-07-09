@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 
 import 'package:kobeur/core/common/button/button_widget.dart';
+import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 
 import '../../../../core/themes/app_color.dart';
 
 class ChangePassword extends StatefulWidget {
-  const ChangePassword({super.key});
+  final String userEmail;
+
+  const ChangePassword({super.key, required this.userEmail});
 
   @override
   State<ChangePassword> createState() => _RestartPasswordState();
@@ -13,7 +17,8 @@ class ChangePassword extends StatefulWidget {
 
 class _RestartPasswordState extends State<ChangePassword> {
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _repeatPasswordController = TextEditingController();
+  final TextEditingController _repeatPasswordController =
+      TextEditingController();
 
   bool _showNewPassword = false;
   bool _showRepeatPassword = false;
@@ -78,126 +83,166 @@ class _RestartPasswordState extends State<ChangePassword> {
           style: TextStyle(color: Colors.black, fontSize: 24),
         ),
       ),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 32),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 32),
+      body: GetBuilder<AuthController>(
+        builder: (authController) {
+          return SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 32,
+                        ),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 32),
 
-                          /// New Password
-                          TextFormField(
-                            controller: _newPasswordController,
-                            obscureText: !_showNewPassword,
-                            style: TextStyle(color: AppColors.secondayText),
-                            decoration: _buildInputDecoration(
-                              hintText: "New Password",
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _showNewPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: AppColors.secondayText,
-                                ),
-                                onPressed: () {
-                                  setState(() => _showNewPassword = !_showNewPassword);
-                                },
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter a password';
-                              } else if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          /// Repeat Password
-                          TextFormField(
-                            controller: _repeatPasswordController,
-                            obscureText: !_showRepeatPassword,
-                            style: TextStyle(color: AppColors.secondayText),
-                            decoration: _buildInputDecoration(
-                              hintText: "Repeat New Password",
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _showRepeatPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: AppColors.secondayText,
-                                ),
-                                onPressed: () {
-                                  setState(() => _showRepeatPassword = !_showRepeatPassword);
-                                },
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please repeat your password';
-                              } else if (value != _newPasswordController.text) {
-                                return 'Passwords do not match';
-                              }
-                              return null;
-                            },
-                          ),
-
-                          const SizedBox(height: 32),
-
-                          /// Continue Button
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-                            child: context.primaryButton(
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  if (!_passwordsMatch) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("Passwords do not match"),
-                                        backgroundColor: Colors.red,
-                                        behavior: SnackBarBehavior.floating,
-                                      ),
-                                    );
-                                    return;
-                                  }
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Password changed successfully"),
-                                      backgroundColor: Colors.green,
-                                      behavior: SnackBarBehavior.floating,
+                              /// New Password
+                              TextFormField(
+                                controller: _newPasswordController,
+                                obscureText: !_showNewPassword,
+                                style: TextStyle(color: AppColors.secondayText),
+                                decoration: _buildInputDecoration(
+                                  hintText: "New Password",
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _showNewPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppColors.secondayText,
                                     ),
-                                  );
-                                  _newPasswordController.clear();
-                                  _repeatPasswordController.clear();
-                                }
-                              },
-                              text: "Continue",
-                              backgroundColor: _passwordsMatch
-                                  ? AppColors.primaryColor
-                                  : AppColors.secondaryColor,
-                            ),
+                                    onPressed: () {
+                                      setState(
+                                        () =>
+                                            _showNewPassword =
+                                                !_showNewPassword,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a password';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters';
+                                  }
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              /// Repeat Password
+                              TextFormField(
+                                controller: _repeatPasswordController,
+                                obscureText: !_showRepeatPassword,
+                                style: TextStyle(color: AppColors.secondayText),
+                                decoration: _buildInputDecoration(
+                                  hintText: "Repeat New Password",
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _showRepeatPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppColors.secondayText,
+                                    ),
+                                    onPressed: () {
+                                      setState(
+                                        () =>
+                                            _showRepeatPassword =
+                                                !_showRepeatPassword,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please repeat your password';
+                                  } else if (value !=
+                                      _newPasswordController.text) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 32),
+
+                              /// Continue Button
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: 16,
+                                ),
+                                child: context.primaryButton(
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      if (!_passwordsMatch) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              "Passwords do not match",
+                                            ),
+                                            backgroundColor: Colors.red,
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                        return;
+                                      } else {
+                                        final String pass =
+                                            _newPasswordController.text;
+                                        final String repPass =
+                                            _repeatPasswordController.text;
+                                        authController.resetPassword(
+                                          widget.userEmail,
+                                          pass,
+                                          repPass,
+                                        );
+                                      }
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                            "Password changed successfully",
+                                          ),
+                                          backgroundColor: Colors.green,
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                      _newPasswordController.clear();
+                                      _repeatPasswordController.clear();
+                                    }
+                                  },
+                                  text: "Continue",
+                                  backgroundColor:
+                                      _passwordsMatch
+                                          ? AppColors.primaryColor
+                                          : AppColors.secondaryColor,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            );
-          },
-        ),
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

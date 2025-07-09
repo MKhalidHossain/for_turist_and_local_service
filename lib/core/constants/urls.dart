@@ -1,16 +1,59 @@
 class Urls {
-  //.............................Auth..............................
+  //.............................Auth.............................. with localhost
 
   //static const String baseUrl = 'http://localhost:8000';
+  // static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+  // static const String register = '/api/v1/auth/register';
+  // static const String login = '/auth/login';
+  // static const String refreshAccessToken = '/api/v1/auth/refresh-access-token';
+  // // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
+  // static const String changePassword = '/api/v1/auth/change-password';
+  // static const String forgetPassword = '/api/v1/auth/forgot-password';
+  // static const String resetPassword = '/api/v1/auth/reset-password';
+  // static const String verifyCode = '/api/v1/auth/verify-otp';
+  // static const String logOut = '/api/v1/auth/logout';
+
+  // static const String chooseRole = '/auth/choose-role';
+
+  // // ................................Profile / User...............................
+
+  // static const String changeAvatar = '/api/v1/users/add-avatar';
+
+  // static const String deleteAvatar = '/api/v1/users/delete-avatar';
+
+  // static const String getUserById = '/api/v1/users/profile';
+
+  // // ................................Tasks...............................
+
+  // static const String addTask = '/api/v1/tasks';
+
+  // static const String getAllTasks = '/api/v1/tasks';
+
+  // static const String getRequestById = '/api/v1/tasks/';
+
+  // static const String editTask = '/api/v1/tasks/';
+
+  // static const String deleteTask = '/api/v1/tasks/';
+
+
+
+
+
+
+  // ................................Auth...............................with render 
+
+
+
+    //static const String baseUrl = 'http://localhost:8000';
   static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
-  static const String register = '/api/v1/auth/register';
+  static const String register = '/auth/signup';
   static const String login = '/auth/login';
-  static const String refreshAccessToken = '/api/v1/auth/refresh-access-token';
+  static const String refreshAccessToken = '/auth/refresh-token';
   // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
   static const String changePassword = '/api/v1/auth/change-password';
-  static const String forgetPassword = '/api/v1/auth/forgot-password';
-  static const String resetPassword = '/api/v1/auth/reset-password';
-  static const String verifyCode = '/api/v1/auth/verify-otp';
+  static const String forgetPassword = '/auth/forgot-password';
+  static const String resetPassword = '/auth/reset-password';
+  static const String verifyCode = '/auth/verify-otp';
   static const String logOut = '/api/v1/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';

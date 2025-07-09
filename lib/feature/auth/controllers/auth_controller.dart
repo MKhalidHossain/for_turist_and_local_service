@@ -69,21 +69,25 @@ class AuthController extends GetxController implements GetxService {
   }
 
   void pickImage(bool isBack, bool isProfile) async {
-      if (isProfile) {
-        final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
-          _pickedProfileFile = pickedFile;
-        }
-      } else {
-        final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-        if (pickedFile != null) {
-          identityImage = pickedFile;
-          identityImages.add(identityImage);
-          multipartList.add(MultipartBody('identity_images[]', identityImage));
-        }
+    if (isProfile) {
+      final pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      if (pickedFile != null) {
+        _pickedProfileFile = pickedFile;
       }
-      update();
+    } else {
+      final pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+      if (pickedFile != null) {
+        identityImage = pickedFile;
+        identityImages.add(identityImage);
+        multipartList.add(MultipartBody('identity_images[]', identityImage));
+      }
     }
+    update();
+  }
 
   void removeImage(int index) {
     identityImages.removeAt(index);
@@ -125,9 +129,6 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-
-
-
   Future<void> login(String email, String password) async {
     _isLoading = true;
     update();
@@ -147,9 +148,9 @@ class AuthController extends GetxController implements GetxService {
       print(token.toString());
 
       logInResponseModel = LogInResponseModel.fromJson(response.body);
-      
-      refreshToken = logInResponseModel!.data!.refreshToken! ;
-      token = logInResponseModel!.data!.refreshToken! ;
+
+      refreshToken = logInResponseModel!.data!.refreshToken!;
+      token = logInResponseModel!.data!.refreshToken!;
       print('accessToken $token NOW Iwalker');
       print('refreshToken $refreshToken NOW Iwalker');
       print(
@@ -232,9 +233,9 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = true;
     update();
     Response? response = await authServiceInterface.verifyCode(otp, email);
-    if (response!.body['status'] == true) {
+    if (response!.body['success'] == true) {
       showCustomSnackBar('Otp verification has been successful');
-      Get.to(ChangePassword());
+      Get.to(ChangePassword(userEmail: email));
     } else {
       showCustomSnackBar('There is a problem in sending OTP');
       // Get.find<AuthController>().logOut();
@@ -250,7 +251,7 @@ class AuthController extends GetxController implements GetxService {
     if (response!.body['status'] == true) {
       showCustomSnackBar('Otp has been successful to your mail');
 
-      Get.to(VerifyOtpScreen());
+      Get.to(VerifyOtpScreen(email: email));
     }
 
     update();
@@ -263,10 +264,10 @@ class AuthController extends GetxController implements GetxService {
 
     Response? response = await authServiceInterface.forgetPassword(emails);
 
-    if (response?.statusCode == 201) {
+    if (response?.statusCode == 200) {
       _isLoading = false;
       showCustomSnackBar('successfully sent otp');
-      // Get.to(CodeVerification(mail: emails,));
+      Get.to(() => VerifyOtpScreen(email: email));
     } else {
       _isLoading = false;
       showCustomSnackBar('invalid mail');
@@ -310,12 +311,18 @@ class AuthController extends GetxController implements GetxService {
       newPassword,
       confirmNewPassword,
     );
-    if (response!.statusCode == 200) {
+    if (response != null &&
+        response.statusCode == 200 &&
+        response.body['success'] == true) {
       showCustomSnackBar('Password Change Successfully');
       logOut();
+      // Get.to(UserLoginScreen());
       Get.offAll(() => UserLoginScreen());
     } else {
-      ApiChecker.checkApi(response);
+      showCustomSnackBar(response?.body['message'] ?? 'Something went wrong');
+      if (response != null) {
+        ApiChecker.checkApi(response);
+      }
     }
 
     _isLoading = false;

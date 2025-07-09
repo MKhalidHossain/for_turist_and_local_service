@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/constants/app_colors.dart';
+import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import 'package:pinput/pinput.dart';
 
-class VerifyOtpScreen extends StatelessWidget {
+class VerifyOtpScreen extends StatefulWidget {
+  final String email;
+
+  VerifyOtpScreen({super.key, required this.email});
+
+  @override
+  State<VerifyOtpScreen> createState() => _VerifyOtpScreenState();
+}
+
+class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   final TextEditingController pinController = TextEditingController();
+
   final FocusNode focusNode = FocusNode();
 
   @override
@@ -38,117 +50,125 @@ class VerifyOtpScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              /// Info Text
-              Text(
-                "Please check your Email for a message with your code. Your code is 6 numbers long.",
-                style: TextStyle(
-                  color: AppColors.secondayText,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 14,
-                ),
-                textAlign: TextAlign.center,
+      body: GetBuilder<AuthController>(
+        builder: (authController) {
+          return SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12.0,
+                vertical: 24,
               ),
-
-              const SizedBox(height: 28),
-
-              /// Title
-              Text(
-                'Enter OTP',
-                style: TextStyle(
-                  color: AppColors.primaryTextBlack,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              Text(
-                'Enter your received OTP',
-                style: TextStyle(color: AppColors.secondayText, fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-
-              const SizedBox(height: 40),
-
-              /// OTP Input
-              Pinput(
-                length: 6,
-                controller: pinController,
-                focusNode: focusNode,
-                defaultPinTheme: defaultPinTheme,
-                hapticFeedbackType: HapticFeedbackType.lightImpact,
-                onCompleted: (pin) => debugPrint('Completed: $pin'),
-                onChanged: (value) => debugPrint('Changed: $value'),
-                focusedPinTheme: defaultPinTheme.copyWith(
-                  decoration: defaultPinTheme.decoration!.copyWith(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: focusedBorderColor),
-                  ),
-                ),
-                submittedPinTheme: defaultPinTheme.copyWith(
-                  decoration: defaultPinTheme.decoration!.copyWith(
-                    color: fillColor,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: focusedBorderColor),
-                  ),
-                ),
-                errorPinTheme: defaultPinTheme.copyBorderWith(
-                  border: Border.all(color: Colors.red),
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              /// Resend
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  /// Info Text
                   Text(
-                    "Didn't Receive OTP",
-                    style: TextStyle(color: AppColors.secondayText),
+                    "Please check your Email for a message with your code. Your code is 6 numbers long.",
+                    style: TextStyle(
+                      color: AppColors.secondayText,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // Resend logic here
-                    },
-                    child: Text(
-                      "RESEND OTP",
-                      style: TextStyle(
-                        color: AppColors.context(context).primaryColor,
-                        fontSize: 12,
+
+                  const SizedBox(height: 28),
+
+                  /// Title
+                  Text(
+                    'Enter OTP',
+                    style: TextStyle(
+                      color: AppColors.primaryTextBlack,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    'Enter your received OTP',
+                    style: TextStyle(
+                      color: AppColors.secondayText,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 40),
+
+                  /// OTP Input
+                  Pinput(
+                    length: 6,
+                    controller: pinController,
+                    focusNode: focusNode,
+                    defaultPinTheme: defaultPinTheme,
+                    hapticFeedbackType: HapticFeedbackType.lightImpact,
+                    onCompleted: (pin) => debugPrint('Completed: $pin'),
+                    onChanged: (value) => debugPrint('Changed: $value'),
+                    focusedPinTheme: defaultPinTheme.copyWith(
+                      decoration: defaultPinTheme.decoration!.copyWith(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: focusedBorderColor),
                       ),
                     ),
+                    submittedPinTheme: defaultPinTheme.copyWith(
+                      decoration: defaultPinTheme.decoration!.copyWith(
+                        color: fillColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: focusedBorderColor),
+                      ),
+                    ),
+                    errorPinTheme: defaultPinTheme.copyBorderWith(
+                      border: Border.all(color: Colors.red),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  /// Resend
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Didn't Receive OTP",
+                        style: TextStyle(color: AppColors.secondayText),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          authController.resendOtp(widget.email);
+                        },
+                        child: Text(
+                          "RESEND OTP",
+                          style: TextStyle(
+                            color: AppColors.context(context).primaryColor,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 4),
+                  context.primaryButton(
+                    onPressed: () {
+                      final String otp = pinController.text;
+                      
+                      if (otp.length == 6) {
+                        authController.otpVerification(otp, widget.email);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please enter a valid 6-digit code.'),
+                          ),
+                        );
+                      }
+                    },
+                    text: "Verify",
                   ),
                 ],
               ),
-
-              const SizedBox(height: 4),
-              context.primaryButton(
-                onPressed: () {
-                  final otp = pinController.text;
-                  if (otp.length == 6) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Scaffold()),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Please enter a valid 6-digit code.'),
-                      ),
-                    );
-                  }
-                },
-                text: "Verify",
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

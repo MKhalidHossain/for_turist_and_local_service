@@ -47,8 +47,9 @@ class AuthRepository implements AuthRepositoryInterface {
   @override
   Future verifyCode(String otp, String email) async {
     return await apiClient.postData(Urls.verifyCode, {
-      "otp": int.tryParse(otp),
       "email": email,
+      "otp": int.tryParse(otp),
+      
     });
   }
 

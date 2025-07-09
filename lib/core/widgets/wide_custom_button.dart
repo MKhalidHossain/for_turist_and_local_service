@@ -6,6 +6,7 @@ class WideCustomButton extends StatelessWidget {
   final bool showIcon;
   final IconData? sufixIcon;
   final double height;
+  final Color buttonColor;
 
   const WideCustomButton({
     super.key,
@@ -14,6 +15,7 @@ class WideCustomButton extends StatelessWidget {
     this.showIcon = false,
     this.sufixIcon,
     this.height = 55,
+    this.buttonColor = const Color(0xffFF3951),
   });
 
   @override
@@ -24,7 +26,7 @@ class WideCustomButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           alignment: Alignment.center,
-          backgroundColor: Color(0xff438B92), // Make it red like in your design
+          backgroundColor: buttonColor, // Make it red like in your design
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         ),
