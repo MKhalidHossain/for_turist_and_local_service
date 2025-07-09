@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kobeur/core/constants/urls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +13,7 @@ import '../../../utils/app_constants.dart';
 
 class ApiClient extends GetxService {
   final String appBaseUrl;
-  final String appBaseUrln = 'http://localhost:8000';
+  final String appBaseUrln = Urls.baseUrl;
 
   final SharedPreferences sharedPreferences;
 

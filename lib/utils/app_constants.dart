@@ -6,9 +6,9 @@ class AppConstants {
   static const String token = 'token';
   static const String refreshToken = 'token';
 
-  static const String appName = 'Driving Test';
+  static const String appName = 'Kobeur';
 
-  static const String baseUrl = 'http://localhost:8000/api/v1/auth/user-login';
+  static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
 
   // static const String baseUrl = 'https://backend-david-weijian.onrender.com/api/v1';
 
