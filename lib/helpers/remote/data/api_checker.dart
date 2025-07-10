@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../../custom_snackbar.dart';
 import 'error_response.dart';
 

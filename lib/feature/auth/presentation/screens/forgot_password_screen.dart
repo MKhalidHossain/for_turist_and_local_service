@@ -178,15 +178,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     buttonColor: Color(0xff4D4D4D),
                     text: 'Continue',
                     onPressed: () {
-                      final email = _emailController.text;
-                      if (email.isEmpty) {
+                      final fEmail = _emailController.text;
+                      if (fEmail.isEmpty) {
                         showCustomSnackBar('email is required'.tr);
                       }
                       // else if (email.isEmail) {
                       //   showCustomSnackBar('email is not valid'.tr);
                       // }
                       else {
-                        AuthController.forgetPassword(email);
+                        AuthController.forgetPassword(fEmail);
                       }
                     },
                   ),

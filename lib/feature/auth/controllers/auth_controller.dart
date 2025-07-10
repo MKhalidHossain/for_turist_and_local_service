@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kobeur/feature/auth/domain/model/change_password_response_model.dart';
+import 'package:kobeur/feature/auth/domain/model/forget_password_response_model.dart';
+import 'package:kobeur/feature/auth/domain/model/registration_response_model.dart';
+import 'package:kobeur/feature/auth/domain/model/verify_otp_response_model.dart';
 import 'package:kobeur/feature/auth/presentation/screens/change_password_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/tourist_or_local_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/user_login_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/verify_otp_screen.dart';
@@ -61,6 +66,10 @@ class AuthController extends GetxController implements GetxService {
   FocusNode identityNumberNode = FocusNode();
 
   LogInResponseModel? logInResponseModel;
+  // RegistrationResponseModel? registrationResponseModel;
+  // VerifyCodeResponseModel? verifyCodeResponseModel;
+  // ChangePasswordResponseModel? changePasswordResponseModel;
+  // ForgetPasswordResponseModel? forgetPasswordResponseModel;
 
   void addImageAndRemoveMultiParseData() {
     multipartList.clear();
@@ -112,19 +121,32 @@ class AuthController extends GetxController implements GetxService {
   ) async {
     _isLoading = true;
     update();
+    print(
+      "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
+    );
+
     Response? response = await authServiceInterface.register(
       email,
       password,
       confirmPassword,
     );
     if (response!.statusCode == 201) {
-      Get.to(UserLoginScreen());
+      print(
+        "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
+      );
+      // registrationResponseModel = RegistrationResponseModel.fromJson(response.body);
+
+      // _isLoading = false;
+      // update();
+
+      Get.off(() => UserLoginScreen());
       showCustomSnackBar('Welcome you have successfully Registered');
     } else {
       _isLoading = false;
-      //ApiChecker.checkApi(response);
-
-      print(' pagol google ');
+      // ApiChecker.checkApi(response);
+      print(
+        ' ❌ Registration failed: ${response?.statusCode} ${response?.body} ',
+      );
     }
     update();
   }
@@ -158,7 +180,9 @@ class AuthController extends GetxController implements GetxService {
       );
       setUserToken(token, refreshToken);
 
-      Get.offAll(BottomNavbar());
+      Get.to(() => TouristORLocal());
+
+      // Get.offAll(BottomNavbar());
 
       showCustomSnackBar('Welcome you have successfully Logged In');
 
@@ -301,7 +325,7 @@ class AuthController extends GetxController implements GetxService {
   Future<void> resetPassword(
     String email,
     String newPassword,
-    String confirmNewPassword,
+    String repeatNewPassword,
   ) async {
     _isLoading = true;
     update();
@@ -309,20 +333,16 @@ class AuthController extends GetxController implements GetxService {
     Response? response = await authServiceInterface.resetPassword(
       email,
       newPassword,
-      confirmNewPassword,
+      repeatNewPassword,
     );
-    if (response != null &&
-        response.statusCode == 200 &&
-        response.body['success'] == true) {
+    if (response!.statusCode == 200) {
       showCustomSnackBar('Password Change Successfully');
       logOut();
       // Get.to(UserLoginScreen());
       Get.offAll(() => UserLoginScreen());
     } else {
       showCustomSnackBar(response?.body['message'] ?? 'Something went wrong');
-      if (response != null) {
-        ApiChecker.checkApi(response);
-      }
+      ApiChecker.checkApi(response);
     }
 
     _isLoading = false;

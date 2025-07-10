@@ -49,8 +49,7 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future resetPassword(String email, String newPassword, String confirmNewPassword) async {
-    return await authRepositoryInterface.resetPassword(email, newPassword, confirmNewPassword);
+  Future resetPassword(String email, String newPassword, String repeatNewPassword) async {
   }
 
   @override
