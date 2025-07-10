@@ -218,17 +218,17 @@ class _RestartPasswordState extends State<ChangePassword> {
                                         );
                                       }
 
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            "Password changed successfully",
-                                          ),
-                                          backgroundColor: Colors.green,
-                                          behavior: SnackBarBehavior.floating,
-                                        ),
-                                      );
+                                      // ScaffoldMessenger.of(
+                                      //   context,
+                                      // ).showSnackBar(
+                                      //   const SnackBar(
+                                      //     content: Text(
+                                      //       "Password changed successfully",
+                                      //     ),
+                                      //     backgroundColor: Colors.green,
+                                      //     behavior: SnackBarBehavior.floating,
+                                      //   ),
+                                      // );
                                       // _newPasswordController.clear();
                                       // _repeatPasswordController.clear();
                                     }

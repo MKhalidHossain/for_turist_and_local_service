@@ -7,11 +7,7 @@ class AuthService implements AuthServiceInterface {
   AuthService(this.authRepositoryInterface);
 
   @override
-  Future register(
-    String email,
-    String password,
-    String confirmPassword,
-  ) async {
+  Future register(String email, String password, String confirmPassword) async {
     return await authRepositoryInterface.register(
       email,
       password,
@@ -34,8 +30,12 @@ class AuthService implements AuthServiceInterface {
     String currentPassword,
     String newPassword,
     String confirmPassword,
-  ) async{
-    return await authRepositoryInterface.changePassword(currentPassword, newPassword, confirmPassword);
+  ) async {
+    return await authRepositoryInterface.changePassword(
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    );
   }
 
   @override
@@ -49,7 +49,16 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future resetPassword(String email, String newPassword, String repeatNewPassword) async {
+  Future resetPassword(
+    String email,
+    String newPassword,
+    String repeatNewPassword,
+  ) async {
+    return await authRepositoryInterface.resetPassword(
+      email,
+      newPassword,
+      repeatNewPassword,
+    );
   }
 
   @override
@@ -108,9 +117,8 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future updateAccessAndRefreshToken() {
-    // TODO: implement updateAccessAndRefreshToken
-    throw UnimplementedError();
+  Future updateAccessAndRefreshToken() async{
+    return await authRepositoryInterface.updateAccessAndRefreshToken();
   }
 
   @override
@@ -120,7 +128,7 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future chooseRole(String role) async{
-   return await authRepositoryInterface.chooseRole(role);
+  Future chooseRole(String role) async {
+    return await authRepositoryInterface.chooseRole(role);
   }
 }

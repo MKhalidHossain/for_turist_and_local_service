@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kobeur/feature/auth/domain/model/change_password_response_model.dart';
-import 'package:kobeur/feature/auth/domain/model/forget_password_response_model.dart';
-import 'package:kobeur/feature/auth/domain/model/registration_response_model.dart';
-import 'package:kobeur/feature/auth/domain/model/verify_otp_response_model.dart';
 import 'package:kobeur/feature/auth/presentation/screens/change_password_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/tourist_or_local_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/user_login_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/verify_otp_screen.dart';
@@ -19,6 +14,7 @@ import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../../utils/app_constants.dart';
 import '../domain/model/login_response_model.dart';
+import '../presentation/screens/tourist_or_local_screen.dart';
 import '../sevices/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {
@@ -172,8 +168,8 @@ class AuthController extends GetxController implements GetxService {
       logInResponseModel = LogInResponseModel.fromJson(response.body);
 
       refreshToken = logInResponseModel!.data!.refreshToken!;
-      token = logInResponseModel!.data!.refreshToken!;
-      print('accessToken $token NOW Iwalker');
+      token = logInResponseModel!.data!.accessToken!;
+      print('accessToken ${logInResponseModel!.data!.accessToken}} NOW Iwalker');
       print('refreshToken $refreshToken NOW Iwalker');
       print(
         'User Token $token  ================================== from comtroller ',
@@ -182,7 +178,7 @@ class AuthController extends GetxController implements GetxService {
 
       Get.to(() => TouristORLocal());
 
-      // Get.offAll(BottomNavbar());
+      //Get.offAll(BottomNavbar());
 
       showCustomSnackBar('Welcome you have successfully Logged In');
 
@@ -337,11 +333,11 @@ class AuthController extends GetxController implements GetxService {
     );
     if (response!.statusCode == 200) {
       showCustomSnackBar('Password Change Successfully');
-      logOut();
+      // logOut();
       // Get.to(UserLoginScreen());
       Get.offAll(() => UserLoginScreen());
     } else {
-      showCustomSnackBar(response?.body['message'] ?? 'Something went wrong');
+      showCustomSnackBar(response.body['message'] ?? 'Something went wrong');
       ApiChecker.checkApi(response);
     }
 
@@ -457,5 +453,26 @@ class AuthController extends GetxController implements GetxService {
 
   void setFirstTimeInstall() {
     return authServiceInterface.setFirstTimeInstall();
+  }
+
+  Future<void> chooseRole(String role) async {
+    _isLoading = true;
+    update();
+    Response? response = await authServiceInterface.chooseRole(role);
+    if (response!.statusCode == 200) {
+      showCustomSnackBar('You have successfully selected your role as $role');
+
+      Get.to(BottomNavbar());
+      //Get.to(VerifyOtpScreen(role: role));
+    }else {
+      showCustomSnackBar(
+        response.body['message'] ?? 'Something went wrong',
+        isError: true,
+      );
+      ApiChecker.checkApi(response);
+    }
+
+    _isLoading = false;
+    update();
   }
 }

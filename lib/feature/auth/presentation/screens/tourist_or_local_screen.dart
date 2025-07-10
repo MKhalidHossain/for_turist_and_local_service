@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
+import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import '../../../../core/constants/app_colors.dart';
+
 class TouristORLocal extends StatefulWidget {
   const TouristORLocal({super.key});
 
@@ -104,70 +107,69 @@ class _TouristORLocalState extends State<TouristORLocal> {
         ),
         centerTitle: false,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 16),
-                      _buildProfileOption(
-                        type: "Tourist",
-                        description:
-                            "You are looking for activity, experience or sharing",
-                        imagePath: 'assets/images/tourist.png',
-                      ),
-                      _buildProfileOption(
-                        type: "Local",
-                        description:
-                            "You are a hatchr and you want to help tourist and share with them",
-                        imagePath: 'assets/images/local.png',
-                      ),
-                      if (_showProfileError)
-                        Padding(
-                          padding: EdgeInsets.only(top: 8),
-                          child: Text(
-                            "Please select a profile type",
-                            style: TextStyle(color: Colors.red.shade700),
+      body: GetBuilder<AuthController>(
+        builder: (authController) {
+          return SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(horizontal: 12),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 16),
+                          _buildProfileOption(
+                            type: "Tourist",
+                            description:
+                                "You are looking for activity, experience or sharing",
+                            imagePath: 'assets/images/tourist.png',
                           ),
-                        ),
-                    ],
+                          _buildProfileOption(
+                            type: "Local",
+                            description:
+                                "You are a hatchr and you want to help tourist and share with them",
+                            imagePath: 'assets/images/local.png',
+                          ),
+                          if (_showProfileError)
+                            Padding(
+                              padding: EdgeInsets.only(top: 8),
+                              child: Text(
+                                "Please select a profile type",
+                                style: TextStyle(color: Colors.red.shade700),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
 
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-              child: context.primaryButton(
-                onPressed: () {
-                  if (_selectedProfile != null) {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => VerifyOtpScreen(email: ,),
-                    //   ),
-                    // );
-                  } else {
-                    setState(() {
-                      _showProfileError = true;
-                    });
-                  }
-                },
-                text: "Continue",
-                backgroundColor:
-                    _selectedProfile != null
-                        ? AppColors.context(context).primaryColor
-                        : AppColors.secondaryColor,
-              ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                  child: context.primaryButton(
+                    onPressed: () {
+                      if (_selectedProfile != null) {
+                        authController.chooseRole(_selectedProfile!);
+                      } else {
+                        setState(() {
+                          _showProfileError = true;
+                        });
+                      }
+                    },
+                    text: "Continue",
+                    backgroundColor:
+                        _selectedProfile != null
+                            ? AppColors.context(context).primaryColor
+                            : AppColors.secondaryColor,
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
-            const SizedBox(height: 24),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
