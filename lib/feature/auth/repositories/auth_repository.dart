@@ -11,12 +11,7 @@ class AuthRepository implements AuthRepositoryInterface {
   AuthRepository({required this.apiClient, required this.sharedPreferences});
 
   @override
-  Future register(
-
-    String email,
-    String password,
-    String confirmPassword,
-  ) async {
+  Future register(String email, String password, String confirmPassword) async {
     return await apiClient.postData(Urls.register, {
       "email": email,
       "password": password,
@@ -49,16 +44,19 @@ class AuthRepository implements AuthRepositoryInterface {
     return await apiClient.postData(Urls.verifyCode, {
       "email": email,
       "otp": int.tryParse(otp),
-      
     });
   }
 
   @override
-  Future resetPassword(String email ,String newPassword, String confirmNewPassword) async {
+  Future resetPassword(
+    String email,
+    String newPassword,
+    String repeatNewPassword,
+  ) async {
     return await apiClient.postData(Urls.resetPassword, {
       "email": email,
       "newPassword": newPassword,
-      "confirmNewPassword": confirmNewPassword,
+      "repeatNewPassword": repeatNewPassword,
     });
   }
 
@@ -150,8 +148,9 @@ class AuthRepository implements AuthRepositoryInterface {
   Future updateAccessAndRefreshToken() {
     throw UnimplementedError();
   }
-   @override
-  Future chooseRole(String role) async{
-   return await apiClient.postData(Urls.chooseRole, {"role": role});
+
+  @override
+  Future chooseRole(String role) async {
+    return await apiClient.postData(Urls.chooseRole, {"role": role});
   }
 }

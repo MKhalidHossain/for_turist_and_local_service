@@ -26,8 +26,6 @@ class UserSignupScreenState extends State<UserSignupScreen> {
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
 
-
-
   @override
   void initState() {
     _emailController = TextEditingController();
@@ -255,7 +253,11 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                 } else if (password != confirmPassword) {
                                   showCustomSnackBar('Passwords do not match');
                                 } else {
-                                  authController.register(email, password, confirmPassword);
+                                  authController.register(
+                                    email,
+                                    password,
+                                    confirmPassword,
+                                  );
                                 }
                               },
                               text: "Sign up",
@@ -360,12 +362,13 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserLoginScreen(),
-                          ),
-                        );
+                        Get.to(UserLoginScreen());
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //   ),
+                        // );
                       },
                       child: Text(
                         'Sign in',

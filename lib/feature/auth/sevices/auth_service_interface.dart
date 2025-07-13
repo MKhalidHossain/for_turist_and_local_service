@@ -16,7 +16,7 @@ abstract class AuthServiceInterface {
   Future<dynamic> verifyCode(String email, String otp);
   Future<dynamic> resendOtp(String email);
   Future<dynamic> sendOtp({required String phone});
-  Future<dynamic> resetPassword(String email ,String newPassword, String confirmNewPassword);
+  Future<dynamic> resetPassword(String email ,String newPassword, String repeatNewPassword);
   Future<dynamic> logout();
 
   bool isLoggedIn();

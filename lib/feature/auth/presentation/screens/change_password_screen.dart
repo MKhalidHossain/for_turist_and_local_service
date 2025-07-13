@@ -66,8 +66,8 @@ class _RestartPasswordState extends State<ChangePassword> {
   void dispose() {
     _newPasswordController.removeListener(_updateState);
     _repeatPasswordController.removeListener(_updateState);
-    _newPasswordController.dispose();
-    _repeatPasswordController.dispose();
+    // _newPasswordController.dispose();
+    // _repeatPasswordController.dispose();
     super.dispose();
   }
 
@@ -199,6 +199,14 @@ class _RestartPasswordState extends State<ChangePassword> {
                                         );
                                         return;
                                       } else {
+                                        // print("EMAIL: ${widget.userEmail}");
+                                        // print(
+                                        //   "PASS: ${_newPasswordController.text}",
+                                        // );
+                                        // print(
+                                        //   "CONFIRM PASS: ${_repeatPasswordController.text}",
+                                        // );
+
                                         final String pass =
                                             _newPasswordController.text;
                                         final String repPass =
@@ -210,19 +218,19 @@ class _RestartPasswordState extends State<ChangePassword> {
                                         );
                                       }
 
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                            "Password changed successfully",
-                                          ),
-                                          backgroundColor: Colors.green,
-                                          behavior: SnackBarBehavior.floating,
-                                        ),
-                                      );
-                                      _newPasswordController.clear();
-                                      _repeatPasswordController.clear();
+                                      // ScaffoldMessenger.of(
+                                      //   context,
+                                      // ).showSnackBar(
+                                      //   const SnackBar(
+                                      //     content: Text(
+                                      //       "Password changed successfully",
+                                      //     ),
+                                      //     backgroundColor: Colors.green,
+                                      //     behavior: SnackBarBehavior.floating,
+                                      //   ),
+                                      // );
+                                      // _newPasswordController.clear();
+                                      // _repeatPasswordController.clear();
                                     }
                                   },
                                   text: "Continue",

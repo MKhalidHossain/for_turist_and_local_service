@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../../custom_snackbar.dart';
 import 'error_response.dart';
 
@@ -16,10 +15,10 @@ class ApiChecker {
         showCustomSnackBar(errorResponse.errors![0].message!);
       } else {
         showCustomSnackBar(response.body['message']!);
-        
       }
     } else {
-      showCustomSnackBar(response.statusText! + 'Khalid this is Status Code');
+      //showCustomSnackBar(response.statusText! + 'Khalid this is Status Code');
+      showCustomSnackBar(response.statusText!);
     }
   }
 }
