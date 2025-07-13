@@ -199,13 +199,13 @@ class _RestartPasswordState extends State<ChangePassword> {
                                         );
                                         return;
                                       } else {
-                                        print("EMAIL: ${widget.userEmail}");
-                                        print(
-                                          "PASS: ${_newPasswordController.text}",
-                                        );
-                                        print(
-                                          "CONFIRM PASS: ${_repeatPasswordController.text}",
-                                        );
+                                        // print("EMAIL: ${widget.userEmail}");
+                                        // print(
+                                        //   "PASS: ${_newPasswordController.text}",
+                                        // );
+                                        // print(
+                                        //   "CONFIRM PASS: ${_repeatPasswordController.text}",
+                                        // );
 
                                         final String pass =
                                             _newPasswordController.text;

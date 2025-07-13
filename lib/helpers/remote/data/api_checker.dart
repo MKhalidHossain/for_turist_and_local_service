@@ -15,10 +15,10 @@ class ApiChecker {
         showCustomSnackBar(errorResponse.errors![0].message!);
       } else {
         showCustomSnackBar(response.body['message']!);
-        
       }
     } else {
-      showCustomSnackBar(response.statusText! + 'Khalid this is Status Code');
+      //showCustomSnackBar(response.statusText! + 'Khalid this is Status Code');
+      showCustomSnackBar(response.statusText!);
     }
   }
 }

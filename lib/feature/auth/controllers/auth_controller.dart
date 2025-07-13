@@ -11,9 +11,9 @@ import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
 import '../../../helpers/remote/data/api_client.dart';
 
-import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../../utils/app_constants.dart';
 import '../domain/model/login_response_model.dart';
+import '../presentation/language_picker_screen.dart';
 import '../presentation/screens/tourist_or_local_screen.dart';
 import '../sevices/auth_service_interface.dart';
 
@@ -169,14 +169,16 @@ class AuthController extends GetxController implements GetxService {
 
       refreshToken = logInResponseModel!.data!.refreshToken!;
       token = logInResponseModel!.data!.accessToken!;
-      print('accessToken ${logInResponseModel!.data!.accessToken}} NOW Iwalker');
+      print(
+        'accessToken ${logInResponseModel!.data!.accessToken}} NOW Iwalker',
+      );
       print('refreshToken $refreshToken NOW Iwalker');
       print(
         'User Token $token  ================================== from comtroller ',
       );
       setUserToken(token, refreshToken);
 
-      Get.to(() => TouristORLocal());
+      Get.offAll(() => TouristORLocalScreen());
 
       //Get.offAll(BottomNavbar());
 
@@ -461,10 +463,10 @@ class AuthController extends GetxController implements GetxService {
     Response? response = await authServiceInterface.chooseRole(role);
     if (response!.statusCode == 200) {
       showCustomSnackBar('You have successfully selected your role as $role');
+      Get.to(LanguagePickerScreen());
 
-      Get.to(BottomNavbar());
       //Get.to(VerifyOtpScreen(role: role));
-    }else {
+    } else {
       showCustomSnackBar(
         response.body['message'] ?? 'Something went wrong',
         isError: true,

@@ -4,14 +4,14 @@ import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import '../../../../core/constants/app_colors.dart';
 
-class TouristORLocal extends StatefulWidget {
-  const TouristORLocal({super.key});
+class TouristORLocalScreen extends StatefulWidget {
+  const TouristORLocalScreen({super.key});
 
   @override
-  State<TouristORLocal> createState() => _TouristORLocalState();
+  State<TouristORLocalScreen> createState() => _TouristORLocalScreenState();
 }
 
-class _TouristORLocalState extends State<TouristORLocal> {
+class _TouristORLocalScreenState extends State<TouristORLocalScreen> {
   final _formKey = GlobalKey<FormState>();
 
   String? _selectedProfile;
@@ -99,7 +99,8 @@ class _TouristORLocalState extends State<TouristORLocal> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => null,
+          //Navigator.pop(context),
         ),
         title: Text(
           "Select your profile type",
