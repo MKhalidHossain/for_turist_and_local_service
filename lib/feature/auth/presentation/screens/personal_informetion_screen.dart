@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/auth/domain/singleton/user_profile_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/validation/validators.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/choose_country/data/countries.dart';
 import 'description_screen.dart';
-import 'tourist_or_local_screen.dart';
 
 // class TouristOrLocalScreen extends StatelessWidget {
 //   const TouristOrLocalScreen({super.key});
@@ -166,6 +166,32 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
           context.primaryButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                UserProfileService.instance.profile.firstName =
+                    _firstNameController.text;
+                UserProfileService.instance.profile.lastName =
+                    _lastNameController.text;
+                UserProfileService.instance.profile.age = int.tryParse(
+                  _ageController.text,
+                );
+                UserProfileService.instance.profile.gender = selectedGender;
+                UserProfileService.instance.profile.nationality =
+                    selectedNationality;
+
+                print(
+                  'The user data is \n' +
+                      '\nFirst name:' +
+                      (UserProfileService.instance.profile.firstName ?? '') +
+                      '\nLast name:' +
+                      (UserProfileService.instance.profile.lastName ?? '') +
+                      '\nAge:' +
+                      ((UserProfileService.instance.profile.age?.toString()) ??
+                          '') +
+                      '\nGender:' +
+                      (UserProfileService.instance.profile.gender ?? '') +
+                      '\nNationality:' +
+                      (UserProfileService.instance.profile.nationality ?? ''),
+                );
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const DescriptionScreen()),
@@ -178,7 +204,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
                     ? AppColors.context(context).primaryColor
                     : AppColors.secondaryColor,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 36),
         ],
       ),
     );

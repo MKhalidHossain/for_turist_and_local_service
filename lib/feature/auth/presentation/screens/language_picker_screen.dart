@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/feature/auth/presentation/screens/personal_informetion_screen.dart';
-import '../../../core/widgets/choose_country/model/country.dart';
-import '../../../core/widgets/choose_country/data/countries.dart';
-import '../../../navigation/bottom_navigationber_screen.dart';
+import '../../../../core/widgets/choose_country/model/country.dart';
+import '../../../../core/widgets/choose_country/data/countries.dart';
+import '../../domain/singleton/user_profile_service.dart';
 
 class LanguagePickerScreen extends StatefulWidget {
   const LanguagePickerScreen({super.key});
@@ -173,7 +173,11 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
                 onPressed:
                     selectedLanguages.isNotEmpty
                         ? () {
+                          UserProfileService.instance.profile.languages =
+                              selectedLanguages.toList();
+
                           Navigator.pop(context, selectedLanguages.toList());
+                          print(UserProfileService.instance.profile.languages);
                           Get.to(PersonalInformetionScreen());
                         }
                         : null,

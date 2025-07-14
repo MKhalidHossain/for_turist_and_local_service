@@ -13,7 +13,7 @@ import '../../../helpers/remote/data/api_client.dart';
 
 import '../../../utils/app_constants.dart';
 import '../domain/model/login_response_model.dart';
-import '../presentation/language_picker_screen.dart';
+import '../presentation/screens/language_picker_screen.dart';
 import '../presentation/screens/tourist_or_local_screen.dart';
 import '../sevices/auth_service_interface.dart';
 

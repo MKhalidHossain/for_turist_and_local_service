@@ -166,7 +166,7 @@ class _TouristORLocalScreenState extends State<TouristORLocalScreen> {
                             : AppColors.secondaryColor,
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 0),
               ],
             ),
           );

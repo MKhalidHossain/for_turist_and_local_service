@@ -45,5 +45,12 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- ✅ Add these camera and photo library permissions -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to take pictures.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select pictures.</string>
+
 </dict>
 </plist>
