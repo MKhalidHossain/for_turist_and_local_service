@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/themes/app_color.dart';
 import '../feature/auth/presentation/screens/personal_informetion_screen.dart';
-import '../feature/booking/presentation/screens/bookinf_screen.dart';
+import '../feature/booking/presentation/screens/bookings_screen.dart';
 import '../feature/message/presentation/screens/message_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
@@ -16,7 +16,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
 
   final List<Widget> _screens = [
     SizedBox(),
-    BookingPage(),
+    BookingsPage(),
     MessagesScreen(),
     PersonalInformetionScreen(),
   ];
@@ -29,8 +29,8 @@ class _BottomNavbarState extends State<BottomNavbar> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            height: 76,
-            padding: EdgeInsets.symmetric(vertical: 10),
+            height: 85,
+            padding: EdgeInsets.only(bottom: 18),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: [
@@ -46,7 +46,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
                   Icons.home_filled,
                   Icons.calendar_today,
                   Icons.chat_bubble_outline,
-                  Icons.person_outline,
+                  Icons.person_2,
                 ];
                 //       final icons = [
                 //   'assets/icons/home.png',
@@ -79,10 +79,10 @@ class _BottomNavbarState extends State<BottomNavbar> {
                       children: [
                         SizedBox(
                           width: 32,
-                          height: 20,
+                          height: 30,
                           child: Icon(
                             icons[index],
-                            size: 20,
+                            size: 26,
                             color: isSelected ? Colors.white : Colors.black,
                           ),
                         ),
@@ -103,7 +103,6 @@ class _BottomNavbarState extends State<BottomNavbar> {
               }),
             ),
           ),
-          const SizedBox(height: 16),
         ],
       ),
     );

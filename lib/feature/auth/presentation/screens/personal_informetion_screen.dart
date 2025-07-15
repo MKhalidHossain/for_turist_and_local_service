@@ -77,6 +77,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
     final size = MediaQuery.of(context).size;
 
     return AppScaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: const BackButton(),
         title: const Text(
@@ -142,6 +143,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
                               (value) =>
                                   value == null ? 'Please select gender' : null,
                         ),
+                        const SizedBox(height: 12),
                         _buildDropdown(
                           label: 'Nationality',
                           value: selectedNationality,
@@ -308,6 +310,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xffC4C4C4).withOpacity(0.25),
+            hintText: 'Select $label',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -317,15 +320,24 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
               vertical: 14,
             ),
           ),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
-          dropdownColor: const Color(0xffC4C4C4),
-          style: const TextStyle(color: Colors.black, fontSize: 16),
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: AppColors.secondaryColor,
+          ),
+          dropdownColor: const Color(0xffC4C4C4).withOpacity(0.8),
+          style: const TextStyle(color: AppColors.secondayText, fontSize: 16),
           items:
               items
                   .map(
                     (item) => DropdownMenuItem<String>(
                       value: item,
-                      child: Text(item),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          item,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
                     ),
                   )
                   .toList(),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kobeur/core/constants/app_colors.dart';
+import 'package:path/path.dart';
 
 extension TextStylingExtension on String {
   // Font family
@@ -107,6 +109,16 @@ extension TextStylingExtension on String {
     ),
   );
 
+  Text text16Black600() => Text(
+    this,
+    style: const TextStyle(
+      fontSize: 16,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w600,
+      color: Color(0xFF000000),
+    ),
+  );
+
   Text text16Profile() => Text(
     this,
     style: const TextStyle(
@@ -124,6 +136,16 @@ extension TextStylingExtension on String {
       fontFamily: _fontFamily,
       fontWeight: FontWeight.w500,
       color: Color(0xff009A64),
+    ),
+  );
+
+  Text text16LightRed() => Text(
+    this,
+    style: TextStyle(
+      fontSize: 16,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w500,
+      color: Colors.red,
     ),
   );
 
@@ -146,6 +168,16 @@ extension TextStylingExtension on String {
       fontSize: 14,
       fontFamily: _fontFamily,
       fontWeight: FontWeight.w400,
+      color: Color(0xFF000000),
+    ),
+  );
+  Text text14Black600() => Text(
+    maxLines: 15,
+    this,
+    style: const TextStyle(
+      fontSize: 14,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w600,
       color: Color(0xFF000000),
     ),
   );

@@ -4,6 +4,7 @@ import 'package:kobeur/feature/auth/presentation/screens/tourist_or_local_screen
 import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
 import 'helpers/dependency_injection.dart';
+import 'navigation/bottom_navigationber_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,8 +12,6 @@ void main() async {
   await initDI();
   if (!Get.find<AuthController>().isFirstTimeInstall()) {
     print("object ---------------000000000000-----------------");
-
-    
 
     Get.find<AuthController>().setFirstTimeInstall();
     Get.lazyPut(() => ProfileStorageService());
@@ -38,8 +37,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
       ),
       home:
+          //BottomNavbar(),
           TouristORLocalScreen(),
-          //UserLoginScreen(),
+      //UserLoginScreen(),
 
       // SpokenLanguageScreen(),
     );

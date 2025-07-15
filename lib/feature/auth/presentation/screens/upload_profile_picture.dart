@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/domain/singleton/user_profile_service.dart';
@@ -76,153 +77,162 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
         centerTitle: false,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 36.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            'To create your new account, provide one of your photos.'
-                .text14Black(),
-
-            /// Middle content
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(height: 24),
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                  ),
-                  child: ClipOval(
-                    child:
-                        _imageFile != null
-                            ? Image.file(
-                              _imageFile!,
-                              height: size.width * 0.8,
-                              width: size.width * 0.8,
-                              fit: BoxFit.cover,
-                            )
-                            : Image.asset(
-                              'assets/images/profileBlankImage.png',
-                              height: size.width * 0.8,
-                              width: size.width * 0.8,
-                              fit: BoxFit.contain,
-                            ),
-                  ),
-                ),
-                const SizedBox(height: 12),
+                'To create your new account, provide one of your photos.'
+                    .text14Black(),
 
-                SizedBox(
-                  width: 150,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                /// Middle content
+                Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.black,
-                              size: 30,
-                            ),
-                            onPressed: () => _pickImage(ImageSource.camera),
-                          ),
-                          const Text(
-                            'Camera',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
+                          child:
+                              _imageFile != null
+                                  ? Image.file(
+                                    _imageFile!,
+                                    height: size.width * 0.8,
+                                    width: size.width * 0.8,
+                                    fit: BoxFit.cover,
+                                  )
+                                  : Image.asset(
+                                    'assets/images/profileBlankImage.png',
+                                    height: size.width * 0.8,
+                                    width: size.width * 0.8,
+                                    fit: BoxFit.cover,
+                                  ),
+                        ),
                       ),
-                      Column(
-                        children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.photo_library_outlined,
-                              color: Colors.black,
-                              size: 30,
+                      const SizedBox(height: 12),
+
+                      SizedBox(
+                        width: 150,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  onPressed:
+                                      () => _pickImage(ImageSource.camera),
+                                ),
+                                const Text(
+                                  'Camera',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
-                            onPressed: () => _pickImage(ImageSource.gallery),
-                          ),
-                          const Text(
-                            'Gallery',
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
+                            Column(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.photo_library_outlined,
+                                    color: Colors.black,
+                                    size: 30,
+                                  ),
+                                  onPressed:
+                                      () => _pickImage(ImageSource.gallery),
+                                ),
+                                const Text(
+                                  'Gallery',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
+                      const SizedBox(height: 54),
                     ],
                   ),
                 ),
-                const SizedBox(height: 54),
-              ],
-            ),
 
-            /// Bottom buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: size.width * 0.45,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Get.to(BottomNavbar());
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(
-                        color: AppColors.context(context).primaryColor,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 14,
-                        horizontal: 24,
+                /// Bottom buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: size.width * 0.45,
+                      child: OutlinedButton(
+                        onPressed: () {
+                          Get.to(BottomNavbar());
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: AppColors.context(context).primaryColor,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 24,
+                          ),
+                        ),
+                        child: Text(
+                          "Skip",
+                          style: TextStyle(
+                            color: AppColors.context(context).primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
                     ),
-                    child: Text(
-                      "Skip",
-                      style: TextStyle(
-                        color: AppColors.context(context).primaryColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    context.primaryButton(
+                      onPressed: () {
+                        if (_imageFile != null) {
+                          UserProfileService.instance.profile.profileImage =
+                              _imageFile;
+                          print(
+                            'Profile Image:' +
+                                UserProfileService.instance.profile.profileImage
+                                    .toString() +
+                                '\n',
+                          );
+                          Get.to(BottomNavbar());
+                        } else
+                          null;
+                      },
+                      width: size.width * 0.45,
+                      text: "Continue",
+                      backgroundColor:
+                          _imageFile != null
+                              ? AppColors.context(context).primaryColor
+                              : AppColors.secondaryColor,
                     ),
-                  ),
-                ),
-                context.primaryButton(
-                  onPressed: () {
-                    if (_imageFile != null) {
-                      UserProfileService.instance.profile.profileImage =
-                          _imageFile;
-                      print(
-                        'Profile Image:' +
-                            UserProfileService.instance.profile.profileImage
-                                .toString() +
-                            '\n',
-                      );
-                      Get.to(BottomNavbar());
-                    } else
-                      null;
-                  },
-                  width: size.width * 0.45,
-                  text: "Continue",
-                  backgroundColor:
-                      _imageFile != null
-                          ? AppColors.context(context).primaryColor
-                          : AppColors.secondaryColor,
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

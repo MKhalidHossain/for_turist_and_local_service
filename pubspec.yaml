@@ -49,6 +49,7 @@ dependencies:
   pinput: ^5.0.1
   # country_picker:
   #   path: packages/country_picker/
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -106,6 +107,7 @@ flutter:
   assets:
     #- assets/Icons/
     - assets/images/
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

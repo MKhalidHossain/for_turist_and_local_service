@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/constants/app_colors.dart';
 import 'package:kobeur/feature/auth/domain/singleton/user_profile_service.dart';
@@ -174,7 +175,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
             ),
           ),
           context.primaryButton(
-            onPressed: () {
+            onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 UserProfileService.instance.profile.description =
                     _descriptionController.text;
@@ -182,10 +183,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                   '\nThe description is:' +
                       '${UserProfileService.instance.profile.description}',
                 );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => UploadProfilePicture()),
-                );
+                await Future.delayed(Duration(seconds: 1));
+                Get.to(UploadProfilePicture());
               }
             },
             text: "Continue",

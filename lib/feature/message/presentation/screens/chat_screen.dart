@@ -122,9 +122,8 @@ class ChatScreen extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.only(top: isNewSender ? 20 : 12),
                   child: Row(
-                    mainAxisAlignment: isMe
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
+                    mainAxisAlignment:
+                        isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       if (!isMe)
@@ -146,9 +145,10 @@ class ChatScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
-                            crossAxisAlignment: isMe
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
+                            crossAxisAlignment:
+                                isMe
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
                             children: [
                               Text(
                                 message.text,
@@ -165,9 +165,12 @@ class ChatScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.w400,
-                                  color: isMe
-                                      ? AppColors.context(context).backgroundColor
-                                      : AppColors.primaryTextBlack,
+                                  color:
+                                      isMe
+                                          ? AppColors.context(
+                                            context,
+                                          ).backgroundColor
+                                          : AppColors.primaryTextBlack,
                                 ),
                               ),
                             ],

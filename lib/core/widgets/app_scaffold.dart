@@ -6,6 +6,7 @@ class AppScaffold extends StatelessWidget {
   final Widget? drawer;
   final bool removePadding;
   final Widget? floatingActionButton;
+  final bool resizeToAvoidBottomInset; // ✅ Add this
 
   const AppScaffold({
     super.key,
@@ -14,6 +15,7 @@ class AppScaffold extends StatelessWidget {
     required this.body,
     this.removePadding = false,
     this.floatingActionButton,
+    this.resizeToAvoidBottomInset = true, // ✅ Default to true
   });
 
   @override
@@ -21,6 +23,7 @@ class AppScaffold extends StatelessWidget {
     return Scaffold(
       drawer: drawer,
       appBar: appBar,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset, // ✅ Correct placement
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: removePadding ? 0 : 18),
         child: body,
