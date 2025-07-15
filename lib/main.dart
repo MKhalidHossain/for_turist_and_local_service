@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/feature/auth/presentation/screens/tourist_or_local_screen.dart';
+import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
 import 'helpers/dependency_injection.dart';
+import 'navigation/bottom_navigationber_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,9 +14,11 @@ void main() async {
     print("object ---------------000000000000-----------------");
 
     Get.find<AuthController>().setFirstTimeInstall();
+    Get.lazyPut(() => ProfileStorageService());
   } else {
     print("object ---------------11111111111-----------------");
   }
+
   Get.put(AppBarTheme());
   runApp(MyApp());
 }
@@ -32,8 +36,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
       ),
-      home: TouristORLocalScreen(),
-
+      home:
+          //BottomNavbar(),
+          TouristORLocalScreen(),
       //UserLoginScreen(),
 
       // SpokenLanguageScreen(),

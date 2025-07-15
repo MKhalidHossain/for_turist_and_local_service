@@ -3,9 +3,6 @@ import 'package:kobeur/core/themes/app_color.dart';
 
 import '../../themes/text_style.dart';
 
-
-
-
 extension ButtonStyleExtensions on BuildContext {
   Widget primaryButton({
     required VoidCallback onPressed,
@@ -30,50 +27,78 @@ extension ButtonStyleExtensions on BuildContext {
             borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),
-        child: isLoading
-            ? SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    text,
-                    style: AppText.mdMedium_16.copyWith(color: Colors.white),
+        child:
+            isLoading
+                ? SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
                   ),
-                  if (icon != null) ...[
-                    SizedBox(width: 8),
-                    Icon(icon, size: 20, color: Colors.black),
+                )
+                : Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      text,
+                      style: AppText.mdMedium_16.copyWith(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'outfit',
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (icon != null) ...[
+                      SizedBox(width: 8),
+                      Icon(icon, size: 20, color: Colors.black),
+                    ],
                   ],
-                ],
-              ),
+                ),
       ),
     );
   }
 }
 
 class SecondaryButton extends StatelessWidget {
-  const SecondaryButton({super.key, required Null Function() onPressed});
+  final VoidCallback onPressed;
+  final String text;
+  final double? height;
+  final double? width;
+  final double? fontSize;
+
+  const SecondaryButton({
+    super.key,
+    required this.onPressed,
+    this.text = 'Message Local',
+    this.height = 51,
+    this.width,
+    this.fontSize,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: () {},
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.primaryColor,
-        side: BorderSide(color: AppColors.primaryColor),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-      child: const Center(
-        child: Text(
-          'Message Local',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+    return SizedBox(
+      width: width ?? double.infinity,
+      height: height,
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primaryColor,
+          side: BorderSide(color: AppColors.primaryColor),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: AppText.mdMedium_16.copyWith(
+              color: AppColors.primaryColor,
+              fontSize: fontSize ?? 16,
+              fontFamily: 'outfit',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );
@@ -158,4 +183,3 @@ class SecondaryButton extends StatelessWidget {
 //                     : Colors.black,
 //               ),
 //             ),
-

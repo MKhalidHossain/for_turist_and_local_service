@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/auth/domain/singleton/user_profile_service.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/validation/validators.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/widgets/choose_country/data/countries.dart';
 import 'description_screen.dart';
-import 'tourist_or_local_screen.dart';
 
 // class TouristOrLocalScreen extends StatelessWidget {
 //   const TouristOrLocalScreen({super.key});
@@ -77,6 +77,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
     final size = MediaQuery.of(context).size;
 
     return AppScaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: const BackButton(),
         title: const Text(
@@ -142,6 +143,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
                               (value) =>
                                   value == null ? 'Please select gender' : null,
                         ),
+                        const SizedBox(height: 12),
                         _buildDropdown(
                           label: 'Nationality',
                           value: selectedNationality,
@@ -166,6 +168,32 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
           context.primaryButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                UserProfileService.instance.profile.firstName =
+                    _firstNameController.text;
+                UserProfileService.instance.profile.lastName =
+                    _lastNameController.text;
+                UserProfileService.instance.profile.age = int.tryParse(
+                  _ageController.text,
+                );
+                UserProfileService.instance.profile.gender = selectedGender;
+                UserProfileService.instance.profile.nationality =
+                    selectedNationality;
+
+                print(
+                  'The user data is \n' +
+                      '\nFirst name:' +
+                      (UserProfileService.instance.profile.firstName ?? '') +
+                      '\nLast name:' +
+                      (UserProfileService.instance.profile.lastName ?? '') +
+                      '\nAge:' +
+                      ((UserProfileService.instance.profile.age?.toString()) ??
+                          '') +
+                      '\nGender:' +
+                      (UserProfileService.instance.profile.gender ?? '') +
+                      '\nNationality:' +
+                      (UserProfileService.instance.profile.nationality ?? ''),
+                );
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const DescriptionScreen()),
@@ -178,7 +206,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
                     ? AppColors.context(context).primaryColor
                     : AppColors.secondaryColor,
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 36),
         ],
       ),
     );
@@ -282,6 +310,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xffC4C4C4).withOpacity(0.25),
+            hintText: 'Select $label',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -291,15 +320,24 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
               vertical: 14,
             ),
           ),
-          icon: const Icon(Icons.keyboard_arrow_down, color: Colors.black),
-          dropdownColor: const Color(0xffC4C4C4),
-          style: const TextStyle(color: Colors.black, fontSize: 16),
+          icon: Icon(
+            Icons.keyboard_arrow_down,
+            color: AppColors.secondaryColor,
+          ),
+          dropdownColor: const Color(0xffC4C4C4).withOpacity(0.8),
+          style: const TextStyle(color: AppColors.secondayText, fontSize: 16),
           items:
               items
                   .map(
                     (item) => DropdownMenuItem<String>(
                       value: item,
-                      child: Text(item),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text(
+                          item,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
                     ),
                   )
                   .toList(),
