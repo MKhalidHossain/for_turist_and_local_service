@@ -4,6 +4,7 @@ import '../core/themes/app_color.dart';
 import '../feature/auth/presentation/screens/personal_informetion_screen.dart';
 import '../feature/booking/presentation/screens/bookings_screen.dart';
 import '../feature/message/presentation/screens/message_screen.dart';
+import '../feature/profile/presentation/screens/profile_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});
@@ -18,7 +19,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
     SizedBox(),
     BookingsPage(),
     MessagesScreen(),
-    PersonalInformetionScreen(),
+    ProfileScreen(),
   ];
 
   @override

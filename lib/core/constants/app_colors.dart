@@ -3,26 +3,23 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color background = Color(0xFFF5F5F5);
 
-  static final Color _primaryColor = Color(0xFFFF3951);//Color.fromARGB(255, 58, 64, 234);
+  static final Color _primaryColor = Color(
+    0xFFFF3951,
+  ); //Color.fromARGB(255, 58, 64, 234);
 
   static const Color secondaryColor = Color(0xFF282828);
   static const Color _secondaryActionColor = Color.fromARGB(255, 94, 68, 238);
   //Color.fromARGB(255, 58, 64, 234);
   //static const Color _actionColor =  Colors.orange;
 
-
-
-
   //a colors
-    static const Color primaryTextBlack = secondaryColor;
-    static  Color primaryTextRed = _primaryColor;
-    static const Color secondayText = Color(0xFF666666);
-    static const Color textfieldBg = Color(0xFFE9E9E9);
-
-
+  static const Color primaryTextBlack = secondaryColor;
+  static Color primaryTextRed = _primaryColor;
+  static const Color secondayText = Color(0xFF666666);
+  static const Color textfieldBg = Color(0xFFE9E9E9);
 
   /// [Other Colors]
-  static  Color error = _primaryColor;
+  static Color error = _primaryColor;
 
   static final AppColors _lightInstance = AppColors._internalLight();
   static final AppColors _darkInstance = AppColors._internalDark();

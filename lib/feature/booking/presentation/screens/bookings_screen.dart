@@ -7,7 +7,6 @@ import 'package:kobeur/feature/message/presentation/screens/chat_screen.dart';
 import '../../../../core/common/button/button_widget.dart';
 import '../widgets/bookingtabber_widget.dart';
 import '../widgets/upcoming_cart_widget.dart';
-import '../../../../core/constants/app_colors.dart';
 
 class BookingsPage extends StatefulWidget {
   const BookingsPage({super.key});

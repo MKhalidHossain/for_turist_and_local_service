@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kobeur/feature/auth/presentation/screens/tourist_or_local_screen.dart';
 import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
+import 'feature/auth/presentation/screens/user_login_screen.dart';
+import 'feature/profile/presentation/screens/profile_screen.dart';
 import 'helpers/dependency_injection.dart';
 import 'navigation/bottom_navigationber_screen.dart';
 
@@ -36,10 +37,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
       ),
-      home:
-          //BottomNavbar(),
-          TouristORLocalScreen(),
-      //UserLoginScreen(),
+      home: 
+      //ProfileScreen(),
+      BottomNavbar(),
+      //TouristORLocalScreen(),
+      // UserLoginScreen(),
 
       // SpokenLanguageScreen(),
     );
