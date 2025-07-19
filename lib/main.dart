@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
-import 'feature/auth/presentation/screens/user_login_screen.dart';
-import 'feature/profile/presentation/screens/profile_screen.dart';
 import 'helpers/dependency_injection.dart';
 import 'navigation/bottom_navigationber_screen.dart';
 

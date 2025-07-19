@@ -4,8 +4,8 @@ import 'package:kobeur/core/constants/app_colors.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import '../../../../core/validation/validators.dart';
-import '../../../../helpers/custom_snackbar.dart';
+import '../../../../../core/validation/validators.dart';
+import '../../../../../helpers/custom_snackbar.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   // final String emailFocus;

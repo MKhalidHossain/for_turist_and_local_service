@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/auth/domain/singleton/user_profile_service.dart';
+import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/validation/validators.dart';
-import '../../../../core/widgets/app_scaffold.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/validation/validators.dart';
+import '../../../../../core/widgets/app_scaffold.dart';
 
 class UploadProfilePicture extends StatefulWidget {
   @override

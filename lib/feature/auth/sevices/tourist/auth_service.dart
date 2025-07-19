@@ -1,4 +1,4 @@
-import '../repositories/auth_repository_interface.dart';
+import '../../repositories/tourist/auth_repository_interface.dart';
 import 'auth_service_interface.dart';
 
 class AuthService implements AuthServiceInterface {

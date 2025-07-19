@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import '../../../../core/constants/app_colors.dart';
-import '../../../../core/validation/validators.dart';
-import '../../../../core/widgets/app_logo.dart';
-import '../../../../core/widgets/app_scaffold.dart';
-import '../../../../core/widgets/or_divider_with_circle_widget.dart';
-import '../../../../helpers/custom_snackbar.dart';
+import '../../../../../core/constants/app_colors.dart';
+import '../../../../../core/validation/validators.dart';
+import '../../../../../core/widgets/app_logo.dart';
+import '../../../../../core/widgets/app_scaffold.dart';
+import '../../../../../core/widgets/or_divider_with_circle_widget.dart';
+import '../../../../../helpers/custom_snackbar.dart';
 import 'user_login_screen.dart';
 
 class UserSignupScreen extends StatefulWidget {

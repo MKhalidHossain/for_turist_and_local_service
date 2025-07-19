@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 
-import '../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/app_colors.dart';
 
 class UploadProfileScreen extends StatefulWidget {
   const UploadProfileScreen({super.key});

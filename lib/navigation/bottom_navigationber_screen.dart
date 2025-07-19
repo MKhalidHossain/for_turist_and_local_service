@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../core/themes/app_color.dart';
-import '../feature/auth/presentation/screens/personal_informetion_screen.dart';
-import '../feature/booking/presentation/screens/bookings_screen.dart';
-import '../feature/message/presentation/screens/message_screen.dart';
+import '../feature/trip_local/presentation/screens/bookings_screen.dart';
+import '../feature/chat/tourist/message/presentation/screens/message_screen.dart';
 import '../feature/profile/presentation/screens/profile_screen.dart';
 
 class BottomNavbar extends StatefulWidget {

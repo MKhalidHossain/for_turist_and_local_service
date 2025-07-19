@@ -4,11 +4,11 @@ import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/constants/app_colors.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import '../../../../core/validation/validators.dart';
-import '../../../../core/widgets/app_logo.dart';
-import '../../../../core/widgets/app_scaffold.dart';
-import '../../../../core/widgets/or_divider_with_circle_widget.dart';
-import '../../../../helpers/custom_snackbar.dart';
+import '../../../../../core/validation/validators.dart';
+import '../../../../../core/widgets/app_logo.dart';
+import '../../../../../core/widgets/app_scaffold.dart';
+import '../../../../../core/widgets/or_divider_with_circle_widget.dart';
+import '../../../../../helpers/custom_snackbar.dart';
 import 'forgot_password_screen.dart';
 import 'user_signup_screen.dart';
 

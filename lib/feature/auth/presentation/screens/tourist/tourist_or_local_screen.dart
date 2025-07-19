@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../../../core/constants/app_colors.dart';
 
 class TouristORLocalScreen extends StatefulWidget {
   const TouristORLocalScreen({super.key});

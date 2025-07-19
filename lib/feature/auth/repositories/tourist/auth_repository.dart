@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/constants/urls.dart';
-import '../../../helpers/remote/data/api_client.dart';
-import '../../../utils/app_constants.dart';
+import '../../../../core/constants/urls.dart';
+import '../../../../helpers/remote/data/api_client.dart';
+import '../../../../utils/app_constants.dart';
 import 'auth_repository_interface.dart';
 
 class AuthRepository implements AuthRepositoryInterface {

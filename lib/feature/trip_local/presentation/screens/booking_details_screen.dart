@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../../core/extensions/text_extensions.dart';
-import '../../../message/presentation/screens/chat_screen.dart';
+import '../../../chat/tourist/message/presentation/screens/chat_screen.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
   BookingDetailsScreen({super.key});
