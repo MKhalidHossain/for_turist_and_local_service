@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kobeur/feature/auth/presentation/screens/personal_informetion_screen.dart';
-import '../../../../core/widgets/choose_country/model/country.dart';
-import '../../../../core/widgets/choose_country/data/countries.dart';
-import '../../domain/singleton/user_profile_service.dart';
+import 'package:kobeur/feature/auth/presentation/screens/tourist/personal_informetion_screen.dart';
+import '../../../../../core/widgets/choose_country/model/country.dart';
+import '../../../../../core/widgets/choose_country/data/countries.dart';
+import '../../../domain/common/singleton/user_profile_service.dart';
 
 class LanguagePickerScreen extends StatefulWidget {
   const LanguagePickerScreen({super.key});

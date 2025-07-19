@@ -4,7 +4,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 
-import '../../../../core/themes/app_color.dart';
+import '../../../../../core/themes/app_color.dart';
 
 class ChangePassword extends StatefulWidget {
   final String userEmail;

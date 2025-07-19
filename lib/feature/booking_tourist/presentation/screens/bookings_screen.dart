@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/booking/presentation/screens/booking_details_screen.dart';
-import 'package:kobeur/feature/message/presentation/screens/chat_screen.dart';
+import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
 
 import '../../../../core/common/button/button_widget.dart';
-import '../widgets/bookingtabber_widget.dart';
-import '../widgets/upcoming_cart_widget.dart';
-import '../../../../core/constants/app_colors.dart';
+import '../../../trip_local/presentation/screens/booking_details_screen.dart';
+import '../../../trip_local/presentation/widgets/bookingtabber_widget.dart';
+import '../../../trip_local/presentation/widgets/upcoming_cart_widget.dart';
 
 class BookingsPage extends StatefulWidget {
   const BookingsPage({super.key});
