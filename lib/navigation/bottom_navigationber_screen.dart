@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/themes/app_color.dart';
+import '../feature/home/presentation/screens/tourist/home_screen.dart';
 import '../feature/trip_local/presentation/screens/bookings_screen.dart';
 import '../feature/chat/tourist/message/presentation/screens/message_screen.dart';
 import '../feature/profile/presentation/screens/profile_screen.dart';
@@ -15,7 +16,7 @@ class _BottomNavbarState extends State<BottomNavbar> {
   int _selectedIndex = 1;
 
   final List<Widget> _screens = [
-    SizedBox(),
+    HomeScreen(),
     BookingsPage(),
     MessagesScreen(),
     ProfileScreen(),
