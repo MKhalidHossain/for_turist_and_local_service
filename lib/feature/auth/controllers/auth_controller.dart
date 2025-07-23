@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kobeur/feature/auth/presentation/screens/tourist/change_password_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/tourist/user_login_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/tourist/user_signup_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/tourist/verify_otp_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
@@ -13,8 +13,8 @@ import '../../../helpers/remote/data/api_client.dart';
 
 import '../../../utils/app_constants.dart';
 import '../domain/common/model/login_response_model.dart';
-import '../presentation/screens/tourist/language_picker_screen.dart';
-import '../presentation/screens/tourist/tourist_or_local_screen.dart';
+import '../presentation/screens/common/language_picker_screen.dart';
+import '../presentation/screens/common/tourist_or_local_screen.dart';
 import '../sevices/tourist/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {

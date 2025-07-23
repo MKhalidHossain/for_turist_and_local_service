@@ -19,7 +19,7 @@ class NormalCustomButton extends StatelessWidget {
     this.weight = 80,
     this.fontSize = 14,
     this.textColor = Colors.white,
-    this.fillColor = const Color(0xff285358),
+    this.fillColor = const Color(0xffFF3951),
     this.showIcon = false,
     this.sufixIcon,
   });

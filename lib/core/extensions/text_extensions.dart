@@ -32,7 +32,7 @@ extension TextStylingExtension on String {
     style: const TextStyle(
       fontSize: 24,
       fontFamily: _fontFamily,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w700,
       color: Color(0xFF000000),
     ),
   );
@@ -44,6 +44,26 @@ extension TextStylingExtension on String {
       fontSize: 24,
       fontFamily: _fontFamily,
       fontWeight: FontWeight.w500,
+      color: Color(0xFF000000),
+    ),
+  );
+
+  Text text22Black700() => Text(
+    this,
+    style: const TextStyle(
+      fontSize: 20,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w700,
+      color: Color(0xFF000000),
+    ),
+  );
+
+  Text text20Black700() => Text(
+    this,
+    style: const TextStyle(
+      fontSize: 20,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w700,
       color: Color(0xFF000000),
     ),
   );
@@ -109,12 +129,32 @@ extension TextStylingExtension on String {
     ),
   );
 
+  Text text16Grey500() => Text(
+    this,
+    style: const TextStyle(
+      fontSize: 16,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w500,
+      color: Color(0xFF666666),
+    ),
+  );
+
   Text text16Black() => Text(
     this,
     style: const TextStyle(
       fontSize: 16,
       fontFamily: _fontFamily,
       fontWeight: FontWeight.w400,
+      color: Color(0xFF000000),
+    ),
+  );
+
+  Text text16Black500() => Text(
+    this,
+    style: const TextStyle(
+      fontSize: 16,
+      fontFamily: _fontFamily,
+      fontWeight: FontWeight.w500,
       color: Color(0xFF000000),
     ),
   );

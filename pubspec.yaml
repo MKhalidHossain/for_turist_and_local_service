@@ -50,6 +50,7 @@ dependencies:
   # country_picker:
   #   path: packages/country_picker/
   shimmer: ^3.0.0
+  dotted_border: ^2.0.0
 
 dev_dependencies:
   flutter_test:
