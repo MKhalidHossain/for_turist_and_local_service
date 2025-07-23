@@ -18,12 +18,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     {
       'id': 1,
       'name': 'Jasmine Bell',
-      'location': 'Bali, Indonesia',
+      'location': 'Tacos at home',
       'rating': 4.8,
       'price': 120,
       'image': 'assets/images/local1.png',
       'reviews': 'Very Good',
-      'description': 'Professional photographer',
+      'description':
+          "Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ",
       'category': 'photographer',
     },
     {
@@ -40,12 +41,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     {
       'id': 3,
       'name': 'Sarah Wilson',
-      'location': 'Bali, Indonesia',
+      'location': 'Tacos at home',
       'rating': 4.7,
       'price': 100,
       'image': 'assets/images/local4.png',
       'reviews': 'Very Good',
-      'description': 'Portrait photographer',
+      'description':
+          'Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ',
       'category': 'photographer',
     },
     {
@@ -62,12 +64,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     {
       'id': 5,
       'name': 'Emma Rodriguez',
-      'location': 'Bali, Indonesia',
+      'location': 'Tacos at home',
       'rating': 4.9,
       'price': 140,
       'image': 'assets/images/local1.png',
       'reviews': 'Excellent',
-      'description': 'Event photographer',
+      'description':
+          'Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ',
       'category': 'photographer',
     },
     {
@@ -84,12 +87,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     {
       'id': 7,
       'name': 'Jane Smith',
-      'location': 'Bali, Indonesia',
+      'location': 'Tacos at home',
       'rating': 4.8,
       'price': 120,
       'image': 'assets/images/local3.png',
       'reviews': 'Excellent',
-      'description': 'Portrait photographer',
+      'description':
+          'Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ',
       'category': 'photographer',
     },
   ];
@@ -618,53 +622,120 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
                                         Row(
                                           children: [
-                                            Column(children: [
-                                              
-                                            ],),
                                             Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Text(
-                                                  result['location'],
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12,
-                                                  ),
+                                                Image.asset(
+                                                  'assets/images/takeaway.png',
+                                                  height: 40,
+                                                  fit: BoxFit.contain,
                                                 ),
                                                 Text(
-                                                  result['description'],
+                                                  "Takeaway",
                                                   style: TextStyle(
-                                                    color: Colors.grey[600],
+                                                    color: Colors.black,
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    result['location'],
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    result['description'],
+                                                    maxLines: 5,
+                                                    //overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      color: Colors.grey[600],
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                  size: 12,
+                                                ),
+                                                SizedBox(width: 4),
+                                                Text(
+                                                  '${result['rating']}',
+                                                  style: TextStyle(
                                                     fontSize: 12,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
 
-                                        SizedBox(height: 4),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                              size: 12,
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'from ',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '${result['price']}\€',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  '/ ',
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  'person',
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              '${result['rating']}',
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              '(${result['reviews']})',
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12,
-                                              ),
-                                            ),
+
+                                            // Text(
+                                            //   '(${result['reviews']})',
+                                            //   style: TextStyle(
+                                            //     color: Colors.grey,
+                                            //     fontSize: 12,
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       ],
@@ -672,27 +743,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                   ),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            '${result['price']}\€',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          Text(
-                                            '/person',
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                    children: [],
                                   ),
                                 ],
                               ),

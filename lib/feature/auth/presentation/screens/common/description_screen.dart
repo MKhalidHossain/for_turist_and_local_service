@@ -6,7 +6,7 @@ import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service
 import '../../../../../core/validation/validators.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
-import 'upload_profile_picture.dart';
+import '../tourist/upload_profile_picture.dart';
 
 class DescriptionScreen extends StatefulWidget {
   const DescriptionScreen({super.key});

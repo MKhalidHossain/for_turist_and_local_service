@@ -13,7 +13,7 @@ class BottomNavbar extends StatefulWidget {
 }
 
 class _BottomNavbarState extends State<BottomNavbar> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
 
   final List<Widget> _screens = [
     HomeScreen(),
