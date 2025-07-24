@@ -221,6 +221,7 @@ class AuthController extends GetxController implements GetxService {
         await preferences.setString(AppConstants.refreshToken, '');
 
         showCustomSnackBar('You have logout Successfully');
+        Get.offAll(() => UserLoginScreen());
       } else {
         logging = false;
         ApiChecker.checkApi(response);

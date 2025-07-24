@@ -1,0 +1,16 @@
+import 'package:get/get_connect/http/src/response/response.dart';
+import 'package:image_picker/image_picker.dart';
+
+abstract class ProfileRepositoryInterface {
+  Future<Response> getProfile();
+  Future<Response> updateProfile({
+    required String firstName,
+    required String lastName,
+    required int age,
+    required String gender,
+    required String nationality,
+    required String description,
+    List<String>? languages,
+    XFile? profileImage,
+  });
+}

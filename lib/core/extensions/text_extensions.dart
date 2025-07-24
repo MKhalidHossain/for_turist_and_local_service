@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kobeur/core/constants/app_colors.dart';
-import 'package:path/path.dart';
 
 extension TextStylingExtension on String {
   // Font family

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../../navigation/bottom_navigationber_screen.dart';
+import 'create_first_service_screen.dart';
 
 class ServiceCompleteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic>? args = 
+    final Map<String, dynamic>? args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
     return Scaffold(
@@ -37,32 +41,22 @@ class ServiceCompleteScreen extends StatelessWidget {
                 color: Colors.green.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.check,
-                size: 60,
-                color: Colors.green,
-              ),
+              child: Icon(Icons.check, size: 60, color: Colors.green),
             ),
             SizedBox(height: 24),
             Text(
               'Service Created Successfully!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 12),
             Text(
               'Your service has been created and is now available for booking.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 40),
-            
+
             // Show selected data if available
             if (args != null) ...[
               Container(
@@ -94,18 +88,13 @@ class ServiceCompleteScreen extends StatelessWidget {
               ),
               SizedBox(height: 40),
             ],
-            
+
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigate back to home or service list
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/',
-                    (route) => false,
-                  );
+                  Get.to(BottomNavbar());
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
@@ -129,12 +118,7 @@ class ServiceCompleteScreen extends StatelessWidget {
               height: 50,
               child: OutlinedButton(
                 onPressed: () {
-                  // Create another service
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    '/category-selection',
-                    (route) => false,
-                  );
+                  Get.to(CreateFirstServiceScreen());
                 },
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: Colors.red),

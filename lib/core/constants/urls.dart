@@ -35,16 +35,9 @@ class Urls {
 
   // static const String deleteTask = '/api/v1/tasks/';
 
+  // ................................Auth...............................with render
 
-
-
-
-
-  // ................................Auth...............................with render 
-
-
-
-    //static const String baseUrl = 'http://localhost:8000';
+  //static const String baseUrl = 'http://localhost:8000';
   static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
   static const String register = '/auth/signup';
   static const String login = '/auth/login';
@@ -60,11 +53,11 @@ class Urls {
 
   // ................................Profile / User...............................
 
-  static const String changeAvatar = '/api/v1/users/add-avatar';
+  static const String getProfile = '/profile';
 
-  static const String deleteAvatar = '/api/v1/users/delete-avatar';
+  static const String updateProfile = '/profile';
 
-  static const String getUserById = '/api/v1/users/profile';
+  // static const String getUserById = '/api/v1/users/profile';
 
   // ................................Tasks...............................
 
