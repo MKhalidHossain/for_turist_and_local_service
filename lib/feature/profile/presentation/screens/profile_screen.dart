@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
+import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
 
 import 'account_settings_screen.dart';
+import 'common/help_support_screen.dart';
+import 'common/privacy_policy_screen.dart';
+import 'common/terms_condition_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -89,16 +96,34 @@ class ProfileScreen extends StatelessWidget {
                 },
               ),
 
-              _buildMenuItem(icon: Icons.info_outline, text: "About App"),
+              _buildMenuItem(
+                icon: Icons.info_outline,
+                text: "About App",
+                onTap: () {
+                  Get.to(AboutAppScreen());
+                },
+              ),
               _buildMenuItem(
                 icon: Icons.privacy_tip_outlined,
                 text: "Privacy Policy",
+                onTap: () {
+                  Get.to(PrivacyPolicyScreen());
+                },
               ),
               _buildMenuItem(
                 icon: Icons.article_outlined,
                 text: "Term & Condition",
+                onTap: () {
+                  Get.to(TermsConditionScreen());
+                },
               ),
-              _buildMenuItem(icon: Icons.help_outline, text: "Help & Support"),
+              _buildMenuItem(
+                icon: Icons.help_outline,
+                text: "Help & Support",
+                onTap: () {
+                  Get.to(HelpSupportScreen());
+                },
+              ),
 
               _buildMenuItem(
                 icon: Icons.logout,
@@ -107,6 +132,7 @@ class ProfileScreen extends StatelessWidget {
                 textColor: Colors.red,
                 showTrailing: true,
                 onTap: () {
+                  Get.off(UserLoginScreen());
                   // Implement logout logic here
                 },
               ),

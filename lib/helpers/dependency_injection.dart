@@ -6,6 +6,11 @@ import '../feature/auth/repositories/tourist/auth_repository.dart';
 import '../feature/auth/repositories/tourist/auth_repository_interface.dart';
 import '../feature/auth/sevices/tourist/auth_service.dart';
 import '../feature/auth/sevices/tourist/auth_service_interface.dart';
+import '../feature/profile/controllers/profile_controller.dart';
+import '../feature/profile/repositories/profile_repository.dart';
+import '../feature/profile/repositories/profile_repository_interface.dart';
+import '../feature/profile/services/profile_service.dart';
+import '../feature/profile/services/profile_service_interface.dart';
 import 'remote/data/api_client.dart';
 
 Future<void> initDI() async {
@@ -38,18 +43,39 @@ Future<void> initDI() async {
   ///
   ///
 
-  // Get.lazyPut(
+  // // 1. Register ProfileRepository as ProfileRepositoryInterface
+  // Get.lazyPut<ProfileRepositoryInterface>(
   //   () => ProfileRepository(apiClient: apiClient, sharedPreferences: prefs),
   // );
-  // ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
-  //   apiClient: apiClient,
-  //   sharedPreferences: prefs,
+
+  // // 2. Register ProfileService as ProfileServiceInterface
+  // Get.lazyPut<ProfileServiceInterface>(
+  //   () => ProfileService(profileRepositoryInterface: Get.find()),
   // );
-  // Get.lazyPut(() => profileRepositoryInterface);
-  // ProfileServiceInterface profileServiceInterface = ProfileService(Get.find());
-  // Get.lazyPut(() => profileServiceInterface);
+
+  // // 3. Register ProfileController
   // Get.lazyPut(() => ProfileController(profileServiceInterface: Get.find()));
-  // Get.lazyPut(() => ProfileService(Get.find()));
+
+  //
+
+  Get.lazyPut(
+    () => ProfileRepository(apiClient: apiClient, sharedPreferences: prefs),
+  );
+  ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
+    apiClient: apiClient,
+    sharedPreferences: prefs,
+  );
+  Get.lazyPut(() => profileRepositoryInterface);
+  ProfileServiceInterface profileServiceInterface = ProfileService(
+    profileRepositoryInterface: Get.find(),
+  );
+  Get.lazyPut(() => profileServiceInterface);
+  Get.lazyPut(() => ProfileController(profileServiceInterface: Get.find()));
+  Get.lazyPut(() => ProfileService(profileRepositoryInterface: Get.find()));
+
+  //
+
+  //
 
   // //////////// Task Service, Repository and Controller ////////////////////////////////
   // ///

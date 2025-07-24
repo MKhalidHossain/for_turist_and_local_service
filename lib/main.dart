@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'core/constants/splash_screen.dart';
 import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
 import 'feature/auth/presentation/screens/common/user_login_screen.dart';
@@ -38,11 +39,23 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
       ),
       home:
+          GetBuilder<AuthController>(
+            builder: (authController) {
+              // return OnBoard();
+              if (authController.isLoggedIn()) {
+                return BottomNavbar();
+              } else if (authController.isFirstTimeInstall()) {
+                return UserLoginScreen();
+              } else {
+                return SplashScreen();
+              }
+            },
+          ),
           //ProfileScreen(),
           //BottomNavbar(),
-          //TouristORLocalScreen(),
-          // UserLoginScreen(),
-          CreateFirstServiceScreen(),
+      //TouristORLocalScreen(),
+      // UserLoginScreen(),
+      //CreateFirstServiceScreen(),
 
       // SpokenLanguageScreen(),
     );

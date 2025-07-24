@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/language_picker_screen.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/personal_informetion_screen.dart';
+import 'package:kobeur/feature/profile/presentation/screens/common/about_me_screen.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
@@ -98,18 +103,33 @@ class AccountSettingsScreen extends StatelessWidget {
               //     );
               //   },
               // ),
-              _buildMenuItem(icon: Icons.person, text: "Personal Information"),
+              _buildMenuItem(
+                icon: Icons.person,
+                text: "Personal Information",
+                onTap: () {
+                  Get.to(PersonalInformetionScreen());
+                },
+              ),
               _buildMenuItem(
                 icon: Icons.document_scanner_outlined,
                 text: "About Me",
+                onTap: () {
+                  Get.to(AboutMeScreen());
+                },
               ),
               _buildMenuItem(
                 icon: Icons.language_outlined,
                 text: "Spoken Language",
+                onTap: () {
+                  Get.to(LanguagePickerScreen());
+                },
               ),
               _buildMenuItem(
                 icon: Icons.lock_outline_rounded,
                 text: "Change Password",
+                onTap: () {
+                  Get.to(ChangePassword(userEmail: 'compilefiller@gmail'));
+                },
               ),
 
               // _buildMenuItem(
