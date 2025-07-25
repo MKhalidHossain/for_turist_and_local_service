@@ -5,6 +5,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/change_password_
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
+import 'package:kobeur/feature/profile/presentation/screens/profile_screen.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
@@ -194,7 +195,6 @@ class AuthController extends GetxController implements GetxService {
       _isLoading = false;
       ApiChecker.checkApi(response);
     }
-
     _isLoading = false;
     update();
   }
@@ -227,7 +227,7 @@ class AuthController extends GetxController implements GetxService {
         ApiChecker.checkApi(response);
       }
     } else {
-      print('object fucked up');
+      print(response.toString() + ' from controller');
     }
     update();
   }

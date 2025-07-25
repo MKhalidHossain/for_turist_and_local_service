@@ -15,6 +15,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find<AuthController>();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -132,6 +133,8 @@ class ProfileScreen extends StatelessWidget {
                 textColor: Colors.red,
                 showTrailing: true,
                 onTap: () {
+                  authController.logOut(); // 👈 This logs out the user
+
                   Get.off(UserLoginScreen());
                   // Implement logout logic here
                 },

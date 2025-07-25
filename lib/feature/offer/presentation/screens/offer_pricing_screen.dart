@@ -4,6 +4,7 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 
 import '../../domain/model/offers_item.dart';
+import '../details_offer_local.dart';
 import 'photo_upload_screen.dart';
 
 class OfferPricingScreen extends StatefulWidget {
@@ -48,7 +49,7 @@ class _OfferPricingScreenState extends State<OfferPricingScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       BackButton(color: Colors.black),
-                      'Sport'.text22Black700(),
+                      'Pricing'.text22Black700(),
                       SizedBox(width: 50),
                     ],
                   ),
@@ -298,7 +299,8 @@ class _OfferPricingScreenState extends State<OfferPricingScreen> {
                 child: WideCustomButton(
                   text: 'Next',
                   onPressed: () {
-                    Get.to(PhotoUploadScreen());
+                    Get.to(DetailsOfferLocal());
+                    
                   },
                 ),
               ),
