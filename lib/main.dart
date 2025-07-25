@@ -5,6 +5,7 @@ import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
 import 'feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'feature/offer/presentation/details_offer_local.dart';
+import 'feature/profile/presentation/screens/profile_screen.dart';
 import 'helpers/dependency_injection.dart';
 import 'navigation/bottom_navigationber_screen.dart';
 
@@ -51,8 +52,8 @@ class MyApp extends StatelessWidget {
           //     }
           //   },
           // ),
-          DetailsOfferLocal(),
-      //ProfileScreen(),
+         // DetailsOfferLocal(),
+      ProfileScreen(),
       //BottomNavbar(),
       //TouristORLocalScreen(),
       // UserLoginScreen(),
