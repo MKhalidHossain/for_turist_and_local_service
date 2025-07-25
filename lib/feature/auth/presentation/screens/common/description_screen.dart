@@ -20,8 +20,8 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
 
   final FocusNode _descriptionFocus = FocusNode();
 
-  String? selectedGender;
-  String? selectedNationality;
+  //String? selectedGender;
+  //String? selectedNationality;
   bool isEditing = true;
 
   final _formKey = GlobalKey<FormState>();

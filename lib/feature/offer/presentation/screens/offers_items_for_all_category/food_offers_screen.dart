@@ -49,24 +49,12 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 BackButton(color: Colors.black),
-                'Sport'.text22Black700(),
+                'What is your Offer?'.text22Black700(),
                 SizedBox(width: 50),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'What is your Offer?',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
+            const SizedBox(height: 20),
+
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
