@@ -159,7 +159,7 @@ class ApiClient extends GetxService {
   }) async {
     try {
       String apiUrl =
-          "https://backend-david-weijian.onrender.com/api/v1/user/update-userProfile";
+          "https://";
 
       if (kDebugMode) {
         log(

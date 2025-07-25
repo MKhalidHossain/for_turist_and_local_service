@@ -4,7 +4,6 @@ import 'core/constants/splash_screen.dart';
 import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
 import 'feature/auth/presentation/screens/common/user_login_screen.dart';
-import 'feature/offer/presentation/screens/create_first_service_screen.dart';
 import 'helpers/dependency_injection.dart';
 import 'navigation/bottom_navigationber_screen.dart';
 

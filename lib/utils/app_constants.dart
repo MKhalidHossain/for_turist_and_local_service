@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class AppConstants {
-
   static const String token = 'token';
   static const String refreshToken = 'token';
 
@@ -12,7 +11,8 @@ class AppConstants {
 
   // static const String baseUrl = 'https://backend-david-weijian.onrender.com/api/v1';
 
-  static const String polylineMapKey = 'AIzaSyBxA6N8pU61iOKdCVfphQCpV4VC907uT94';
+  static const String polylineMapKey =
+      'AIzaSyBxA6N8pU61iOKdCVfphQCpV4VC907uT94';
 
   static const String appVersion = '1.0.0';
 
@@ -22,8 +22,7 @@ class AppConstants {
 
   static const String loginUri = '/auth/user-login';
 
-  static const String logout = '/auth/user-logout';
-
+  static const String logout = '/auth/logout';
 
   static const String forgetPassword = '/auth/forgot-password';
 
@@ -57,7 +56,8 @@ class AppConstants {
 
   static const String sendReview = '/route-details/create-review/';
 
-  static const String getAllImportedRoute = '/route-details/get-all-imported-routes';
+  static const String getAllImportedRoute =
+      '/route-details/get-all-imported-routes';
 
   static const String getAllFavoriteRoute = '/route-details/favorite/';
 
@@ -77,9 +77,11 @@ class AppConstants {
 
   static const String saveImportedRoute = '/import-route';
 
-  static const String notificationList = '/api/driver/notification-list?limit=10&offset=';
+  static const String notificationList =
+      '/api/driver/notification-list?limit=10&offset=';
 
-  static const String updateLastLocationUsingSocket = '/user/live-location?appKey';
+  static const String updateLastLocationUsingSocket =
+      '/user/live-location?appKey';
 
   static const Color lightPrimary = Color.fromARGB(255, 32, 32, 32);
 
@@ -89,32 +91,34 @@ class AppConstants {
 
   static const double coverageRadiusInMeter = 50;
 
-
   static final categories = <String>[
-    'All', 'Action', 'Anime', 'Sci-fi', 'Thriller'
+    'All',
+    'Action',
+    'Anime',
+    'Sci-fi',
+    'Thriller',
   ];
 
-  static final navItems = <IconData>[Icons.home_filled, Icons.tv, Icons.download, Icons.account_circle_outlined];
+  static final navItems = <IconData>[
+    Icons.home_filled,
+    Icons.tv,
+    Icons.download,
+    Icons.account_circle_outlined,
+  ];
 
   void checkOS() {
-
     if (Platform.isAndroid) {
-
-      print("Running on Android"); [1, 3, 5];
-
+      print("Running on Android");
+      [1, 3, 5];
     } else if (Platform.isIOS) {
-
-      print("Running on iOS"); [1, 3, 5];
-
+      print("Running on iOS");
+      [1, 3, 5];
     } else if (Platform.isWindows) {
-
-      print("Running on Windows"); [2, 3, 9];
-
+      print("Running on Windows");
+      [2, 3, 9];
     } else {
-
-      print("Unknown platform"); [3];
-
+      print("Unknown platform");
+      [3];
     }
-
   }
 }

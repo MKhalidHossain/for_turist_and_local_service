@@ -71,12 +71,29 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future logout() {
+  Future logout() async {
     sharedPreferences.setBool('IsLoggedIn', false);
-    return apiClient.postData(AppConstants.logout, {});
+
+    var data = apiClient.postData(AppConstants.logout, {});
+
+    apiClient.token = '';
+    apiClient.updateHeader('');
+    await sharedPreferences.setString(AppConstants.token, '');
+    await sharedPreferences.setString(AppConstants.refreshToken, '');
+    return data;
   }
 
   @override
+  /// Save user token and refresh token in the SharedPreferences
+  ///
+  /// This function is used to save the user's token and refresh token
+  /// in the SharedPreferences. This token is used to authenticate the
+  /// user in the APIs.
+  ///
+  /// [token] is the user's token.
+  /// [refreshToken] is the user's refresh token.
+  ///
+  /// Returns [bool] indicating whether the operation was successful or not.
   Future<bool?> saveUserToken(String token, String refreshToken) async {
     print(
       'User Token ${token.toString()} ================================== from Repository ',
