@@ -57,7 +57,7 @@ class ApiClient extends GetxService {
       http.Response response = await http
           .get(Uri.parse(appBaseUrln + uri), headers: headers ?? _mainHeaders)
           .timeout(Duration(seconds: timeoutInSeconds));
-      print('Commanders Calls');
+      debugPrint('====> API Response: ${response.statusCode} - $uri');
       return handleResponse(response, uri);
     } catch (e) {
       return Response(statusCode: 1, statusText: noInternetMessage);
@@ -158,8 +158,7 @@ class ApiClient extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
-      String apiUrl =
-          "https://";
+      String apiUrl = "https://";
 
       if (kDebugMode) {
         log(
