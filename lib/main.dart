@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/description_screen.dart';
 import 'core/constants/splash_screen.dart';
 import 'core/services/profile_storage_service.dart';
 import 'feature/auth/controllers/auth_controller.dart';
@@ -10,20 +11,38 @@ import 'feature/profile/presentation/screens/profile_screen.dart';
 import 'helpers/dependency_injection.dart';
 import 'navigation/bottom_navigationber_screen.dart';
 
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   await initDI();
+//   if (!Get.find<AuthController>().isFirstTimeInstall()) {
+//     print("object ---------------000000000000-----------------");
+
+//     Get.find<AuthController>().setFirstTimeInstall();
+//     Get.lazyPut(() => ProfileStorageService());
+//   } else {
+//     print("object ---------------11111111111-----------------");
+//   }
+
+//   Get.put(AppBarTheme());
+//   runApp(MyApp());
+// }
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await initDI();
-  if (!Get.find<AuthController>().isFirstTimeInstall()) {
-    print("object ---------------000000000000-----------------");
 
-    Get.find<AuthController>().setFirstTimeInstall();
+  final authController = Get.find<AuthController>();
+  final isFirstTime = await authController.isFirstTimeInstall();
+
+  if (isFirstTime) {
+    print("object ---------------000000000000-----------------");
+    await authController.setFirstTimeInstall();
     Get.lazyPut(() => ProfileStorageService());
   } else {
     print("object ---------------11111111111-----------------");
   }
 
-  Get.put(AppBarTheme());
   runApp(MyApp());
 }
 
@@ -40,23 +59,25 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
       ),
-      home: GetBuilder<AuthController>(
-        builder: (authController) {
-          // return OnBoard();
-          if (authController.isLoggedIn()) {
-            return BottomNavbar();
-          } else if (authController.isFirstTimeInstall()) {
-            return UserLoginScreen();
-          } else {
-            return SplashScreen();
-          }
-        },
-      ),
-      // DetailsOfferLocal(),
-      // ProfileScreen(),
-      //BottomNavbar(),
-      //TouristORLocalScreen(),
-      // UserLoginScreen(),
+      home:
+          //  GetBuilder<AuthController>(
+          //   builder: (authController) {
+          //     // return OnBoard();
+          //     if (authController.isLoggedIn()) {
+          //       return BottomNavbar();
+          //     } else if (authController.isFirstTimeInstall()) {
+          //       return UserLoginScreen();
+          //     } else {
+          //       return SplashScreen();
+          //     }
+          //   },
+          // ),
+          // DetailsOfferLocal(),
+          // ProfileScreen(),
+          //BottomNavbar(),
+          //TouristORLocalScreen(),
+          //UserLoginScreen(),
+          DescriptionScreen(),
       //CreateFirstServiceScreen(),
       // BottomNavbar(),
 

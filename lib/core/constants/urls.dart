@@ -39,6 +39,9 @@ class Urls {
 
   //static const String baseUrl = 'http://localhost:8000';
   static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+
+  // Auth Module
+
   static const String register = '/auth/signup';
   static const String login = '/auth/login';
   static const String refreshAccessToken = '/auth/refresh-token';
@@ -51,25 +54,81 @@ class Urls {
 
   static const String chooseRole = '/auth/choose-role';
 
-  // ................................Profile / User...............................
+  // ................................Profile Module...............................
 
   static const String getProfile = '/profile';
 
   static const String updateProfile = '/profile';
 
-  // static const String getUserById = '/api/v1/users/profile';
+  //static const String changePassword = '/profile/change-password';
 
-  // ................................Tasks...............................
+  // ................................Tourist Module...............................
 
-  static const String addTask = '/api/v1/tasks';
+  static const String getFristPage = '/tourist/home';
 
-  static const String getAllTasks = '/api/v1/tasks';
+  static const String getSuperHatch = '/tourist/super-hatch';
 
-  static const String getRequestById = '/api/v1/tasks/';
+  static const String getFavouriteHatch = '/tourist/favorites';
 
-  static const String editTask = '/api/v1/tasks/';
+  static const String searchOffer = '/tourist/search';
 
-  static const String deleteTask = '/api/v1/tasks/';
+  static const String getOfferDetails = '/tourist/offer/:localId/:offerId';
+
+  static const String getLocalProfile = '/tourist//:localId';
+
+  static const String postAddFavouriteOrRemoveFavourite = '/tourist/favorite';
+
+  static const String getFavorites = '/tourist/favorites';
+
+  static const String rateALocal = '/tourist/rate-local';
+
+  static const String cencelTripForTuourist = '/local/trip/:tripId/cancel';
+
+  // ................................Booking Module...............................
+
+  static const String createBooking = '/booking/';
+
+  static const String confirmBooking = '/booking/confirm-booking';
+
+  static const String updateBooking = '/booking/:bookingId';
+
+  static const String getBookingDetails =
+      '/booking/'; // need bookingId here in last of the url
+
+  static const String getBookingsByStatus = '/booking?status=confirmed';
+
+  // ................................Local Module...............................
+
+  static const String createOffer = '/local';
+
+  static const String updateOffer = '/local/:offerId/update';
+
+  static const String getHome = '/local/';
+
+  static const String getTrips =
+      '/trips'; // need bookingId here in last of the url
+
+  static const String cencelTripForLocal = '/local/trip/:tripId/cancel';
+
+  // ................................Message Module...............................
+
+  static const String sendMessage = '/chat/message';
+
+  static const String getMessage = '/messages/history/:receiverId';
+
+  static const String getUserAssociatWithChat = '/messages/list';
+
+  // ................................Payment Module...............................
+
+  // static const String sendMessage = '/chat/message';
+
+  // static const String getMessage = '/messages/history/:receiverId';
+
+  // static const String getUserAssociatWithChat = '/messages/list';
+
+  // static const String getOfferDetails = '/api/v1/tasks/';
+
+  // static const String getOfferDetails = '/api/v1/tasks/';
 
   //
 

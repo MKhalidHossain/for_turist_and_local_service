@@ -158,7 +158,7 @@ class _DetailsOfferLocalState extends State<DetailsOfferLocal> {
                         ],
                       ),
 
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 24), 
 
                       "Description".text16Black(),
                       const SizedBox(height: 16),

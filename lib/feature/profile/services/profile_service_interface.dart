@@ -13,5 +13,10 @@ abstract class ProfileServiceInterface {
     List<String>? languages,
     XFile? profileImage,
   });
-}
 
+  Future<Response> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  });
+}
