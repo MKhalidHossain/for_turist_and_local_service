@@ -1,4 +1,3 @@
-
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
 import '../repositories/profile_repository_interface.dart';
@@ -7,11 +6,9 @@ import 'profile_service_interface.dart';
 class ProfileService implements ProfileServiceInterface {
   final ProfileRepositoryInterface profileRepositoryInterface;
 
-  ProfileService( {required this.profileRepositoryInterface});
+  ProfileService(this.profileRepositoryInterface);
 
-
-
-   @override
+  @override
   Future<Response> getProfile() async {
     return await profileRepositoryInterface.getProfile();
   }
@@ -39,4 +36,16 @@ class ProfileService implements ProfileServiceInterface {
     );
   }
 
+  @override
+  Future<Response> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) {
+    return profileRepositoryInterface.changePassword(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+    );
+  }
 }

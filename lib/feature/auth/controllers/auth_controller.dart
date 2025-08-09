@@ -203,8 +203,13 @@ class AuthController extends GetxController implements GetxService {
     return authServiceInterface.isLoggedIn();
   }
 
-  bool isFirstTimeInstall() {
-    return true;
+  // bool isFirstTimeInstall() {
+  //   return true;
+  // }
+
+  Future<bool> isFirstTimeInstall() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('first_time') ?? true;
   }
 
   bool logging = false;
@@ -454,9 +459,14 @@ class AuthController extends GetxController implements GetxService {
     return authServiceInterface.isFirstTimeInstall();
   }
 
-  void setFirstTimeInstall() {
-    return authServiceInterface.setFirstTimeInstall();
+  Future<void> setFirstTimeInstall() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('first_time', false);
   }
+
+  // void setFirstTimeInstall() {
+  //   return authServiceInterface.setFirstTimeInstall();
+  // }
 
   Future<void> chooseRole(String role) async {
     _isLoading = true;

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
+import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
 
 import 'account_settings_screen.dart';
@@ -11,11 +11,12 @@ import 'common/privacy_policy_screen.dart';
 import 'common/terms_condition_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
+  final profileScreenController = Get.put(ProfileController(Get.find()));
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.find<AuthController>();
+    // final AuthController authController = Get.find<AuthController>();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -132,8 +133,9 @@ class ProfileScreen extends StatelessWidget {
                 iconColor: Colors.red,
                 textColor: Colors.red,
                 showTrailing: true,
-                onTap: () {
-                  authController.logOut(); // 👈 This logs out the user
+                onTap: () async {
+                  //  await   profileScreenController
+                  //         .getApicall(); // 👈 This logs out the user
 
                   Get.off(UserLoginScreen());
                   // Implement logout logic here

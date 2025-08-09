@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/urls.dart';
 import '../feature/auth/controllers/auth_controller.dart';
@@ -6,7 +7,6 @@ import '../feature/auth/repositories/tourist/auth_repository.dart';
 import '../feature/auth/repositories/tourist/auth_repository_interface.dart';
 import '../feature/auth/sevices/tourist/auth_service.dart';
 import '../feature/auth/sevices/tourist/auth_service_interface.dart';
-import '../feature/profile/controllers/profile_controller.dart';
 import '../feature/profile/repositories/profile_repository.dart';
 import '../feature/profile/repositories/profile_repository_interface.dart';
 import '../feature/profile/services/profile_service.dart';
@@ -58,20 +58,16 @@ Future<void> initDI() async {
 
   //
 
-  Get.lazyPut(
-    () => ProfileRepository(apiClient: apiClient, sharedPreferences: prefs),
-  );
+  Get.lazyPut(() => ProfileRepository(Get.find(), prefs));
   ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
-    apiClient: apiClient,
-    sharedPreferences: prefs,
+    apiClient,
+    prefs,
   );
   Get.lazyPut(() => profileRepositoryInterface);
-  ProfileServiceInterface profileServiceInterface = ProfileService(
-    profileRepositoryInterface: Get.find(),
-  );
+  ProfileServiceInterface profileServiceInterface = ProfileService(Get.find());
   Get.lazyPut(() => profileServiceInterface);
-  Get.lazyPut(() => ProfileController(profileServiceInterface: Get.find()));
-  Get.lazyPut(() => ProfileService(profileRepositoryInterface: Get.find()));
+  Get.lazyPut(() => ProfileController(profileServiceInterface));
+  Get.lazyPut(() => ProfileService(Get.find()));
 
   //
 
