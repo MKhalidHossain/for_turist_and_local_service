@@ -75,9 +75,9 @@ class MyApp extends StatelessWidget {
           // DetailsOfferLocal(),
           // ProfileScreen(),
           //BottomNavbar(),
-          //TouristORLocalScreen(),
+          TouristORLocalScreen(),
           //UserLoginScreen(),
-          DescriptionScreen(),
+          //DescriptionScreen(),
       //CreateFirstServiceScreen(),
       // BottomNavbar(),
 

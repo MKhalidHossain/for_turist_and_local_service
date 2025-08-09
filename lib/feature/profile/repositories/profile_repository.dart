@@ -10,7 +10,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
 
-  ProfileRepository( this.apiClient,  this.sharedPreferences);
+  ProfileRepository(this.apiClient, this.sharedPreferences);
 
   @override
   Future<Response> getProfile() async {
@@ -28,31 +28,29 @@ class ProfileRepository implements ProfileRepositoryInterface {
     List<String>? languages,
     XFile? profileImage,
   }) async {
-    return await apiClient.putData(
-      Urls.updateProfile,
-      {
-        "firstName": firstName,
-        "lastName": lastName,
-        "age": age,
-        "gender": gender,
-        "nationality": nationality,
-        "languages": languages,
-        "description": description,
+    return await apiClient.putData(Urls.updateProfile, {
+      "firstName": firstName,
+      "lastName": lastName,
+      "age": age,
+      "gender": gender,
+      "nationality": nationality,
+      "languages": languages,
+      "description": description,
 
-        "profileImage": profileImage,
-      },
-    );
+      "profileImage": profileImage,
+    });
   }
-  
+
   @override
-  Future<Response> changePassword({required String currentPassword, required String newPassword, required String confirmPassword}) {
-    return apiClient.postData(
-      Urls.changePassword,
-      {
-        "currentPassword": currentPassword,
-        "newPassword": newPassword,
-        "confirmPassword": confirmPassword,
-      },
-    );
+  Future<Response> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    return await apiClient.postData(Urls.changePassword, {
+      "currentPassword": currentPassword,
+      "newPassword": newPassword,
+      "confirmPassword": confirmPassword,
+    });
   }
 }

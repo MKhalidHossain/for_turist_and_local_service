@@ -331,10 +331,11 @@ class ApiClient extends GetxService {
 
     try {
       body = jsonDecode(response.body);
-      print('no fuck you');
+      debugPrint('Not Any Error in Response');
+      // print('no fuck you');
       print(response.body.toString());
     } catch (e) {
-      print(e.toString() + 'fuck you');
+      print(e.toString() + 'Error has occuredin Response');
     }
     Response localResponse = Response(
       body: body ?? response.body,

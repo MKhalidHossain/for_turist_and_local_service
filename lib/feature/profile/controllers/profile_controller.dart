@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/constants/urls.dart';
@@ -120,6 +122,7 @@ class ProfileController extends GetxController implements GetxService {
     required String nationality,
     required String description,
     List<String>? languages,
+    XFile? profileImage // Store as a File
   }) async {
     try {
       isLoading = true;
