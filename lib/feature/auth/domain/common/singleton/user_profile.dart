@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:image_picker/image_picker.dart';
+
 class UserProfile {
   String? firstName;
   String? lastName;
@@ -9,7 +11,7 @@ class UserProfile {
   String? description;
 
   List<String> languages = [];
-  File? profileImage; // Store as a File
+  XFile? profileImage; // Store as a File
   String? userRole;
 
   Map<String, String> toJson() => {

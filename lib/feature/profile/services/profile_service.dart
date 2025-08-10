@@ -22,7 +22,7 @@ class ProfileService implements ProfileServiceInterface {
     required String nationality,
     required String description,
     List<String>? languages,
-    XFile? profileImage,
+    required XFile profileImage,
   }) async {
     return await profileRepositoryInterface.updateProfile(
       firstName: firstName,
