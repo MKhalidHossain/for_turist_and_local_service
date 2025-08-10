@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
-
 import '../../../utils/app_constants.dart';
 
 class ApiClient extends GetxService {
@@ -91,6 +90,114 @@ class ApiClient extends GetxService {
     }
   }
 
+  //
+  // patch Data
+  //
+  Future<Response> patchData(
+    String uri,
+    dynamic body, {
+    Map<String, String>? headers,
+    XFile? file,
+    String fileFieldName = 'profileImage',
+  }) async {
+    try {
+      if (kDebugMode) {
+        log('====> API Call (PATCH): $appBaseUrln$uri\nHeader: $_mainHeaders');
+        log('====> API Body: $body');
+      }
+
+      // If we have a file to upload, use multipart request
+      if (file != null) {
+        var request = http.MultipartRequest(
+          'PATCH',
+          Uri.parse(appBaseUrln + uri),
+        );
+
+        // Add headers (remove Content-Type for multipart request)
+        var requestHeaders = Map<String, String>.from(headers ?? _mainHeaders);
+        requestHeaders.remove('Content-Type');
+        request.headers.addAll(requestHeaders);
+
+        // Add file
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            fileFieldName,
+            file.path,
+            filename: file.name,
+          ),
+        );
+
+        // Add other fields if body is a Map
+        if (body is Map) {
+          body.forEach((key, value) {
+            if (value != null) {
+              request.fields[key] = value.toString();
+            }
+          });
+        }
+
+        var streamedResponse = await request.send();
+        var response = await http.Response.fromStream(streamedResponse);
+        return handleResponse(response, uri);
+      }
+      // Otherwise use regular PATCH with JSON
+      else {
+        http.Response response = await http
+            .patch(
+              Uri.parse(appBaseUrln + uri),
+              body: jsonEncode(body),
+              headers: headers ?? _mainHeaders,
+            )
+            .timeout(Duration(seconds: timeoutInSeconds));
+        return handleResponse(response, uri);
+      }
+    } catch (e) {
+      print('Error in patchData: $e');
+      return Response(statusCode: 1, statusText: noInternetMessage);
+    }
+  }
+
+  Future<Response> patchMultipartData(
+    String uri, {
+    Map<String, String>? fields,
+    Map<String, XFile>? files,
+    Map<String, String>? headers,
+  }) async {
+    try {
+      var request = http.MultipartRequest(
+        'PATCH',
+        Uri.parse(appBaseUrln + uri),
+      );
+
+      // Add default headers
+      request.headers.addAll(headers ?? _mainHeaders);
+
+      // Add fields (text data)
+      if (fields != null) {
+        request.fields.addAll(fields);
+      }
+
+      // Add files (images, documents, etc.)
+      if (files != null) {
+        for (var entry in files.entries) {
+          var file = await http.MultipartFile.fromPath(
+            entry.key,
+            entry.value.path,
+            filename: entry.value.name,
+          );
+          request.files.add(file);
+        }
+      }
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      return handleResponse(response, uri);
+    } catch (e) {
+      return Response(statusCode: 1, statusText: noInternetMessage);
+    }
+  }
+
   Future<Response> postMultipartData(
     String uri,
     Map<String, String> body,
@@ -98,8 +205,7 @@ class ApiClient extends GetxService {
     Map<String, String>? headers,
   }) async {
     try {
-      String apiUrl =
-          "https://backend-david-weijian.onrender.com/api/v1/user/update-userProfile";
+      String apiUrl = Urls.baseUrl + uri;
 
       if (kDebugMode) {
         log(
@@ -331,10 +437,11 @@ class ApiClient extends GetxService {
 
     try {
       body = jsonDecode(response.body);
-      print('no fuck you');
+      debugPrint('Not Any Error in Response');
+      // print('no fuck you');
       print(response.body.toString());
     } catch (e) {
-      print(e.toString() + 'fuck you');
+      print(e.toString() + 'Error has occuredin Response');
     }
     Response localResponse = Response(
       body: body ?? response.body,
