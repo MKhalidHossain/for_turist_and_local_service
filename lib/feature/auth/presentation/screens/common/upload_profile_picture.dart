@@ -68,6 +68,9 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
       source: source,
       imageQuality: 85,
     );
+
+    debugPrint('Picked Image: ${pickedFile?.path}');
+
     if (pickedFile != null) {
       setState(() {
         _imageFile = pickedFile;
@@ -177,7 +180,7 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                             size: 30,
                                           ),
                                           onPressed:
-                                              () => _pickImage(
+                                              () async => await _pickImage(
                                                 ImageSource.gallery,
                                               ),
                                         ),
@@ -262,6 +265,11 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 // Get other data from API model
                                 final model =
                                     UserProfileService.instance.profile;
+
+                                debugPrint(
+                                  'Profile Data: ${model.profileImage?.path ?? 'No image'}',
+                                );
+
                                 if (model == null) {
                                   Get.snackbar(
                                     'Error',
@@ -279,7 +287,8 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                   nationality: model.nationality ?? '',
                                   description: model.description ?? '',
                                   languages: model.languages ?? [],
-                                  profileImage: _imageFile,
+
+                                  profileImage: _imageFile ?? XFile(''),
                                 );
 
                                 // Navigate based on userRole

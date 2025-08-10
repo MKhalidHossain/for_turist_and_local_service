@@ -11,7 +11,7 @@ abstract class ProfileRepositoryInterface {
     required String nationality,
     required String description,
     List<String>? languages,
-    XFile? profileImage,
+    required XFile profileImage,
   });
     Future<Response> changePassword({
     required String currentPassword,

@@ -122,7 +122,7 @@ class ProfileController extends GetxController implements GetxService {
     required String nationality,
     required String description,
     List<String>? languages,
-    XFile? profileImage // Store as a File
+    required XFile profileImage // Store as a File
   }) async {
     try {
       isLoading = true;
@@ -136,7 +136,7 @@ class ProfileController extends GetxController implements GetxService {
         nationality: nationality,
         description: description,
         languages: languages,
-        profileImage: _pickedProfileFile,
+        profileImage: profileImage,
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
