@@ -60,12 +60,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
       ),
       home:
-          //  GetBuilder<AuthController>(
+          // GetBuilder<AuthController>(
           //   builder: (authController) {
           //     // return OnBoard();
           //     if (authController.isLoggedIn()) {
           //       return BottomNavbar();
-          //     } else if (authController.isFirstTimeInstall()) {
+          //     } else if ( authController.isFirstTimeInstall()) {
           //       return UserLoginScreen();
           //     } else {
           //       return SplashScreen();
@@ -75,13 +75,13 @@ class MyApp extends StatelessWidget {
           // DetailsOfferLocal(),
           // ProfileScreen(),
           //BottomNavbar(),
-          TouristORLocalScreen(),
-          //UserLoginScreen(),
-          //DescriptionScreen(),
+          //  TouristORLocalScreen(),
+          UserLoginScreen(),
+      //DescriptionScreen(),
       //CreateFirstServiceScreen(),
       // BottomNavbar(),
 
-      // SpokenLanguageScreen(),
+      //SpokenLanguageScreen(),
     );
   }
 }
