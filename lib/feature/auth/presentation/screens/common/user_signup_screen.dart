@@ -21,6 +21,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
   final FocusNode _confirmPasswordFocus = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
@@ -31,7 +32,27 @@ class UserSignupScreenState extends State<UserSignupScreen> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+
+    // Add listener to scroll when keyboard appears
+    _emailFocus.addListener(_scrollToShowButton);
+    _passwordFocus.addListener(_scrollToShowButton);
+    _confirmPasswordFocus.addListener(_scrollToShowButton);
+
     super.initState();
+  }
+
+  void _scrollToShowButton() {
+    if (_emailFocus.hasFocus ||
+        _passwordFocus.hasFocus ||
+        _confirmPasswordFocus.hasFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
@@ -39,6 +60,14 @@ class UserSignupScreenState extends State<UserSignupScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _scrollController.dispose();
+        // Remove listeners to prevent memory leaks
+    _emailFocus.removeListener(_scrollToShowButton);
+    _passwordFocus.removeListener(_scrollToShowButton);
+    _confirmPasswordFocus.removeListener(_scrollToShowButton);
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
     super.dispose();
   }
 
@@ -51,11 +80,12 @@ class UserSignupScreenState extends State<UserSignupScreen> {
             builder: (context, constraints) {
               return Column(
                 children: [
-                  // Scrollable content (excluding Sign In button)
+                  // Scrollable content
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: _scrollController,
                       padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+                        bottom: MediaQuery.of(context).viewInsets.bottom + 80,
                       ),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
@@ -116,11 +146,6 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                     ).requestFocus(_passwordFocus),
                                 textInputAction: TextInputAction.next,
                                 validator: Validators.email,
-                                style: TextStyle(
-                                  color: AppColors.secondayText,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                ),
                               ),
                               const SizedBox(height: 16),
 
@@ -193,7 +218,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                               ),
                               const SizedBox(height: 16),
 
-                              // Sign Up Button
+                              // Sign Up Button (now stays visible when keyboard appears)
                               context.primaryButton(
                                 onPressed: () {
                                   String email = _emailController.text;
@@ -241,13 +266,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                     height: 24,
                                     width: 24,
                                   ),
-                                  label: Text(
-                                    "Continue With Google",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                                  label: Text("Continue With Google"),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.background,
                                     foregroundColor: AppColors.primaryTextBlack,
@@ -275,13 +294,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                     height: 24,
                                     width: 24,
                                   ),
-                                  label: Text(
-                                    "Continue With Apple",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
+                                  label: Text("Continue With Apple"),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
                                         AppColors.context(
@@ -301,12 +314,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                   ),
                                 ),
                               ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).viewInsets.bottom > 0
-                                        ? 0
-                                        : 60,
-                              ),
+                              const SizedBox(height: 60),
                             ],
                           ),
                         ),

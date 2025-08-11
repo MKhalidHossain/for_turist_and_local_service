@@ -22,6 +22,7 @@ class UserLoginScreen extends StatefulWidget {
 class UserLoginScreenState extends State<UserLoginScreen> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
@@ -30,15 +31,36 @@ class UserLoginScreenState extends State<UserLoginScreen> {
   void initState() {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+
+    // Add listener to scroll when keyboard appears
+    _emailFocus.addListener(_scrollToShowButton);
+    _passwordFocus.addListener(_scrollToShowButton);
     super.initState();
+  }
+
+  void _scrollToShowButton() {
+    if (_emailFocus.hasFocus || _passwordFocus.hasFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
   void dispose() {
-    _emailFocus.dispose();
-    _passwordFocus.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _scrollController.dispose();
+    // Remove listeners to prevent memory leaks
+    _emailFocus.removeListener(_scrollToShowButton);
+    _passwordController.removeListener(_scrollToShowButton);
+
     super.dispose();
   }
 
@@ -56,6 +78,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                   // Scrollable content (excluding Sign Up button)
                   Expanded(
                     child: SingleChildScrollView(
+                      controller: _scrollController,
                       padding: EdgeInsets.only(
                         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
                       ),
@@ -291,12 +314,6 @@ class UserLoginScreenState extends State<UserLoginScreen> {
     );
   }
 }
-
-
-
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
