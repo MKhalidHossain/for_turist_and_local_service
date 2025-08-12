@@ -8,12 +8,13 @@ import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'feature/offer/presentation/screens/create_first_service_screen.dart';
 import 'feature/profile/controllers/profile_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDI();
-  final authController = Get.find<AuthController>();
+  //final authController = Get.find<AuthController>();
   runApp(MyApp());
 }
 
@@ -92,10 +93,10 @@ class _HomeState extends State<Home> {
         if (authController.isLoggedIn()) {
           debugPrint('User is logged in, userRole: $userRole');
           return userRole == 'local'
-              ? const BottomNavbar() 
-              : const UserLoginScreen();
+              ? const BottomNavbar()
+              : CreateFirstServiceScreen();
         }
-        return const UserLoginScreen(); 
+        return const UserLoginScreen();
       },
     );
   }

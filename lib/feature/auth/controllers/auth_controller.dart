@@ -610,6 +610,17 @@ class AuthController extends GetxController implements GetxService {
 
   bool isLoggedIn() {
     return authServiceInterface.isLoggedIn();
+    // if do not work then use this
+    //return authRepository.isLoggedIn();
+  }
+
+  Future<void> handleLoginSuccess(String token) async {
+    await authServiceInterface.saveLogin(token);
+    update();
+  }
+
+  String? getToken() {
+    return authServiceInterface.getUserToken();
   }
 
   // bool isFirstTimeInstall() {
