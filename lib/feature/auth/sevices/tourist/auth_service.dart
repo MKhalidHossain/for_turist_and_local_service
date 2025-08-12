@@ -67,6 +67,11 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
+  Future saveLogin(String token) {
+    return authRepositoryInterface.saveLogin(token);
+  }
+
+  @override
   Future logout() {
     return authRepositoryInterface.logout();
   }

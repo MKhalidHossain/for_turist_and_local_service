@@ -62,26 +62,51 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   bool isLoggedIn() {
-    sharedPreferences.getString(AppConstants.token);
-    bool isLoggedIn = sharedPreferences.getBool('IsLoggedIn') ?? false;
-    if (isLoggedIn) {
-      return true;
-    }
-    return false;
+    final token = sharedPreferences.getString(AppConstants.token);
+    return token != null && token.isNotEmpty;
   }
 
   @override
-  Future logout() async {
-    sharedPreferences.setBool('IsLoggedIn', false);
-
-    var data = apiClient.postData(AppConstants.logout, {});
-
-    apiClient.token = '';
-    apiClient.updateHeader('');
-    await sharedPreferences.setString(AppConstants.token, '');
-    await sharedPreferences.setString(AppConstants.refreshToken, '');
-    return data;
+  Future<void> saveLogin(String token) async {
+    await sharedPreferences.setString('IsLoggedIn', token);
   }
+
+  @override
+  Future<void> logout() async {
+    await sharedPreferences.remove('IsLoggedIn');
+  }
+
+  //@override
+  String? getToken() {
+    return sharedPreferences.getString('IsLoggedIn');
+  }
+
+  // // Try to update the code for saving user token and refresh token
+  // // in the SharedPreferences.
+
+  // @override
+  // bool isLoggedIn() {
+  //   sharedPreferences.getString(AppConstants.token);
+  //   bool isLoggedIn = sharedPreferences.getBool('IsLoggedIn') ?? false;
+  //   if (isLoggedIn) {
+  //     sharedPreferences.setBool('IsLoggedIn', true);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+  // @override
+  // Future logout() async {
+  //   sharedPreferences.setBool('IsLoggedIn', false);
+
+  //   var data = apiClient.postData(AppConstants.logout, {});
+
+  //   apiClient.token = '';
+  //   apiClient.updateHeader('');
+  //   await sharedPreferences.setString(AppConstants.token, '');
+  //   await sharedPreferences.setString(AppConstants.refreshToken, '');
+  //   return data;
+  // }
 
   @override
   /// Save user token and refresh token in the SharedPreferences

@@ -20,6 +20,7 @@ abstract class AuthServiceInterface {
   Future<dynamic> logout();
 
   bool isLoggedIn();
+  Future<dynamic> saveLogin(String token) ;
   Future<bool> clearUserCredentials();
   bool clearSharedAddress();
   String getUserToken();
