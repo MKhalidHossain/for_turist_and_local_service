@@ -19,7 +19,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // final bool isFirstTimeInstall;
-
   const MyApp({super.key});
 
   @override
@@ -45,69 +44,58 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final profileController = Get.find<ProfileController>();
   bool isLoading = true;
-  String? userRole;
-
   bool? isFirstTime;
+  String? userRole;
 
   @override
   void initState() {
     super.initState();
-    _checkFirstTime();
-    _loadUserProfile();
+    _initApp();
   }
 
-  void _loadUserProfile() async {
-    await profileController.getUserProfile();
-    userRole = profileController.getProfileResponseModel?.data?.role;
-    print('User Role: $userRole');
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  Future<void> _checkFirstTime() async {
+  Future<void> _initApp() async {
     final prefs = await SharedPreferences.getInstance();
-
-    // Get first time install flag
     isFirstTime = prefs.getBool('first_time') ?? true;
-
     if (isFirstTime!) {
-      // Mark as not first time anymore
       await prefs.setBool('first_time', false);
-
-      // Register storage service for first time setup
       Get.lazyPut(() => ProfileStorageService());
     }
 
-    // Done loading
-    setState(() => isLoading = false);
+    final authController = Get.find<AuthController>();
+    if (authController.isLoggedIn()) {
+      await profileController.getUserProfile();
+      userRole = profileController.getProfileResponseModel?.data?.role;
+      debugPrint('User Role: $userRole');
+    }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       // Show loading while checking SharedPreferences
-      return SplashScreen();
+      return const SplashScreen();
     }
 
     return GetBuilder<AuthController>(
       builder: (authController) {
-        if (userRole == null) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+        debugPrint(
+          'isFirstTime: $isFirstTime, isLoggedIn: ${authController.isLoggedIn()}, userRole: $userRole',
+        );
 
         if (isFirstTime!) {
           return const SplashScreen();
-        } else if (authController.isLoggedIn()) {
-          debugPrint('User is logged in, navigating to BottomNavbar');
-          return userRole == 'local'
-              ? const BottomNavbar() // Local user → go to BottomNavbar
-              : const UserLoginScreen();
-        } else {
-          return const UserLoginScreen(); // Not logged in → go to login screen
         }
+        if (authController.isLoggedIn()) {
+          debugPrint('User is logged in, userRole: $userRole');
+          return userRole == 'local'
+              ? const BottomNavbar() 
+              : const UserLoginScreen();
+        }
+        return const UserLoginScreen(); 
       },
     );
   }

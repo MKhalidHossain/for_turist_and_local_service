@@ -65,6 +65,7 @@ class AuthRepository implements AuthRepositoryInterface {
     sharedPreferences.getString(AppConstants.token);
     bool isLoggedIn = sharedPreferences.getBool('IsLoggedIn') ?? false;
     if (isLoggedIn) {
+      sharedPreferences.setBool('IsLoggedIn', true);
       return true;
     }
     return false;
