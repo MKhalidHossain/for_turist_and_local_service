@@ -5,6 +5,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/user_login_scree
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
 
+import '../../../auth/controllers/auth_controller.dart';
 import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';
@@ -137,8 +138,8 @@ class ProfileScreen extends StatelessWidget {
                   //  await   profileScreenController
                   //         .getApicall(); // 👈 This logs out the user
 
-                  Get.off(UserLoginScreen());
-                  // Implement logout logic here
+                  // await Get.find<AuthController>().logout();
+                  Get.offAll(() => const UserLoginScreen());
                 },
               ),
             ],

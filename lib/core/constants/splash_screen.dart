@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:kobeur/core/constants/app_colors.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import '../../feature/auth/presentation/screens/common/user_signup_screen.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_scaffold.dart';
 //import '../widgets/app_scaffold.dart';
@@ -38,41 +40,6 @@ class SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
-
-          // Padding(
-          //   padding: const EdgeInsets.only(bottom: 16),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Text(
-          //         "Already have an account? ",
-          //         style: TextStyle(
-          //           color: AppColors.primaryTextBlack,
-          //           fontSize: 14,
-          //           fontWeight: FontWeight.w400,
-          //         ),
-          //       ),
-          //       GestureDetector(
-          //         onTap: () {
-          //           Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //               builder: (context) => UserSignupScreen(),
-          //             ),
-          //           );
-          //         },
-          //         child: Text(
-          //           'Sign in',
-          //           style: TextStyle(
-          //             color: AppColors.context(context).primaryColor,
-          //             fontWeight: FontWeight.w400,
-          //             fontSize: 14,
-          //           ),
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
         ],
       ),
     );
