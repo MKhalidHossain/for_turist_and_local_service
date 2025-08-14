@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/constants/splash_screen.dart';
 import 'package:kobeur/core/services/profile_storage_service.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/tourist_or_local_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
@@ -44,9 +47,12 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final profileController = Get.find<ProfileController>();
+  final authController = Get.find<AuthController>();
+
   bool isLoading = true;
   bool? isFirstTime;
   String? userRole;
+  bool isLoggedIn = false;
 
   @override
   void initState() {
@@ -55,23 +61,39 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> _initApp() async {
+    setState(() => isLoading = true);
+
     final prefs = await SharedPreferences.getInstance();
     isFirstTime = prefs.getBool('first_time') ?? true;
+
     if (isFirstTime!) {
       await prefs.setBool('first_time', false);
       Get.lazyPut(() => ProfileStorageService());
     }
 
     final authController = Get.find<AuthController>();
-    if (authController.isLoggedIn()) {
-      await profileController.getUserProfile();
-      userRole = profileController.getProfileResponseModel?.data?.role;
-      debugPrint('User Role: $userRole');
+    isLoggedIn = authController.isLoggedIn();
+
+    if (isLoggedIn) {
+      await _loadUserRole();
     }
 
     setState(() {
       isLoading = false;
     });
+  }
+
+  Future<void> _loadUserRole() async {
+    await profileController.getUserProfile();
+    userRole = profileController.getProfileResponseModel?.data?.role;
+    debugPrint('Loaded User Role: $userRole');
+  }
+
+  // Call this after login to reload role
+  Future<void> reloadAfterLogin() async {
+    setState(() => isLoading = true);
+    await _loadUserRole();
+    setState(() => isLoading = false);
   }
 
   @override
@@ -92,11 +114,18 @@ class _HomeState extends State<Home> {
         }
         if (authController.isLoggedIn()) {
           debugPrint('User is logged in, userRole: $userRole');
-          return userRole == 'local'
-              ? const BottomNavbar()
-              : CreateFirstServiceScreen();
+          if (userRole.toString().toLowerCase() == 'local') {
+            return BottomNavbar();
+          } else if (userRole == 'tourist') {
+            return CreateFirstServiceScreen();
+          } else {
+            debugPrint('User role is null, redirecting to SelectRoleScreen');
+            return const TouristORLocalScreen();
+          }
         }
-        return const UserLoginScreen();
+        return UserLoginScreen(
+          //  onLoginSuccess: reloadAfterLogin,
+        );
       },
     );
   }
