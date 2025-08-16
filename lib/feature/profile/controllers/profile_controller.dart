@@ -8,7 +8,6 @@ import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.d
 import '../../../helpers/remote/data/api_client.dart';
 import '../domain/model/update_profile_response_model.dart';
 import '../services/profile_service_interface.dart';
-import 'package:http/http.dart' as http;
 
 class ProfileController extends GetxController implements GetxService {
   // ProfileController() {
@@ -19,8 +18,9 @@ class ProfileController extends GetxController implements GetxService {
 
   ProfileController(this.profileServiceInterface);
 
-  late GetProfileResponseModel getProfileResponseModel;
-  late UpdateProfileResponseModel updateProfileResponseModel;
+  GetProfileResponseModel? getProfileResponseModel = GetProfileResponseModel();
+  UpdateProfileResponseModel updateProfileResponseModel =
+      UpdateProfileResponseModel();
 
   bool isLoading = false;
   XFile? _pickedProfileFile;
@@ -121,7 +121,7 @@ class ProfileController extends GetxController implements GetxService {
     required String nationality,
     required String description,
     List<String>? languages,
-    required XFile profileImage // Store as a File
+    required XFile profileImage, // Store as a File
   }) async {
     try {
       isLoading = true;

@@ -342,8 +342,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
@@ -361,8 +359,9 @@ import 'user_signup_screen.dart';
 //import '../widgets/app_scaffold.dart';
 
 class UserLoginScreen extends StatefulWidget {
-  final VoidCallback? onLoginSuccess;
-  const UserLoginScreen({super.key, this.onLoginSuccess});
+  String? userRole;
+
+  UserLoginScreen({super.key, this.userRole});
 
   @override
   State<UserLoginScreen> createState() => UserLoginScreenState();
@@ -530,7 +529,8 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                             context.primaryButton(
                               onPressed: () async {
                                 String email = _emailController.text.trim();
-                                String password = _passwordController.text.trim();
+                                String password =
+                                    _passwordController.text.trim();
                                 if (email.isEmpty) {
                                   showCustomSnackBar('email is required'.tr);
                                 } else if (password.isEmpty) {
@@ -540,12 +540,15 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                     'minimum password length is 8',
                                   );
                                 } else {
-                                   authController.login(email, password);
+                                  authController.login(
+                                    email,
+                                    password,
+                                    widget.userRole!.toLowerCase(),
+                                  );
                                   // bool success = await authController.login(email, password);
                                   // if (success && widget.onLoginSuccess != null) {
                                   //   widget.onLoginSuccess?.call();
                                   // }
-
                                 }
 
                                 // Navigator.push(

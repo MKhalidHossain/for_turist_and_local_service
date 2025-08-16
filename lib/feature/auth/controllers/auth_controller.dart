@@ -421,7 +421,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
 import '../../../helpers/remote/data/api_client.dart';
+import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../../utils/app_constants.dart';
+import '../../offer/presentation/screens/create_first_service_screen.dart';
 import '../domain/common/model/login_response_model.dart';
 import '../presentation/screens/common/language_picker_screen.dart';
 import '../presentation/screens/common/tourist_or_local_screen.dart';
@@ -557,9 +559,9 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> login(String email, String password) async {
-    _isLoading = true;
-    update();
+  Future<void> login(String email, String password, String userRole) async {
+    // _isLoading = true;
+    // update();
 
     // Response? response = Response();
 
@@ -588,7 +590,19 @@ class AuthController extends GetxController implements GetxService {
       );
       setUserToken(token, refreshToken);
 
-      Get.offAll(() => TouristORLocalScreen());
+      debugPrint(
+        'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
+      );
+      // for Nevigation to Tourist or Local
+      if (userRole.toString().toLowerCase() == 'tourist') {
+        Get.offAll(() => BottomNavbar());
+      } else if (userRole.toString().toLowerCase() == 'local') {
+        Get.offAll(() => CreateFirstServiceScreen());
+      } else {
+        Get.offAll(() => TouristORLocalScreen());
+      }
+
+      //Get.offAll(() => TouristORLocalScreen());
 
       //Get.offAll(BottomNavbar());
 

@@ -138,8 +138,8 @@ class ProfileScreen extends StatelessWidget {
                   //  await   profileScreenController
                   //         .getApicall(); // 👈 This logs out the user
 
-                  // await Get.find<AuthController>().logout();
-                  Get.offAll(() => const UserLoginScreen());
+                  await Get.find<AuthController>().logOut();
+                  //  Get.offAll(() =>  UserLoginScreen());
                 },
               ),
             ],
