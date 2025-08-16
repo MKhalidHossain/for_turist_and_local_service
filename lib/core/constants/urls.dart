@@ -50,7 +50,7 @@ class Urls {
   static const String forgetPassword = '/auth/forgot-password';
   static const String resetPassword = '/auth/reset-password';
   static const String verifyCode = '/auth/verify-otp';
-  static const String logOut = '/api/v1/auth/logout';
+  static const String logOut = '/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';
 

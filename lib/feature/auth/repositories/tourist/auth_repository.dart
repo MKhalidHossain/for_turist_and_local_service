@@ -72,8 +72,12 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<void> logout() async {
+  Future logout() async {
     await sharedPreferences.remove('IsLoggedIn');
+    apiClient.token = '';
+    return await apiClient.postData(Urls.logOut, {}); 
+
+
   }
 
   //@override

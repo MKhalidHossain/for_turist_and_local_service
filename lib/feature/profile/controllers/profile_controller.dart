@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/constants/urls.dart';
@@ -22,6 +23,7 @@ class ProfileController extends GetxController implements GetxService {
   UpdateProfileResponseModel updateProfileResponseModel =
       UpdateProfileResponseModel();
 
+ String ? userRole ;
   bool isLoading = false;
   XFile? _pickedProfileFile;
   XFile? get pickedProfileFile => _pickedProfileFile;
@@ -61,6 +63,16 @@ class ProfileController extends GetxController implements GetxService {
     _pickedProfileFile = null;
     update();
   }
+
+
+  Future<void> getUserRole() async {
+    await getUserProfile();
+    userRole = getProfileResponseModel?.data?.role ?? '';
+    //debugPrint('Loaded User Role: ${userRole}');
+    debugPrint('Loaded User Role from ProfileController: $userRole');
+  }
+
+
 
   Future<void> getUserProfile() async {
     try {

@@ -101,6 +101,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return const SplashScreen();
+
       //      BottomNavbar();
     }
 
@@ -114,18 +115,33 @@ class _HomeState extends State<Home> {
           const SplashScreen();
         }
 
-        if (authController.isLoggedIn()) {
-          debugPrint('User is logged in, userRole: $userRole');
+        if (isFirstTime! && authController.isLoggedIn()) {
+          debugPrint('First time user, redirecting to TouristORLocalScreen\n');
+          return const TouristORLocalScreen();
+        } else if (authController.isLoggedIn()) {
+          userRole =
+              profileController.getProfileResponseModel?.data?.role
+                  ?.toLowerCase();
+          // userRole = profileController.userRole.toString().toLowerCase();
+          // profileController.getUserRole();
+          // reload user role if not loaded yet2
+          // if (userRole == null) {
+          //   _loadUserRole().then((_) {
+          //     setState(() {}); // refresh after role is fetched
+          //   });
+          //   return const SplashScreen(); // temporary loader until role is fetched
+          // }
+          debugPrint('User is logged in, userRole: $userRole \n');
           if (userRole.toString().toLowerCase() == 'local') {
             return BottomNavbar();
           } else if (userRole.toString().toLowerCase() == 'tourist') {
             return CreateFirstServiceScreen();
           } else {
-            debugPrint('User role is null, redirecting to SelectRoleScreen');
+            debugPrint('User role is null, redirecting to SelectRoleScreen\n');
             return const TouristORLocalScreen();
           }
         }
-        return UserLoginScreen(userRole: userRole);
+        return UserLoginScreen();
       },
     );
   }

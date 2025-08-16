@@ -353,21 +353,23 @@ import '../../../../../core/widgets/app_logo.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/widgets/or_divider_with_circle_widget.dart';
 import '../../../../../helpers/custom_snackbar.dart';
+import '../../../../profile/controllers/profile_controller.dart';
 import 'forgot_password_screen.dart';
 import 'user_signup_screen.dart';
 
 //import '../widgets/app_scaffold.dart';
 
 class UserLoginScreen extends StatefulWidget {
-  String? userRole;
 
-  UserLoginScreen({super.key, this.userRole});
+
+  UserLoginScreen({super.key, });
 
   @override
   State<UserLoginScreen> createState() => UserLoginScreenState();
 }
 
 class UserLoginScreenState extends State<UserLoginScreen> {
+    String? userRole;
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
@@ -390,6 +392,9 @@ class UserLoginScreenState extends State<UserLoginScreen> {
 
     super.dispose();
   }
+
+   
+
 
   @override
   Widget build(BuildContext context) {
@@ -543,7 +548,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                   authController.login(
                                     email,
                                     password,
-                                    widget.userRole!.toLowerCase(),
+                                    
                                   );
                                   // bool success = await authController.login(email, password);
                                   // if (success && widget.onLoginSuccess != null) {

@@ -424,6 +424,7 @@ import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../../utils/app_constants.dart';
 import '../../offer/presentation/screens/create_first_service_screen.dart';
+import '../../profile/controllers/profile_controller.dart';
 import '../domain/common/model/login_response_model.dart';
 import '../presentation/screens/common/language_picker_screen.dart';
 import '../presentation/screens/common/tourist_or_local_screen.dart';
@@ -449,6 +450,7 @@ class AuthController extends GetxController implements GetxService {
   List<MultipartBody> multipartList = [];
   String countryDialCode = '+880';
   String email = '';
+  String? userRole;
 
   void setCountryCode(String code) {
     countryDialCode = code;
@@ -478,6 +480,12 @@ class AuthController extends GetxController implements GetxService {
   // VerifyCodeResponseModel? verifyCodeResponseModel;
   // ChangePasswordResponseModel? changePasswordResponseModel;
   // ForgetPasswordResponseModel? forgetPasswordResponseModel;
+  final profileController = Get.find<ProfileController>();
+  Future<void> _loadUserRole() async {
+    await profileController.getUserProfile();
+    userRole = profileController.getProfileResponseModel?.data?.role;
+    debugPrint('Loaded User Role: $userRole');
+  }
 
   void addImageAndRemoveMultiParseData() {
     multipartList.clear();
@@ -559,7 +567,7 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  Future<void> login(String email, String password, String userRole) async {
+  Future<void> login(String email, String password) async {
     // _isLoading = true;
     // update();
 
@@ -582,13 +590,15 @@ class AuthController extends GetxController implements GetxService {
       refreshToken = logInResponseModel!.data!.refreshToken!;
       token = logInResponseModel!.data!.accessToken!;
       print(
-        'accessToken ${logInResponseModel!.data!.accessToken}} NOW Iwalker',
+        'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
       );
       print('refreshToken $refreshToken NOW Iwalker');
       print(
         'User Token $token  ================================== from comtroller ',
       );
       setUserToken(token, refreshToken);
+
+      await _loadUserRole();
 
       debugPrint(
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',

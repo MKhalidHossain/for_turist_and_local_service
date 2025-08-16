@@ -11,141 +11,160 @@ import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';
 import 'common/terms_condition_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
   final profileScreenController = Get.put(ProfileController(Get.find()));
+
+  @override
+  void initState() {
+    Get.find<ProfileController>().getUserProfile();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     // final AuthController authController = Get.find<AuthController>();
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // const SizedBox(height: 24),
-              // ListTile(
-              //   leading: CircleAvatar(
-              //     radius: 30,
-              //     backgroundImage: NetworkImage(
-              //       "https://randomuser.me/api/portraits/women/44.jpg",
-              //     ),
-              //   ),
-              //   title: const Text(
-              //     'Kristin Watson',
-              //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              //   ),
-              //   subtitle: const Text('Tourist'),
-              // ),
-              Row(
+    return GetBuilder<ProfileController>(
+      init: profileScreenController,
+      builder: (profileController) {
+        final userProfile = profileController.getProfileResponseModel?.data;
+        return Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
                 children: [
-                  Stack(
-                    clipBehavior: Clip.none,
+                  // const SizedBox(height: 24),
+                  // ListTile(
+                  //   leading: CircleAvatar(
+                  //     radius: 30,
+                  //     backgroundImage: NetworkImage(
+                  //       "https://randomuser.me/api/portraits/women/44.jpg",
+                  //     ),
+                  //   ),
+                  //   title: const Text(
+                  //     'Kristin Watson',
+                  //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  //   ),
+                  //   subtitle: const Text('Tourist'),
+                  // ),
+                  Row(
                     children: [
-                      const CircleAvatar(
-                        radius: 35,
-                        backgroundImage: NetworkImage(
-                          "https://randomuser.me/api/portraits/women/44.jpg",
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: -2,
-                        child: GestureDetector(
-                          onTap: () {
-                            // Handle image change
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.red,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              size: 14,
-                              color: Colors.white,
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundImage: NetworkImage(
+                              userProfile?.profileImage ??
+                                  "https://randomuser.me/api/portraits/women/44.jpg",
                             ),
                           ),
+                          Positioned(
+                            bottom: 0,
+                            right: -2,
+                            child: GestureDetector(
+                              onTap: () {
+                                // Handle image change
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.red,
+                                ),
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  size: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            'Jerome Bell'.text20Grey700(),
+                            'China'.text16Grey(),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        'Jerome Bell'.text20Grey700(),
-                        'China'.text16Grey(),
-                      ],
-                    ),
+                  const SizedBox(height: 24),
+                  _buildMenuItem(
+                    icon: Icons.settings,
+                    text: "Account Settings",
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AccountSettingsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+
+                  _buildMenuItem(
+                    icon: Icons.info_outline,
+                    text: "About App",
+                    onTap: () {
+                      Get.to(AboutAppScreen());
+                    },
+                  ),
+                  _buildMenuItem(
+                    icon: Icons.privacy_tip_outlined,
+                    text: "Privacy Policy",
+                    onTap: () {
+                      Get.to(PrivacyPolicyScreen());
+                    },
+                  ),
+                  _buildMenuItem(
+                    icon: Icons.article_outlined,
+                    text: "Term & Condition",
+                    onTap: () {
+                      Get.to(TermsConditionScreen());
+                    },
+                  ),
+                  _buildMenuItem(
+                    icon: Icons.help_outline,
+                    text: "Help & Support",
+                    onTap: () {
+                      Get.to(HelpSupportScreen());
+                    },
+                  ),
+
+                  _buildMenuItem(
+                    icon: Icons.logout,
+                    text: "Log Out",
+                    iconColor: Colors.red,
+                    textColor: Colors.red,
+                    showTrailing: true,
+                    onTap: () async {
+                      //  await   profileScreenController
+                      //         .getApicall(); // 👈 This logs out the user
+
+                      await Get.find<AuthController>().logOut();
+                      //  Get.offAll(() =>  UserLoginScreen());
+                    },
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              _buildMenuItem(
-                icon: Icons.settings,
-                text: "Account Settings",
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AccountSettingsScreen(),
-                    ),
-                  );
-                },
-              ),
-
-              _buildMenuItem(
-                icon: Icons.info_outline,
-                text: "About App",
-                onTap: () {
-                  Get.to(AboutAppScreen());
-                },
-              ),
-              _buildMenuItem(
-                icon: Icons.privacy_tip_outlined,
-                text: "Privacy Policy",
-                onTap: () {
-                  Get.to(PrivacyPolicyScreen());
-                },
-              ),
-              _buildMenuItem(
-                icon: Icons.article_outlined,
-                text: "Term & Condition",
-                onTap: () {
-                  Get.to(TermsConditionScreen());
-                },
-              ),
-              _buildMenuItem(
-                icon: Icons.help_outline,
-                text: "Help & Support",
-                onTap: () {
-                  Get.to(HelpSupportScreen());
-                },
-              ),
-
-              _buildMenuItem(
-                icon: Icons.logout,
-                text: "Log Out",
-                iconColor: Colors.red,
-                textColor: Colors.red,
-                showTrailing: true,
-                onTap: () async {
-                  //  await   profileScreenController
-                  //         .getApicall(); // 👈 This logs out the user
-
-                  await Get.find<AuthController>().logOut();
-                  //  Get.offAll(() =>  UserLoginScreen());
-                },
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
