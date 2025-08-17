@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/constants/splash_screen.dart';
@@ -9,7 +8,6 @@ import 'package:kobeur/feature/auth/presentation/screens/common/user_login_scree
 import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'feature/offer/presentation/screens/create_first_service_screen.dart';
 import 'feature/profile/controllers/profile_controller.dart';
 
@@ -45,12 +43,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final profileController = Get.find<ProfileController>();
+  //final profileController = Get.find<ProfileController>();
   //final authController = Get.find<AuthController>();
 
   bool isLoading = true;
   bool? isFirstTime;
-  String? userRole;
+  // String? userRole;
   bool isLoggedIn = false;
 
   @override
@@ -67,79 +65,29 @@ class _HomeState extends State<Home> {
 
     if (isFirstTime!) {
       await prefs.setBool('first_time', false);
-      Get.lazyPut(() => ProfileStorageService());
+      //Get.lazyPut(() => ProfileStorageService());
     }
 
     final authController = Get.find<AuthController>();
     isLoggedIn = authController.isLoggedIn();
 
     debugPrint('isFirstTime: $isFirstTime, isLoggedIn: $isLoggedIn');
-
-    if (isLoggedIn) {
-      await _loadUserRole();
-    }
-
     setState(() {
       isLoading = false;
     });
   }
 
-  Future<void> _loadUserRole() async {
-    await profileController.getUserProfile();
-    userRole = profileController.getProfileResponseModel?.data?.role;
-    debugPrint('Loaded User Role: $userRole');
-  }
-
-  // Call this after login to reload role
-  // Future<void> reloadAfterLogin() async {
-  //   setState(() => isLoading = true);
-  //   await _loadUserRole();
-  //   setState(() => isLoading = false);
-  // }
-
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
       return const SplashScreen();
-
-      //      BottomNavbar();
     }
-
     return GetBuilder<AuthController>(
       builder: (authController) {
-        debugPrint(
-          'isFirstTime: $isFirstTime, isLoggedIn: ${authController.isLoggedIn()}, userRole: $userRole',
-        );
-
         if (isFirstTime!) {
           const SplashScreen();
-        }
-
-        if (isFirstTime! && authController.isLoggedIn()) {
-          debugPrint('First time user, redirecting to TouristORLocalScreen\n');
-          return const TouristORLocalScreen();
         } else if (authController.isLoggedIn()) {
-          userRole =
-              profileController.getProfileResponseModel?.data?.role
-                  ?.toLowerCase();
-          // userRole = profileController.userRole.toString().toLowerCase();
-          // profileController.getUserRole();
-          // reload user role if not loaded yet2
-          // if (userRole == null) {
-          //   _loadUserRole().then((_) {
-          //     setState(() {}); // refresh after role is fetched
-          //   });
-          //   return const SplashScreen(); // temporary loader until role is fetched
-          // }
-          debugPrint('User is logged in, userRole: $userRole \n');
-          if (userRole.toString().toLowerCase() == 'local') {
-            return BottomNavbar();
-          } else if (userRole.toString().toLowerCase() == 'tourist') {
-            return CreateFirstServiceScreen();
-          } else {
-            debugPrint('User role is null, redirecting to SelectRoleScreen\n');
-            return const TouristORLocalScreen();
-          }
+          return const BottomNavbar();
         }
         return UserLoginScreen();
       },

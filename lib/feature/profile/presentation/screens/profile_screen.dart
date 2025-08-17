@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/auth/domain/common/singleton/user_profile.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
 
+import '../../../../core/constants/urls.dart';
+import '../../../../helpers/remote/data/api_client.dart';
 import '../../../auth/controllers/auth_controller.dart';
+import '../../repositories/profile_repository.dart';
 import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';
@@ -20,20 +24,16 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final profileScreenController = Get.put(ProfileController(Get.find()));
-
-  @override
-  void initState() {
-    Get.find<ProfileController>().getUserProfile();
-    super.initState();
-  }
+  final profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
-    // final AuthController authController = Get.find<AuthController>();
     return GetBuilder<ProfileController>(
-      init: profileScreenController,
       builder: (profileController) {
-        final userProfile = profileController.getProfileResponseModel?.data;
+        debugPrint(
+          "My Profile Data: ${profileController.getProfileResponseModel?.data?.profileImage}",
+        );
+        final userProfileData = profileController.getProfileResponseModel?.data;
         return Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -63,7 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           CircleAvatar(
                             radius: 35,
                             backgroundImage: NetworkImage(
-                              userProfile?.profileImage ??
+                              userProfileData?.profileImage ??
                                   "https://randomuser.me/api/portraits/women/44.jpg",
                             ),
                           ),
@@ -95,8 +95,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            'Jerome Bell'.text20Grey700(),
-                            'China'.text16Grey(),
+                            " ${userProfileData?.firstName} ${userProfileData?.lastName}"
+                                .text20Grey700(),
+                            "${userProfileData?.nationality}".text16Grey(),
                           ],
                         ),
                       ),

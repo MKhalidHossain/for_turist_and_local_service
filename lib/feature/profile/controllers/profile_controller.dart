@@ -15,6 +15,13 @@ class ProfileController extends GetxController implements GetxService {
   //   print("i am a constatore");
   //   getApicall();
   // }
+
+  @override
+  void onInit() {
+    getUserProfile();
+    super.onInit();
+  }
+
   final ProfileServiceInterface profileServiceInterface;
 
   ProfileController(this.profileServiceInterface);
@@ -23,7 +30,7 @@ class ProfileController extends GetxController implements GetxService {
   UpdateProfileResponseModel updateProfileResponseModel =
       UpdateProfileResponseModel();
 
- String ? userRole ;
+  String? userRole;
   bool isLoading = false;
   XFile? _pickedProfileFile;
   XFile? get pickedProfileFile => _pickedProfileFile;
@@ -64,15 +71,12 @@ class ProfileController extends GetxController implements GetxService {
     update();
   }
 
-
   Future<void> getUserRole() async {
-    await getUserProfile();
+     getUserProfile();
     userRole = getProfileResponseModel?.data?.role ?? '';
     //debugPrint('Loaded User Role: ${userRole}');
     debugPrint('Loaded User Role from ProfileController: $userRole');
   }
-
-
 
   Future<void> getUserProfile() async {
     try {
