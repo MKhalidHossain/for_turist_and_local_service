@@ -26,6 +26,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // final profileScreenController =  Get.put(ProfileController(Get.find()));
   final profileController = Get.find<ProfileController>();
 
+  bool isLoading = true;
+  String? userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    profileController.getUserProfile();
+  }
+
+  // void _loadUserProfile() async {
+  //   await profileController.getUserProfile();
+  //   userRole = profileController.getProfileResponseModel?.data?.role;
+  //   print('User Role: $userRole');
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
@@ -62,11 +80,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           CircleAvatar(
                             radius: 35,
-                            backgroundImage: NetworkImage(
-                              userProfileData?.profileImage ??
-                                  "https://randomuser.me/api/portraits/women/44.jpg",
+                            backgroundColor: Colors.grey[200],
+                            child: ClipOval(
+                              child:
+                                  (userProfileData?.profileImage != null &&
+                                          userProfileData!
+                                              .profileImage!
+                                              .isNotEmpty)
+                                      ? Image.network(
+                                        userProfileData!.profileImage!,
+                                        fit: BoxFit.cover,
+                                        width: 70,
+                                        height: 70,
+                                        errorBuilder: (
+                                          context,
+                                          error,
+                                          stackTrace,
+                                        ) {
+                                          return Image.asset(
+                                            'assets/images/profileBlankImage.png',
+                                            fit: BoxFit.cover,
+                                            width: 70,
+                                            height: 70,
+                                          );
+                                        },
+                                      )
+                                      : Image.asset(
+                                        'assets/images/profileBlankImage.png',
+                                        fit: BoxFit.cover,
+                                        width: 70,
+                                        height: 70,
+                                      ),
                             ),
                           ),
+
+                          // CircleAvatar(
+                          //   radius: 35,
+                          //   backgroundImage: NetworkImage(
+                          //     userProfileData?.profileImage ??
+                          //         "https://randomuser.me/api/portraits/women/44.jpg",
+                          //   ),
+                          // ),
                           Positioned(
                             bottom: 0,
                             right: -2,

@@ -15,6 +15,7 @@ import '../../../utils/app_constants.dart';
 import '../../offer/presentation/screens/create_first_service_screen.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../domain/common/model/login_response_model.dart';
+import '../domain/common/model/registration_response_model.dart';
 import '../presentation/screens/common/language_picker_screen.dart';
 import '../presentation/screens/common/tourist_or_local_screen.dart';
 import '../sevices/tourist/auth_service_interface.dart';
@@ -69,7 +70,7 @@ class AuthController extends GetxController implements GetxService {
   FocusNode identityNumberNode = FocusNode();
 
   LogInResponseModel? logInResponseModel;
-  // RegistrationResponseModel? registrationResponseModel;
+  RegistrationResponseModel? registrationResponseModel;
   // VerifyCodeResponseModel? verifyCodeResponseModel;
   // ChangePasswordResponseModel? changePasswordResponseModel;
   // ForgetPasswordResponseModel? forgetPasswordResponseModel;
@@ -163,13 +164,17 @@ class AuthController extends GetxController implements GetxService {
         confirmPassword,
       );
       if (response!.statusCode == 201) {
-        String token = logInResponseModel!.data!.accessToken!;
-        String refreshToken = logInResponseModel!.data!.refreshToken!;
+        registrationResponseModel = RegistrationResponseModel.fromJson(
+          response.body,
+        );
+
+        String token = registrationResponseModel!.data!.accessToken!;
+        String refreshToken = registrationResponseModel!.data!.refreshToken!;
         print(
           "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
         );
 
-        // await setUserToken(token, refreshToken);
+        await setUserToken(token, refreshToken);
 
         Get.offAll(() => TouristORLocalScreen());
         showCustomSnackBar('Welcome you have successfully Registered');
