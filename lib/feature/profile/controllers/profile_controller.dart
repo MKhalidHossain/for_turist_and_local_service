@@ -16,11 +16,11 @@ class ProfileController extends GetxController implements GetxService {
   //   getApicall();
   // }
 
-  @override
-  void onInit() {
-    getUserProfile();
-    super.onInit();
-  }
+  // @override
+  // void onInit() async {
+  //   super.onInit();
+  //   await getUserProfile();
+  // }
 
   final ProfileServiceInterface profileServiceInterface;
 
@@ -72,7 +72,7 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   Future<void> getUserRole() async {
-     getUserProfile();
+    getUserProfile();
     userRole = getProfileResponseModel?.data?.role ?? '';
     //debugPrint('Loaded User Role: ${userRole}');
     debugPrint('Loaded User Role from ProfileController: $userRole');
@@ -142,6 +142,13 @@ class ProfileController extends GetxController implements GetxService {
     try {
       isLoading = true;
       update();
+
+      // debugPrint(
+      //   "Updating profile with image: ${profileImage.path} \n "
+      //   "First Name: $firstName, Last Name: $lastName, "
+      //   "Age: $age, Gender: $gender, Nationality: $nationality, "
+      //   "Description: $description, Languages: $languages, Profile Image: ${profileImage.path}",
+      // );
 
       final response = await profileServiceInterface.updateProfile(
         firstName: firstName,

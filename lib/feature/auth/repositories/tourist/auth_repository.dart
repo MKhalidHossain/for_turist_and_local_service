@@ -129,7 +129,7 @@ class AuthRepository implements AuthRepositoryInterface {
     );
     apiClient.token = token;
     apiClient.updateHeader(token);
-    await sharedPreferences.setString(AppConstants.refreshToken, token);
+    await sharedPreferences.setString(AppConstants.refreshToken, refreshToken);
     return await sharedPreferences.setString(AppConstants.token, token);
   }
 

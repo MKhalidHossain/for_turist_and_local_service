@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 
 import '../../../../../core/constants/app_colors.dart';
@@ -210,63 +209,18 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                             SizedBox(
                               width: size.width * 0.45,
                               child: OutlinedButton(
-                                onPressed: () async {
-                                  if (_imageFile == null) {
-                                    Get.snackbar(
-                                      'Error',
-                                      'Please select a profile image',
-                                    );
-                                    return;
+                                onPressed: () {
+                                  if (userRole == 'Tourist') {
+                                    Get.to(
+                                      () => BottomNavbar(),
+                                    ); // replace with your tourist screen
+                                  } else if (userRole == 'Local') {
+                                    Get.to(
+                                      () => CreateFirstServiceScreen(),
+                                    ); // replace with your local screen
+                                  } else {
+                                    Get.snackbar('Error', 'Unknown user role');
                                   }
-
-                                  // Store picked image in singleton
-                                  UserProfileService
-                                      .instance
-                                      .profile
-                                      .profileImage = _imageFile;
-
-                                  // Get other data from API model
-                                  final model =
-                                      UserProfileService.instance.profile;
-
-                                  debugPrint(
-                                    'Profile Data: ${model.profileImage?.path ?? 'No image'}',
-                                  );
-
-                                  if (model == null) {
-                                    Get.snackbar(
-                                      'Error',
-                                      'Failed to load profile data',
-                                    );
-                                    return;
-                                  }
-
-                                  // Call updateProfile with both API data + new image
-                                  await profileController.updateUserProfile(
-                                    firstName: model.firstName ?? '',
-                                    lastName: model.lastName ?? '',
-                                    age: model.age ?? 0,
-                                    gender: model.gender ?? '',
-                                    nationality: model.nationality ?? '',
-                                    description: model.description ?? '',
-                                    languages: model.languages ?? [],
-
-                                    profileImage: XFile(
-                                      'assets/images/profileBlankImage.png',
-                                    ),
-
-                                    //_imageFile ??
-                                  );
-                                  Get.offAll(UserLoginScreen());
-
-                                  // // Navigate based on userRole
-                                  // if (userRole == 'Tourist') {
-                                  //   Get.to(() => BottomNavbar());
-                                  // } else if (userRole == 'Local') {
-                                  //   Get.to(() => CreateFirstServiceScreen());
-                                  // } else {
-                                  //   Get.snackbar('Error', 'Unknown user role');
-                                  // }
                                 },
                                 style: OutlinedButton.styleFrom(
                                   side: BorderSide(
@@ -338,15 +292,13 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 );
 
                                 // Navigate based on userRole
-                                Get.offAll(UserLoginScreen());
-
-                                // if (userRole == 'Tourist') {
-                                //   Get.to(() => BottomNavbar());
-                                // } else if (userRole == 'Local') {
-                                //   Get.to(() => CreateFirstServiceScreen());
-                                // } else {
-                                //   Get.snackbar('Error', 'Unknown user role');
-                                // }
+                                if (userRole == 'Tourist') {
+                                  Get.to(() => BottomNavbar());
+                                } else if (userRole == 'Local') {
+                                  Get.to(() => CreateFirstServiceScreen());
+                                } else {
+                                  Get.snackbar('Error', 'Unknown user role');
+                                }
                               },
                               width: size.width * 0.45,
                               text: "Continue",

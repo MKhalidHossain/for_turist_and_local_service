@@ -23,7 +23,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final profileScreenController = Get.put(ProfileController(Get.find()));
+  // final profileScreenController =  Get.put(ProfileController(Get.find()));
   final profileController = Get.find<ProfileController>();
 
   @override

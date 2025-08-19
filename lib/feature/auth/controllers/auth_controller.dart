@@ -74,28 +74,28 @@ class AuthController extends GetxController implements GetxService {
   // ChangePasswordResponseModel? changePasswordResponseModel;
   // ForgetPasswordResponseModel? forgetPasswordResponseModel;
   final profileController = Get.find<ProfileController>();
-  Future<void> _initApp() async {
-    isLoadingforProfile = true;
+  // Future<void> _initApp() async {
+  //   isLoadingforProfile = true;
 
-    final prefs = await SharedPreferences.getInstance();
-    isFirstTime = prefs.getBool('first_time') ?? true;
+  //   final prefs = await SharedPreferences.getInstance();
+  //   isFirstTime = prefs.getBool('first_time') ?? true;
 
-    if (isFirstTime!) {
-      await prefs.setBool('first_time', false);
-      Get.lazyPut(() => ProfileStorageService());
-    }
+  //   if (isFirstTime!) {
+  //     await prefs.setBool('first_time', false);
+  //     Get.lazyPut(() => ProfileStorageService());
+  //   }
 
-    final authController = Get.find<AuthController>();
-    isLoggedInforProfile = authController.isLoggedIn();
+  //   final authController = Get.find<AuthController>();
+  //   isLoggedInforProfile = authController.isLoggedIn();
 
-    debugPrint('isFirstTime: $isFirstTime, isLoggedIn: $isLoggedIn');
+  //   debugPrint('isFirstTime: $isFirstTime, isLoggedIn: $isLoggedIn');
 
-    if (isLoggedInforProfile) {
-      await _loadUserRole();
-    }
+  //   if (isLoggedInforProfile) {
+  //     await _loadUserRole();
+  //   }
 
-    isLoadingforProfile = false;
-  }
+  //   isLoadingforProfile = false;
+  // }
 
   Future<void> _loadUserRole() async {
     await profileController.getUserProfile();
@@ -156,36 +156,44 @@ class AuthController extends GetxController implements GetxService {
     print(
       "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
     );
-
-    Response? response = await authServiceInterface.register(
-      email,
-      password,
-      confirmPassword,
-    );
-    if (response!.statusCode == 201) {
-      print(
-        "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
+    try {
+      Response? response = await authServiceInterface.register(
+        email,
+        password,
+        confirmPassword,
       );
-      // registrationResponseModel = RegistrationResponseModel.fromJson(response.body);
+      if (response!.statusCode == 201) {
+        String token = logInResponseModel!.data!.accessToken!;
+        String refreshToken = logInResponseModel!.data!.refreshToken!;
+        print(
+          "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
+        );
 
-      // _isLoading = false;
-      // update();
+        // await setUserToken(token, refreshToken);
 
-      Get.offAll(() => TouristORLocalScreen());
-      showCustomSnackBar('Welcome you have successfully Registered');
-    } else {
+        Get.offAll(() => TouristORLocalScreen());
+        showCustomSnackBar('Welcome you have successfully Registered');
+      } else {
+        _isLoading = false;
+        // ApiChecker.checkApi(response);
+        print(
+          ' ❌ Registration failed: ${response?.statusCode} ${response?.body} ',
+        );
+      }
+      update();
+    } catch (e) {
       _isLoading = false;
-      // ApiChecker.checkApi(response);
-      print(
-        ' ❌ Registration failed: ${response?.statusCode} ${response?.body} ',
+      print("❌ Error during registration: $e");
+      showCustomSnackBar(
+        "Something went wrong. Please try again later.",
+        isError: true,
       );
     }
-    update();
   }
 
   Future<void> login(String email, String password) async {
-    // _isLoading = true;
-    // update();
+    _isLoading = true;
+    update();
 
     // Response? response = Response();
 
@@ -196,6 +204,7 @@ class AuthController extends GetxController implements GetxService {
     }
     if (response!.statusCode == 200) {
       Map map = response.body;
+      _loadUserRole();
       String token = '';
       String refreshToken = '';
 
