@@ -75,14 +75,13 @@ class AuthRepository implements AuthRepositoryInterface {
   Future logout() async {
     await sharedPreferences.remove('IsLoggedIn');
     apiClient.token = '';
-    return await apiClient.postData(Urls.logOut, {}); 
-
-
+    return await apiClient.postData(Urls.logOut, {});
   }
 
   //@override
   String? getToken() {
-    return sharedPreferences.getString('IsLoggedIn');
+   // return sharedPreferences.getString('IsLoggedIn');
+    return sharedPreferences.getString(AppConstants.token);
   }
 
   // // Try to update the code for saving user token and refresh token
