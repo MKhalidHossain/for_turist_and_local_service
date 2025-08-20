@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 
 import '../../../../../core/constants/app_colors.dart';
@@ -37,17 +38,22 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
         TextEditingController()..addListener(_onFieldChanged);
     super.initState();
 
-    _loadUserProfile(); // fetch profile
+    // profileController.getUserRole();
+
+    isLoading = false;
+
+    // _loadUserProfile(); // fetch profile
   }
 
-  void _loadUserProfile() async {
-    await profileController.getUserProfile();
-    userRole = profileController.getProfileResponseModel?.data?.role;
-    print('User Role: $userRole');
-    setState(() {
-      isLoading = false;
-    });
-  }
+  // void _loadUserProfile() async {
+  //   isLoading = true;
+  //   await profileController.getUserProfile();
+  //   userRole = profileController.getProfileResponseModel?.data?.role;
+  //   print('User Role: $userRole');
+  //   setState(() {
+  //     isLoading = false;
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -256,11 +262,11 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                   return;
                                 }
 
-                                // Store picked image in singleton
-                                UserProfileService
-                                    .instance
-                                    .profile
-                                    .profileImage = _imageFile;
+                                // // Store picked image in singleton
+                                // UserProfileService
+                                //     .instance
+                                //     .profile
+                                //     .profileImage = _imageFile;
 
                                 // Get other data from API model
                                 final model =
@@ -273,31 +279,39 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 if (model == null) {
                                   Get.snackbar(
                                     'Error',
-                                    'Failed to load profile data',
+                                    'Profile data is missing,   Failed to load profile data\nPlease fill in your profile details first.',
                                   );
                                   return;
                                 }
 
+                                // need to conditon this if all things are not null then go to login screen
+
+                                // otehrwise show snackbar and got to filling data screen
+
                                 // Call updateProfile with both API data + new image
-                                await profileController.updateUserProfile(
-                                  firstName: model.firstName ?? '',
-                                  lastName: model.lastName ?? '',
-                                  age: model.age ?? 0,
-                                  gender: model.gender ?? '',
-                                  nationality: model.nationality ?? '',
-                                  description: model.description ?? '',
-                                  languages: model.languages ?? [],
+                                try {
+                                  await profileController.updateUserProfile(
+                                    firstName: model.firstName ?? '',
+                                    lastName: model.lastName ?? '',
+                                    age: model.age ?? 0,
+                                    gender: model.gender ?? '',
+                                    nationality: model.nationality ?? '',
+                                    description: model.description ?? '',
+                                    languages: model.languages ?? [],
 
-                                  profileImage: _imageFile ?? XFile(''),
-                                );
+                                    profileImage: _imageFile ?? XFile(''),
+                                  );
+                                  // Navigate based on userRole
 
-                                // Navigate based on userRole
-                                if (userRole == 'Tourist') {
-                                  Get.to(() => BottomNavbar());
-                                } else if (userRole == 'Local') {
-                                  Get.to(() => CreateFirstServiceScreen());
-                                } else {
-                                  Get.snackbar('Error', 'Unknown user role');
+                                  Get.offAll(UserLoginScreen());
+                                } catch (e, st) {
+                                  debugPrint(
+                                    " ❌ Error calling updateUserProfile: $e \n$st",
+                                  );
+                                  Get.snackbar(
+                                    "Error",
+                                    "Something went wrong while updating your profile. Please try again.",
+                                  );
                                 }
                               },
                               width: size.width * 0.45,

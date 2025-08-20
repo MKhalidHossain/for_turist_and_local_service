@@ -37,8 +37,8 @@ class Urls {
 
   // ................................Auth...............................with render
 
-  //static const String baseUrl = 'http://localhost:8000';
-  static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+    static const String baseUrl = 'http://10.10.5.85:5002/api/v1';
+  //static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
 
   // Auth Module
 
@@ -50,7 +50,7 @@ class Urls {
   static const String forgetPassword = '/auth/forgot-password';
   static const String resetPassword = '/auth/reset-password';
   static const String verifyCode = '/auth/verify-otp';
-  static const String logOut = '/api/v1/auth/logout';
+  static const String logOut = '/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';
 

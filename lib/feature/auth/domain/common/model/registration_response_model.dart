@@ -4,8 +4,12 @@ class RegistrationResponseModel {
   String? message;
   Data? data;
 
-  RegistrationResponseModel(
-      {this.statusCode, this.success, this.message, this.data});
+  RegistrationResponseModel({
+    this.statusCode,
+    this.success,
+    this.message,
+    this.data,
+  });
 
   RegistrationResponseModel.fromJson(Map<String, dynamic> json) {
     statusCode = json['statusCode'];

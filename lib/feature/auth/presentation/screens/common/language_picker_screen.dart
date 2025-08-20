@@ -173,8 +173,10 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
                 onPressed:
                     selectedLanguages.isNotEmpty
                         ? () {
-                          UserProfileService.instance.profile.languages =
-                              selectedLanguages.toList();
+                          final model = UserProfileService.instance.profile;
+
+                          
+                          model.languages = selectedLanguages.toList();
 
                           Navigator.pop(context, selectedLanguages.toList());
                           print(UserProfileService.instance.profile.languages);

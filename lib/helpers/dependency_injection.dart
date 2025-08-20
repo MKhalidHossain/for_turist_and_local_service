@@ -58,7 +58,6 @@ Future<void> initDI() async {
 
   //
 
-  Get.lazyPut(() => ProfileRepository(Get.find(), prefs));
   ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
     apiClient,
     prefs,

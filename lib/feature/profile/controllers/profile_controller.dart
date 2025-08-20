@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/constants/urls.dart';
@@ -9,20 +9,28 @@ import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.d
 import '../../../helpers/remote/data/api_client.dart';
 import '../domain/model/update_profile_response_model.dart';
 import '../services/profile_service_interface.dart';
-import 'package:http/http.dart' as http;
 
 class ProfileController extends GetxController implements GetxService {
   // ProfileController() {
   //   print("i am a constatore");
   //   getApicall();
   // }
+
+  // @override
+  // void onInit() async {
+  //   super.onInit();
+  //   await getUserProfile();
+  // }
+
   final ProfileServiceInterface profileServiceInterface;
 
   ProfileController(this.profileServiceInterface);
 
-  late GetProfileResponseModel getProfileResponseModel;
-  late UpdateProfileResponseModel updateProfileResponseModel;
+  GetProfileResponseModel? getProfileResponseModel = GetProfileResponseModel();
+  UpdateProfileResponseModel updateProfileResponseModel =
+      UpdateProfileResponseModel();
 
+  String? userRole;
   bool isLoading = false;
   XFile? _pickedProfileFile;
   XFile? get pickedProfileFile => _pickedProfileFile;
@@ -63,18 +71,41 @@ class ProfileController extends GetxController implements GetxService {
     update();
   }
 
+  Future<void> getUserRole() async {
+    await getUserProfile();
+    userRole = getProfileResponseModel?.data?.role ?? '';
+    //debugPrint('Loaded User Role: ${userRole}');
+    debugPrint(
+      'Loaded User Role: $userRole     ============================== < from ProfileController',
+    );
+  }
+
   Future<void> getUserProfile() async {
     try {
       isLoading = true;
       update();
 
       final response = await profileServiceInterface.getProfile();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
       if (response.statusCode == 200) {
         print("✅ Profile fetched successfully\n");
         getProfileResponseModel = GetProfileResponseModel.fromJson(
           response.body,
         );
         print("✅ Profile fetched successfully\n");
+      } else if (response.statusCode == 401) {
+        // Handle unauthorized access, maybe redirect to login
+        print(
+          "⚠️ Unauthorized access. Please log in again. need to check access token\n",
+        );
+      } else if (response.statusCode == 403) {
+        // Handle forbidden access
+        print(
+          "⚠️ Forbidden access. You do not have permission to view this profile.\n",
+        );
       } else {
         print("❌ Failed to fetch profile: ${response.statusCode}\n");
       }
@@ -122,11 +153,18 @@ class ProfileController extends GetxController implements GetxService {
     required String nationality,
     required String description,
     List<String>? languages,
-    required XFile profileImage // Store as a File
+    required XFile profileImage, // Store as a File
   }) async {
     try {
       isLoading = true;
       update();
+
+      debugPrint(
+        "Updating profile with image: ${profileImage.path} \n "
+        "First Name: $firstName, Last Name: $lastName, "
+        "Age: $age, Gender: $gender, Nationality: $nationality, "
+        "Description: $description, Languages: $languages, Profile Image: ${profileImage.path}",
+      );
 
       final response = await profileServiceInterface.updateProfile(
         firstName: firstName,
@@ -138,6 +176,8 @@ class ProfileController extends GetxController implements GetxService {
         languages: languages,
         profileImage: profileImage,
       );
+
+      debugPrint("Status Code: ${response.statusCode}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         updateProfileResponseModel = UpdateProfileResponseModel.fromJson(

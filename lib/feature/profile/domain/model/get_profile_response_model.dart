@@ -1,12 +1,20 @@
+import 'package:flutter/material.dart';
+
 class GetProfileResponseModel {
   int? statusCode;
   bool? success;
   String? message;
   Data? data;
 
-  GetProfileResponseModel({this.statusCode, this.success, this.message, this.data});
+  GetProfileResponseModel({
+    this.statusCode,
+    this.success,
+    this.message,
+    this.data,
+  });
 
   GetProfileResponseModel.fromJson(Map<String, dynamic> json) {
+    debugPrint("Parsing GetProfileResponseModel from JSON: ${json['data']}");
     statusCode = json['statusCode'];
     success = json['success'];
     message = json['message'];
@@ -42,24 +50,26 @@ class Data {
   String? nationality;
   String? profileImage;
 
-  Data(
-      {this.sId,
-      this.email,
-      this.languages,
-      this.registrationDate,
-      this.ratings,
-      this.trips,
-      this.iV,
-      this.role,
-      this.age,
-      this.description,
-      this.firstName,
-      this.gender,
-      this.lastName,
-      this.nationality,
-      this.profileImage});
+  Data({
+    this.sId,
+    this.email,
+    this.languages,
+    this.registrationDate,
+    this.ratings,
+    this.trips,
+    this.iV,
+    this.role,
+    this.age,
+    this.description,
+    this.firstName,
+    this.gender,
+    this.lastName,
+    this.nationality,
+    this.profileImage,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
+    debugPrint("Parsing GetProfileResponseModel from JSON 2: ${json['profileImage']}");
     sId = json['_id'];
     email = json['email'];
     languages = json['languages'].cast<String>();
