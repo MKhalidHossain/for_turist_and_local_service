@@ -246,7 +246,7 @@ class AuthController extends GetxController implements GetxService {
         debugPrint(
           'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
         );
-        Get.offAll(() => BottomNavbar());
+        Get.offAll(() => BottomNavbar(userRole: userRole,));
       } else if (userRole.toString().toLowerCase() == 'local') {
         Get.offAll(() => CreateFirstServiceScreen());
       } else {
@@ -580,7 +580,7 @@ class AuthController extends GetxController implements GetxService {
         showCustomSnackBar('You have successfully selected your role as $role');
 
         // Navigate to next screen
-        Get.to(LanguagePickerScreen());
+        Get.to(LanguagePickerScreen(userRole: role));
         // Get.to(VerifyOtpScreen(role: role));
       } else if (response != null) {
         showCustomSnackBar(

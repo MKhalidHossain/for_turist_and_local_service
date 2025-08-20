@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 
 import '../../../../../core/constants/app_colors.dart';
@@ -15,6 +14,9 @@ import '../../../../offer/presentation/screens/create_first_service_screen.dart'
 import '../../../../profile/controllers/profile_controller.dart';
 
 class UploadProfilePicture extends StatefulWidget {
+  final String? userRole;
+
+  const UploadProfilePicture({super.key, required this.userRole});
   @override
   State<UploadProfilePicture> createState() => _UploadProfilePictureState();
 }
@@ -218,7 +220,7 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 onPressed: () {
                                   if (userRole == 'Tourist') {
                                     Get.to(
-                                      () => BottomNavbar(),
+                                      () => BottomNavbar(userRole: userRole,),
                                     ); // replace with your tourist screen
                                   } else if (userRole == 'Local') {
                                     Get.to(
@@ -294,6 +296,7 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                     firstName: model.firstName ?? '',
                                     lastName: model.lastName ?? '',
                                     age: model.age ?? 0,
+                                    userRole: widget.userRole,
                                     gender: model.gender ?? '',
                                     nationality: model.nationality ?? '',
                                     description: model.description ?? '',
@@ -303,7 +306,7 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                   );
                                   // Navigate based on userRole
 
-                                  Get.offAll(UserLoginScreen());
+                                  // Get.offAll(UserLoginScreen());
                                 } catch (e, st) {
                                   debugPrint(
                                     " ❌ Error calling updateUserProfile: $e \n$st",

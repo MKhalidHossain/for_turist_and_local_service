@@ -5,6 +5,7 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/offer/presentation/screens/category_selection_screen.dart';
 
 class CreateFirstServiceScreen extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -6,7 +6,10 @@ import '../../../../../core/widgets/choose_country/data/countries.dart';
 import '../../../domain/common/singleton/user_profile_service.dart';
 
 class LanguagePickerScreen extends StatefulWidget {
-  const LanguagePickerScreen({super.key});
+  final String? userRole;
+
+  const LanguagePickerScreen({super.key,required this.userRole});
+  
 
   @override
   State<LanguagePickerScreen> createState() => _LanguagePickerScreenState();
@@ -180,7 +183,7 @@ class _LanguagePickerScreenState extends State<LanguagePickerScreen> {
 
                           Navigator.pop(context, selectedLanguages.toList());
                           print(UserProfileService.instance.profile.languages);
-                          Get.to(PersonalInformetionScreen());
+                          Get.to(PersonalInformetionScreen(userRole: widget.userRole,));
                         }
                         : null,
 

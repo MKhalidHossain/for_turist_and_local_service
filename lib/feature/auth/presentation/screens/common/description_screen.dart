@@ -9,7 +9,10 @@ import '../../../../../core/widgets/choose_country/data/countries.dart';
 import 'upload_profile_picture.dart';
 
 class DescriptionScreen extends StatefulWidget {
-  const DescriptionScreen({super.key});
+  final String? userRole;
+
+  const DescriptionScreen({super.key,required this.userRole});
+
 
   @override
   State<DescriptionScreen> createState() => _DescriptionScreenState();
@@ -92,7 +95,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                             controller: _descriptionController,
                             focusNode: _descriptionFocus,
                             keyboardType: TextInputType.multiline,
-                            maxLines: null,
+                            maxLines: 10,
                             minLines: 8,
                             maxLength: 300,
                             buildCounter: (
@@ -186,7 +189,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                       '${UserProfileService.instance.profile.description}',
                 );
                 await Future.delayed(Duration(seconds: 1));
-                Get.to(UploadProfilePicture());
+                Get.to(UploadProfilePicture(userRole: widget.userRole,));
               }
             },
             text: "Continue",
