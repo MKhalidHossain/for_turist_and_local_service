@@ -17,6 +17,8 @@ class AuthRepository implements AuthRepositoryInterface {
       "password": password,
       "confirmPassword": confirmPassword,
     });
+
+
   }
 
   @override
@@ -72,13 +74,16 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future<void> logout() async {
+  Future logout() async {
     await sharedPreferences.remove('IsLoggedIn');
+    apiClient.token = '';
+    return await apiClient.postData(Urls.logOut, {});
   }
 
   //@override
   String? getToken() {
-    return sharedPreferences.getString('IsLoggedIn');
+    // return sharedPreferences.getString('IsLoggedIn');
+    return sharedPreferences.getString(AppConstants.token);
   }
 
   // // Try to update the code for saving user token and refresh token
@@ -125,7 +130,7 @@ class AuthRepository implements AuthRepositoryInterface {
     );
     apiClient.token = token;
     apiClient.updateHeader(token);
-    await sharedPreferences.setString(AppConstants.refreshToken, token);
+    await sharedPreferences.setString(AppConstants.refreshToken, refreshToken);
     return await sharedPreferences.setString(AppConstants.token, token);
   }
 
@@ -155,7 +160,7 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   String getUserToken() {
-    throw UnimplementedError();
+    return sharedPreferences.getString(AppConstants.token) ?? '';
   }
 
   @override
@@ -187,12 +192,13 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future updateAccessAndRefreshToken() {
-    throw UnimplementedError();
+  Future updateAccessAndRefreshToken() async {
+    return await apiClient.postData(Urls.refreshAccessToken, {}) ?? ();
   }
 
   @override
-  Future chooseRole(String role) async {
+  Future chooseRole(String role, String token) async {
+    apiClient.updateHeader(token);
     return await apiClient.postData(Urls.chooseRole, {"role": role});
   }
 }

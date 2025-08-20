@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kobeur/utils/app_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/urls.dart';
 
@@ -31,18 +32,27 @@ class ProfileRepository implements ProfileRepositoryInterface {
   }) async {
     debugPrint("Updating profile with image: ${profileImage?.path}");
 
-    return await apiClient.patchData(Urls.updateProfile, {
-      "firstName": firstName,
-      "lastName": lastName,
-      "age": age,
-      "gender": gender.toLowerCase(),
-      "nationality": nationality,
-      "languages": languages,
-      "description": description,
+    return await apiClient.patchData(
+      Urls.updateProfile,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'Bearer ${sharedPreferences.getString(AppConstants.token) ?? ''}',
+      },
 
-      "profileImage":
-          await profileImage.path, // Convert XFile to bytes if not null
-    });
+      {
+        "firstName": firstName,
+        "lastName": lastName,
+        "age": age,
+        "gender": gender.toLowerCase(),
+        "nationality": nationality,
+        "languages": languages,
+        "description": description,
+
+        "profileImage":
+            await profileImage.path, // Convert XFile to bytes if not null
+      },
+    );
   }
 
   @override
