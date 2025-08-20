@@ -72,10 +72,12 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   Future<void> getUserRole() async {
-    getUserProfile();
+    await getUserProfile();
     userRole = getProfileResponseModel?.data?.role ?? '';
     //debugPrint('Loaded User Role: ${userRole}');
-    debugPrint('Loaded User Role from ProfileController: $userRole');
+    debugPrint(
+      'Loaded User Role: $userRole     ============================== < from ProfileController',
+    );
   }
 
   Future<void> getUserProfile() async {
@@ -84,12 +86,26 @@ class ProfileController extends GetxController implements GetxService {
       update();
 
       final response = await profileServiceInterface.getProfile();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
       if (response.statusCode == 200) {
         print("✅ Profile fetched successfully\n");
         getProfileResponseModel = GetProfileResponseModel.fromJson(
           response.body,
         );
         print("✅ Profile fetched successfully\n");
+      } else if (response.statusCode == 401) {
+        // Handle unauthorized access, maybe redirect to login
+        print(
+          "⚠️ Unauthorized access. Please log in again. need to check access token\n",
+        );
+      } else if (response.statusCode == 403) {
+        // Handle forbidden access
+        print(
+          "⚠️ Forbidden access. You do not have permission to view this profile.\n",
+        );
       } else {
         print("❌ Failed to fetch profile: ${response.statusCode}\n");
       }
@@ -143,12 +159,12 @@ class ProfileController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      // debugPrint(
-      //   "Updating profile with image: ${profileImage.path} \n "
-      //   "First Name: $firstName, Last Name: $lastName, "
-      //   "Age: $age, Gender: $gender, Nationality: $nationality, "
-      //   "Description: $description, Languages: $languages, Profile Image: ${profileImage.path}",
-      // );
+      debugPrint(
+        "Updating profile with image: ${profileImage.path} \n "
+        "First Name: $firstName, Last Name: $lastName, "
+        "Age: $age, Gender: $gender, Nationality: $nationality, "
+        "Description: $description, Languages: $languages, Profile Image: ${profileImage.path}",
+      );
 
       final response = await profileServiceInterface.updateProfile(
         firstName: firstName,
@@ -160,6 +176,8 @@ class ProfileController extends GetxController implements GetxService {
         languages: languages,
         profileImage: profileImage,
       );
+
+      debugPrint("Status Code: ${response.statusCode}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         updateProfileResponseModel = UpdateProfileResponseModel.fromJson(

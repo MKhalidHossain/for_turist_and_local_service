@@ -6,7 +6,6 @@ import 'package:kobeur/feature/auth/presentation/screens/common/user_login_scree
 import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/services/profile_storage_service.dart';
 import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
 import '../../../helpers/remote/data/api_client.dart';
@@ -174,13 +173,15 @@ class AuthController extends GetxController implements GetxService {
           "REGISTER API BODY: {email: $email, password: $password, confirmPassword: $confirmPassword}",
         );
 
+        debugPrint("Register tokens - Access: $token, Refresh: $refreshToken");
+
         await setUserToken(token, refreshToken);
 
-        Get.offAll(() => TouristORLocalScreen());
+        Get.off(() => TouristORLocalScreen());
         showCustomSnackBar('Welcome you have successfully Registered');
       } else {
         _isLoading = false;
-        // ApiChecker.checkApi(response);
+        ApiChecker.checkApi(response);
         print(
           ' ❌ Registration failed: ${response?.statusCode} ${response?.body} ',
         );
@@ -210,25 +211,32 @@ class AuthController extends GetxController implements GetxService {
     if (response!.statusCode == 200) {
       Map map = response.body;
       _loadUserRole();
-      String token = '';
-      String refreshToken = '';
 
-      print(token.toString());
+      //  final String refreshToken = '';
+
+      // print(token.toString());
 
       logInResponseModel = LogInResponseModel.fromJson(response.body);
 
-      refreshToken = logInResponseModel!.data!.refreshToken!;
-      token = logInResponseModel!.data!.accessToken!;
-      print(
-        'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
-      );
-      print('refreshToken $refreshToken NOW Iwalker');
-      print(
-        'User Token $token  ================================== from comtroller ',
-      );
-      setUserToken(token, refreshToken);
+      final String refreshToken = logInResponseModel!.data!.refreshToken!;
+      final String token = logInResponseModel!.data!.accessToken!;
+
+      // print(
+      //   'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
+      // );
+      // print('refreshToken $refreshToken NOW Iwalker');
+      // print(
+      //   'User Token $token  ================================== from comtroller ',
+      // );
+      await setUserToken(token, refreshToken);
+
+      debugPrint("Login tokens - Access: $token, Refresh: $refreshToken");
 
       await _loadUserRole();
+
+      debugPrint("✅ Access Token: $token");
+      debugPrint("✅ Refresh Token: $refreshToken");
+      debugPrint("✅ User Role: $userRole");
 
       debugPrint(
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
@@ -252,8 +260,7 @@ class AuthController extends GetxController implements GetxService {
 
       //Get.offAll(BottomNavbar());
 
-      showCustomSnackBar('Welcome you have successfully Logged In');
-
+      showCustomSnackBar('Welcome, you have successfully Logged In');
       _isLoading = false;
     } else if (response.statusCode == 202) {
       if (response.body['data']['is_phone_verified'] == 0) {}
@@ -532,7 +539,7 @@ class AuthController extends GetxController implements GetxService {
   }
 
   Future<void> setUserToken(String token, String refreshToken) async {
-    authServiceInterface.saveUserToken(token, refreshToken);
+    await authServiceInterface.saveUserToken(token, refreshToken);
   }
 
   Future<bool> getFirsTimeInstall() async {
@@ -551,21 +558,63 @@ class AuthController extends GetxController implements GetxService {
   Future<void> chooseRole(String role) async {
     _isLoading = true;
     update();
-    Response? response = await authServiceInterface.chooseRole(role);
-    if (response!.statusCode == 200) {
-      showCustomSnackBar('You have successfully selected your role as $role');
-      Get.to(LanguagePickerScreen());
 
-      //Get.to(VerifyOtpScreen(role: role));
-    } else {
-      showCustomSnackBar(
-        response.body['message'] ?? 'Something went wrong',
-        isError: true,
-      );
-      ApiChecker.checkApi(response);
+    try {
+      // 🔑 Fetch token internally so UI doesn't need to pass it
+      final token = await getUserToken();
+
+      if (token == null || token.isEmpty) {
+        showCustomSnackBar(
+          "User not authenticated. Please log in again.",
+          isError: true,
+        );
+        _isLoading = false;
+        update();
+        return;
+      }
+
+      // Call API with role + token
+      Response? response = await authServiceInterface.chooseRole(role, token);
+
+      if (response != null && response.statusCode == 200) {
+        showCustomSnackBar('You have successfully selected your role as $role');
+
+        // Navigate to next screen
+        Get.to(LanguagePickerScreen());
+        // Get.to(VerifyOtpScreen(role: role));
+      } else if (response != null) {
+        showCustomSnackBar(
+          response?.body['message'] ?? 'Something went wrong',
+          isError: true,
+        );
+        ApiChecker.checkApi(response);
+      }
+    } catch (e) {
+      showCustomSnackBar("Unexpected error: $e", isError: true);
     }
 
     _isLoading = false;
     update();
   }
+
+  // Future<void> chooseRole(String role) async {
+  //   _isLoading = true;
+  //   update();
+  //   Response? response = await authServiceInterface.chooseRole(role);
+  //   if (response!.statusCode == 200) {
+  //     showCustomSnackBar('You have successfully selected your role as $role');
+  //     Get.to(LanguagePickerScreen());
+
+  //     //Get.to(VerifyOtpScreen(role: role));
+  //   } else {
+  //     showCustomSnackBar(
+  //       response.body['message'] ?? 'Something went wrong',
+  //       isError: true,
+  //     );
+  //     ApiChecker.checkApi(response);
+  //   }
+
+  //   _isLoading = false;
+  //   update();
+  // }
 }

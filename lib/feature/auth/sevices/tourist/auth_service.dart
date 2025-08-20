@@ -105,8 +105,7 @@ class AuthService implements AuthServiceInterface {
 
   @override
   String getUserToken() {
-    // TODO: implement getUserToken
-    throw UnimplementedError();
+   return authRepositoryInterface.getUserToken();
   }
 
   @override
@@ -133,7 +132,7 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future chooseRole(String role) async {
-    return await authRepositoryInterface.chooseRole(role);
+  Future chooseRole(String role, String token ) async {
+    return await authRepositoryInterface.chooseRole(role , token);
   }
 }

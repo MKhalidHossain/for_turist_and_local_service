@@ -38,12 +38,15 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
         TextEditingController()..addListener(_onFieldChanged);
     super.initState();
 
+    // profileController.getUserRole();
+
     isLoading = false;
 
     // _loadUserProfile(); // fetch profile
   }
 
   // void _loadUserProfile() async {
+  //   isLoading = true;
   //   await profileController.getUserProfile();
   //   userRole = profileController.getProfileResponseModel?.data?.role;
   //   print('User Role: $userRole');
@@ -259,11 +262,11 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                   return;
                                 }
 
-                                // Store picked image in singleton
-                                UserProfileService
-                                    .instance
-                                    .profile
-                                    .profileImage = _imageFile;
+                                // // Store picked image in singleton
+                                // UserProfileService
+                                //     .instance
+                                //     .profile
+                                //     .profileImage = _imageFile;
 
                                 // Get other data from API model
                                 final model =
@@ -276,7 +279,7 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 if (model == null) {
                                   Get.snackbar(
                                     'Error',
-                                    'Failed to load profile data',
+                                    'Profile data is missing,   Failed to load profile data\nPlease fill in your profile details first.',
                                   );
                                   return;
                                 }
@@ -286,27 +289,30 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 // otehrwise show snackbar and got to filling data screen
 
                                 // Call updateProfile with both API data + new image
-                                await profileController.updateUserProfile(
-                                  firstName: model.firstName ?? '',
-                                  lastName: model.lastName ?? '',
-                                  age: model.age ?? 0,
-                                  gender: model.gender ?? '',
-                                  nationality: model.nationality ?? '',
-                                  description: model.description ?? '',
-                                  languages: model.languages ?? [],
+                                try {
+                                  await profileController.updateUserProfile(
+                                    firstName: model.firstName ?? '',
+                                    lastName: model.lastName ?? '',
+                                    age: model.age ?? 0,
+                                    gender: model.gender ?? '',
+                                    nationality: model.nationality ?? '',
+                                    description: model.description ?? '',
+                                    languages: model.languages ?? [],
 
-                                  profileImage: _imageFile ?? XFile(''),
-                                );
-                                // Navigate based on userRole
+                                    profileImage: _imageFile ?? XFile(''),
+                                  );
+                                  // Navigate based on userRole
 
-                                Get.to(UserLoginScreen());
-                                // if (userRole == 'Tourist') {
-                                //   Get.to(() => BottomNavbar());
-                                // } else if (userRole == 'Local') {
-                                //   Get.to(() => CreateFirstServiceScreen());
-                                // } else {
-                                //   Get.snackbar('Error', 'Unknown user role');
-                                // }
+                                  Get.offAll(UserLoginScreen());
+                                } catch (e, st) {
+                                  debugPrint(
+                                    " ❌ Error calling updateUserProfile: $e \n$st",
+                                  );
+                                  Get.snackbar(
+                                    "Error",
+                                    "Something went wrong while updating your profile. Please try again.",
+                                  );
+                                }
                               },
                               width: size.width * 0.45,
                               text: "Continue",

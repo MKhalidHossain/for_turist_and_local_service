@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class UpdateProfileResponseModel {
   int? statusCode;
   bool? success;
@@ -7,6 +9,8 @@ class UpdateProfileResponseModel {
   UpdateProfileResponseModel({this.statusCode, this.success, this.message, this.data});
 
   UpdateProfileResponseModel.fromJson(Map<String, dynamic> json) {
+    debugPrint("UpdateProfileResponseModel.fromJson: $json");
+
     statusCode = json['statusCode'];
     success = json['success'];
     message = json['message'];

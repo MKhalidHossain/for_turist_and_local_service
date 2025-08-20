@@ -17,6 +17,8 @@ class AuthRepository implements AuthRepositoryInterface {
       "password": password,
       "confirmPassword": confirmPassword,
     });
+
+
   }
 
   @override
@@ -80,7 +82,7 @@ class AuthRepository implements AuthRepositoryInterface {
 
   //@override
   String? getToken() {
-   // return sharedPreferences.getString('IsLoggedIn');
+    // return sharedPreferences.getString('IsLoggedIn');
     return sharedPreferences.getString(AppConstants.token);
   }
 
@@ -158,7 +160,7 @@ class AuthRepository implements AuthRepositoryInterface {
 
   @override
   String getUserToken() {
-    throw UnimplementedError();
+    return sharedPreferences.getString(AppConstants.token) ?? '';
   }
 
   @override
@@ -190,12 +192,13 @@ class AuthRepository implements AuthRepositoryInterface {
   }
 
   @override
-  Future updateAccessAndRefreshToken() {
-    throw UnimplementedError();
+  Future updateAccessAndRefreshToken() async {
+    return await apiClient.postData(Urls.refreshAccessToken, {}) ?? ();
   }
 
   @override
-  Future chooseRole(String role) async {
+  Future chooseRole(String role, String token) async {
+    apiClient.updateHeader(token);
     return await apiClient.postData(Urls.chooseRole, {"role": role});
   }
 }
