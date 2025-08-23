@@ -6,10 +6,7 @@ import '../widgets/app_scaffold.dart';
 //import '../widgets/app_scaffold.dart';
 
 class SplashScreen extends StatefulWidget {
-  // final Widget nextScreen;
-
   const SplashScreen({super.key,});
-
 
   @override
   State<SplashScreen> createState() => SplashScreenState();
@@ -20,7 +17,6 @@ class SplashScreenState extends State<SplashScreen> {
     void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
-      // Get.offAll(widget.nextScreen);
     });
   }
 
@@ -30,7 +26,6 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return AppScaffold(
       body: Column(
         children: [

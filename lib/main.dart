@@ -87,7 +87,7 @@ class _HomeState extends State<Home> {
         if (isFirstTime!) {
           const SplashScreen();
         } else if (authController.isLoggedIn()) {
-          return const BottomNavbar();
+          return  BottomNavbar(userRole: authController.userRole ?? 'local');
         }
         return UserLoginScreen();
       },
