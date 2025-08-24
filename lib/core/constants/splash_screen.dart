@@ -1,27 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
+import 'package:kobeur/feature/home/presentation/screens/tourist/home_screen.dart';
+import 'package:kobeur/main.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_scaffold.dart';
 //import '../widgets/app_scaffold.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key,});
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => SplashScreenState();
 }
 
 class SplashScreenState extends State<SplashScreen> {
-
-    void initState() {
+  void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 3), () {
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) =>  Home()),
+      );
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,3 +57,62 @@ class SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:kobeur/core/extensions/text_extensions.dart';
+// import '../widgets/app_logo.dart';
+// import '../widgets/app_scaffold.dart';
+
+// class SplashScreen extends StatefulWidget {
+//   const SplashScreen({super.key,});
+
+//   @override
+//   State<SplashScreen> createState() => SplashScreenState();
+// }
+
+// class SplashScreenState extends State<SplashScreen> {
+
+//     void initState() {
+//     super.initState();
+//     Future.delayed(const Duration(seconds: 3), () {
+
+//     });
+//   }
+
+
+
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.of(context).size;
+//     return AppScaffold(
+//       body: Column(
+//         children: [
+//           ConstrainedBox(
+//             constraints: BoxConstraints(minHeight: size.height),
+//             child: IntrinsicHeight(
+//               child: Center(
+//                 child: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   mainAxisAlignment:
+//                       MainAxisAlignment.center, // 🔥 Center vertically
+//                   crossAxisAlignment: CrossAxisAlignment.center,
+//                   children: [
+//                     const SizedBox(height: 40),
+//                     AppLogo(),
+//                     // const SizedBox(height: 32),
+//                     "Explore like a local".text20Black(),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

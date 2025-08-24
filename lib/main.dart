@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/constants/splash_screen.dart';
-import 'package:kobeur/core/services/profile_storage_service.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/tourist_or_local_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'feature/offer/presentation/screens/create_first_service_screen.dart';
+
 import 'feature/profile/controllers/profile_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDI();
   //final authController = Get.find<AuthController>();
+  // final authController = Get.find<AuthController>();
   runApp(MyApp());
 }
 
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffF5F5F5)),
       ),
-      home: Home(),
+      home:  const SplashScreen(),
     );
   }
 }
@@ -43,8 +42,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  //final profileController = Get.find<ProfileController>();
-  //final authController = Get.find<AuthController>();
+  // final profileController = Get.find<ProfileController>();
+  final authController = Get.find<AuthController>();
 
   bool isLoading = true;
   bool? isFirstTime;
@@ -85,7 +84,7 @@ class _HomeState extends State<Home> {
     return GetBuilder<AuthController>(
       builder: (authController) {
         if (isFirstTime!) {
-          const SplashScreen();
+          return SplashScreen();
         } else if (authController.isLoggedIn()) {
           return  BottomNavbar(userRole: authController.userRole ?? 'local');
         }

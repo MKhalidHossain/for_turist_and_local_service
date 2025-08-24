@@ -1,11 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kobeur/core/constants/urls.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
 import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.dart';
 import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
@@ -16,12 +13,15 @@ import '../domain/model/update_profile_response_model.dart';
 import '../services/profile_service_interface.dart';
 
 class ProfileController extends GetxController implements GetxService {
+  
   final authController = Get.find<AuthController>();
+
+
 
   @override
   void onInit() async {
     super.onInit();
-    // await getUserProfile();
+    await getUserProfile();
     
     getUserRole();
     _getSafeToken();
