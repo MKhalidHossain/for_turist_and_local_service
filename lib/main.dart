@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffF5F5F5)),
       ),
-      home:  const SplashScreen(),
+      home: const SplashScreen(),
     );
   }
 }
@@ -85,7 +85,7 @@ class _HomeState extends State<Home> {
         if (isFirstTime!) {
           return SplashScreen();
         } else if (authController.isLoggedIn()) {
-          return  BottomNavbar(userRole: authController.userRole ?? 'local');
+          return BottomNavbar(userRole: authController.userRole ?? 'local');
         }
         return UserLoginScreen();
       },

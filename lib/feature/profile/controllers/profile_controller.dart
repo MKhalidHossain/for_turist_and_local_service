@@ -227,10 +227,12 @@ class ProfileController extends GetxController implements GetxService {
           }    
         }
       } else {
-        print("❌ Failed to update profile: ${response.statusCode}\n");
+        debugPrint("❌ Failed to update profile: ${response.statusCode}");
+      Get.snackbar('Error', 'Failed to update profile: ${response.body['message']}');
       }
-    } catch (e) {
-      print("⚠️ Error updating profile: $e\n");
+    } catch (e ) {
+      print("⚠️ Error updating profile: $e\n ");
+      Get.snackbar('Exception', 'Error updating profile: $e');
     } finally {
       isLoading = false;
       update();
