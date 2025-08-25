@@ -1,26 +1,30 @@
-import 'dart:io';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:kobeur/core/constants/urls.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
 import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.dart';
 import '../../../helpers/remote/data/api_client.dart';
+import '../../../navigation/bottom_navigationber_screen.dart';
+import '../../../utils/display_helper.dart';
+import '../../auth/presentation/screens/common/user_login_screen.dart';
+import '../../offer/presentation/screens/create_first_service_screen.dart';
 import '../domain/model/update_profile_response_model.dart';
 import '../services/profile_service_interface.dart';
 
 class ProfileController extends GetxController implements GetxService {
-  // ProfileController() {
-  //   print("i am a constatore");
-  //   getApicall();
-  // }
+  
+  final authController = Get.find<AuthController>();
 
-  // @override
-  // void onInit() async {
-  //   super.onInit();
-  //   await getUserProfile();
-  // }
+
+
+  @override
+  void onInit() async {
+    super.onInit();
+    await getUserProfile();
+    
+    getUserRole();
+    _getSafeToken();
+  }
 
   final ProfileServiceInterface profileServiceInterface;
 
@@ -30,7 +34,9 @@ class ProfileController extends GetxController implements GetxService {
   UpdateProfileResponseModel updateProfileResponseModel =
       UpdateProfileResponseModel();
 
+
   String? userRole;
+  bool isValidUser=false;
   bool isLoading = false;
   XFile? _pickedProfileFile;
   XFile? get pickedProfileFile => _pickedProfileFile;
@@ -40,6 +46,23 @@ class ProfileController extends GetxController implements GetxService {
   List<XFile> identityImages = [];
 
   List<MultipartBody> multipartList = [];
+
+  /// ✅ Common method to get token safely
+  Future<String?> _getSafeToken() async {
+    final token = await authController.getUserToken();
+    if (token == null || token.isEmpty) {
+      print("⚠️ No token found. Redirecting to login...");
+      SnackBar(content: Text('User not authenticated. Please log in again.'));
+      await authController.logOut();
+      Get.offAll(() => UserLoginScreen());
+      return null;
+    }else{
+     
+      isValidUser = true;
+      debugPrint("✅ User token retrieved successfully: $token");
+    }
+    return token;
+  }
 
   // void pickProfileImage() async {
   //   _pickedProfileFile = await ImagePicker().pickImage(
@@ -74,7 +97,6 @@ class ProfileController extends GetxController implements GetxService {
   Future<void> getUserRole() async {
     await getUserProfile();
     userRole = getProfileResponseModel?.data?.role ?? '';
-    //debugPrint('Loaded User Role: ${userRole}');
     debugPrint(
       'Loaded User Role: $userRole     ============================== < from ProfileController',
     );
@@ -149,6 +171,7 @@ class ProfileController extends GetxController implements GetxService {
     required String firstName,
     required String lastName,
     required int age,
+    required userRole,
     required String gender,
     required String nationality,
     required String description,
@@ -184,11 +207,30 @@ class ProfileController extends GetxController implements GetxService {
           response.body,
         );
         print("✅ Profile updated successfully\n");
+        if(isValidUser && userRole != null && userRole!.isNotEmpty){
+        // for Nevigation to Tourist or Local
+          if (userRole.toString().toLowerCase() == 'tourist') {
+            debugPrint(
+              'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
+            );
+            Get.offAll(() => BottomNavbar(userRole: userRole,));
+          } else if (userRole.toString().toLowerCase() == 'local') {
+            Get.offAll(() => CreateFirstServiceScreen());
+          } else {
+            showCustomSnackBar(
+              'You have not selected your role yet, please select your role',
+              isError: true,
+            );
+            Get.offAll(() => UserLoginScreen());
+          }    
+        }
       } else {
-        print("❌ Failed to update profile: ${response.statusCode}\n");
+        debugPrint("❌ Failed to update profile: ${response.statusCode}");
+      Get.snackbar('Error', 'Failed to update profile: ${response.body['message']}');
       }
-    } catch (e) {
-      print("⚠️ Error updating profile: $e\n");
+    } catch (e ) {
+      print("⚠️ Error updating profile: $e\n ");
+      Get.snackbar('Exception', 'Error updating profile: $e');
     } finally {
       isLoading = false;
       update();

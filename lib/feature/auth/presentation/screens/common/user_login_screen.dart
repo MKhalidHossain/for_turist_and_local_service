@@ -11,7 +11,6 @@ import '../../../../../core/widgets/app_logo.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/widgets/or_divider_with_circle_widget.dart';
 import '../../../../../helpers/custom_snackbar.dart';
-import '../../../../profile/controllers/profile_controller.dart';
 import 'forgot_password_screen.dart';
 import 'user_signup_screen.dart';
 
