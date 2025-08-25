@@ -107,7 +107,7 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.person,
                 text: "Personal Information",
                 onTap: () {
-                  Get.to(PersonalInformetionScreen());
+                //  Get.to(PersonalInformetionScreen());
                 },
               ),
               _buildMenuItem(
@@ -121,7 +121,7 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.language_outlined,
                 text: "Spoken Language",
                 onTap: () {
-                  Get.to(LanguagePickerScreen());
+                //  Get.to(LanguagePickerScreen());
                 },
               ),
               _buildMenuItem(

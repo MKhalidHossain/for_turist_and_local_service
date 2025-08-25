@@ -20,6 +20,14 @@ import '../presentation/screens/common/tourist_or_local_screen.dart';
 import '../sevices/tourist/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {
+  ProfileController get profileController => Get.find<ProfileController>();
+
+  // Avoid calling Get.find in constructor or onInit
+  void someMethod() {
+    // Access ProfileController only when needed
+    print(profileController.userRole);
+  }
+
   final AuthServiceInterface authServiceInterface;
 
   AuthController({required this.authServiceInterface});
@@ -40,7 +48,7 @@ class AuthController extends GetxController implements GetxService {
   String countryDialCode = '+880';
   String email = '';
 
-  bool isLoadingforProfile = true;
+  bool isLoadingforProfile = false;
   bool? isFirstTime;
   String? userRole;
   bool isLoggedInforProfile = false;
@@ -73,7 +81,6 @@ class AuthController extends GetxController implements GetxService {
   // VerifyCodeResponseModel? verifyCodeResponseModel;
   // ChangePasswordResponseModel? changePasswordResponseModel;
   // ForgetPasswordResponseModel? forgetPasswordResponseModel;
-  final profileController = Get.find<ProfileController>();
   // Future<void> _initApp() async {
   //   isLoadingforProfile = true;
 
@@ -101,6 +108,7 @@ class AuthController extends GetxController implements GetxService {
     await profileController.getUserProfile();
     userRole = profileController.getProfileResponseModel?.data?.role;
     debugPrint('Loaded User Role: $userRole');
+    update();
   }
 
   void addImageAndRemoveMultiParseData() {
@@ -182,8 +190,20 @@ class AuthController extends GetxController implements GetxService {
       } else {
         _isLoading = false;
         ApiChecker.checkApi(response);
+        if (response.statusCode == 400) {
+          showCustomSnackBar(
+            response.body['message'] ?? 'Something went wrong',
+            isError: true,
+          );
+        } else {
+          showCustomSnackBar(
+            response.body['message'] ??
+                "Registration failed. Please try again.",
+            isError: true,
+          );
+        }
         print(
-          ' ❌ Registration failed: ${response?.statusCode} ${response?.body} ',
+          ' ❌ Registration failed: ${response.statusCode} ${response.body} ',
         );
       }
       update();
@@ -210,7 +230,7 @@ class AuthController extends GetxController implements GetxService {
     }
     if (response!.statusCode == 200) {
       Map map = response.body;
-      _loadUserRole();
+      // _loadUserRole();
 
       //  final String refreshToken = '';
 
@@ -230,7 +250,7 @@ class AuthController extends GetxController implements GetxService {
       // );
       await setUserToken(token, refreshToken);
 
-      debugPrint("Login tokens - Access: $token, Refresh: $refreshToken");
+      debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
 
       await _loadUserRole();
 
@@ -242,18 +262,26 @@ class AuthController extends GetxController implements GetxService {
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
       );
       // for Nevigation to Tourist or Local
-      if (userRole.toString().toLowerCase() == 'tourist') {
-        debugPrint(
-          'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
-        );
-        Get.offAll(() => BottomNavbar());
-      } else if (userRole.toString().toLowerCase() == 'local') {
-        Get.offAll(() => CreateFirstServiceScreen());
+      if (userRole != null && userRole!.isNotEmpty) {
+        if (userRole.toString().toLowerCase() == 'tourist') {
+          debugPrint(
+            'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
+          );
+          Get.offAll(() => BottomNavbar(userRole: userRole));
+        } else if (userRole.toString().toLowerCase() == 'local') {
+          Get.offAll(() => CreateFirstServiceScreen());
+        } else {
+          showCustomSnackBar(
+            'You have not selected your role yet, please select your role',
+            isError: true,
+          );
+        }
       } else {
         showCustomSnackBar(
           'You have not selected your role yet, please select your role',
           isError: true,
         );
+        Get.offAll(() => UserLoginScreen());
       }
 
       //Get.offAll(() => TouristORLocalScreen());
@@ -274,6 +302,11 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = false;
     update();
   }
+
+  // bool isLoggedIn() {
+  //   final prefs = SharedPreferences.getInstance();
+  //   return prefs.then((value) => value.getString(AppConstants.TOKEN) != null);
+  // }
 
   bool isLoggedIn() {
     return authServiceInterface.isLoggedIn();
@@ -309,8 +342,10 @@ class AuthController extends GetxController implements GetxService {
 
     if (isLoggedIn() == true) {
       if (response!.statusCode == 200) {
-        await preferences.setString(AppConstants.token, '');
-        await preferences.setString(AppConstants.refreshToken, '');
+        // await preferences.setString(AppConstants.token, '');
+        await preferences.remove(AppConstants.token);
+        //await preferences.setString(AppConstants.refreshToken, '');
+        await preferences.remove(AppConstants.refreshToken);
 
         showCustomSnackBar('You have logout Successfully');
         Get.offAll(() => UserLoginScreen());
@@ -580,7 +615,7 @@ class AuthController extends GetxController implements GetxService {
         showCustomSnackBar('You have successfully selected your role as $role');
 
         // Navigate to next screen
-        Get.to(LanguagePickerScreen());
+        Get.to(LanguagePickerScreen(userRole: role));
         // Get.to(VerifyOtpScreen(role: role));
       } else if (response != null) {
         showCustomSnackBar(

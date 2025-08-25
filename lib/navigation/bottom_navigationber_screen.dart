@@ -7,7 +7,9 @@ import '../feature/chat/tourist/message/presentation/screens/message_screen.dart
 import '../feature/profile/presentation/screens/profile_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
-  const BottomNavbar({super.key});
+  final String? userRole;
+  const BottomNavbar({super.key, required this.userRole});
+
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
 }

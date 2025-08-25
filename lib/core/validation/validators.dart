@@ -62,7 +62,7 @@ class Validators {
     if (requireNumbers && !RegExp(r'\d').hasMatch(value)) {
       return 'Password must contain at least one number';
     }
-    if (requireSpecialChars &&
+    if (requireSpecialChars && 
         !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
       return 'Password must contain at least one special character';
     }

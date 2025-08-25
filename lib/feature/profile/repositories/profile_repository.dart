@@ -48,7 +48,6 @@ class ProfileRepository implements ProfileRepositoryInterface {
         "nationality": nationality,
         "languages": languages,
         "description": description,
-
         "profileImage":
             await profileImage.path, // Convert XFile to bytes if not null
       },

@@ -94,7 +94,7 @@ class ServiceCompleteScreen extends StatelessWidget {
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  Get.to(BottomNavbar());
+                  Get.to(BottomNavbar(userRole: "local",));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,

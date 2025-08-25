@@ -9,7 +9,9 @@ import '../../../../../core/widgets/choose_country/data/countries.dart';
 import 'upload_profile_picture.dart';
 
 class DescriptionScreen extends StatefulWidget {
-  const DescriptionScreen({super.key});
+  final String? userRole;
+
+  const DescriptionScreen({super.key, required this.userRole});
 
   @override
   State<DescriptionScreen> createState() => _DescriptionScreenState();
@@ -19,11 +21,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
   late TextEditingController _descriptionController;
 
   final FocusNode _descriptionFocus = FocusNode();
-
-  //String? selectedGender;
-  //String? selectedNationality;
   bool isEditing = true;
-
   final _formKey = GlobalKey<FormState>();
 
   final uniqueCountryNames = countries.map((c) => c.country).toSet().toList();
@@ -32,7 +30,6 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
   void initState() {
     _descriptionController =
         TextEditingController()..addListener(_onFieldChanged);
-
     super.initState();
   }
 
@@ -43,14 +40,17 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
     super.dispose();
   }
 
-
-
   void _onFieldChanged() {
     setState(() {});
   }
 
   bool get isFormValid {
-    return Validators.name(_descriptionController.text) == null;
+    return Validators.textLength(
+          minLength: 3,
+          maxLength: 300,
+          _descriptionController.text,
+        ) ==
+        null;
   }
 
   @override
@@ -92,7 +92,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                             controller: _descriptionController,
                             focusNode: _descriptionFocus,
                             keyboardType: TextInputType.multiline,
-                            maxLines: null,
+                            maxLines: 10,
                             minLines: 8,
                             maxLength: 300,
                             buildCounter: (
@@ -186,7 +186,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                       '${UserProfileService.instance.profile.description}',
                 );
                 await Future.delayed(Duration(seconds: 1));
-                Get.to(UploadProfilePicture());
+                Get.to(UploadProfilePicture(userRole: widget.userRole));
               }
             },
             text: "Continue",

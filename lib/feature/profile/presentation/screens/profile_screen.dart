@@ -9,6 +9,7 @@ import 'package:kobeur/feature/profile/presentation/screens/common/about_app_scr
 import '../../../../core/constants/urls.dart';
 import '../../../../helpers/remote/data/api_client.dart';
 import '../../../auth/controllers/auth_controller.dart';
+import '../../domain/model/get_profile_response_model.dart';
 import '../../repositories/profile_repository.dart';
 import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
@@ -23,6 +24,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late GetProfileResponseModel getProfileResponseModel;
+
   // final profileScreenController =  Get.put(ProfileController(Get.find()));
   final profileController = Get.find<ProfileController>();
 
@@ -52,7 +55,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "My Profile Data: ${profileController.getProfileResponseModel?.data?.profileImage}",
         );
         final userProfileData = profileController.getProfileResponseModel?.data;
-        return Scaffold(
+        return profileController.isLoading ? Center(
+          child: CircularProgressIndicator(),
+        ) : Scaffold(
           backgroundColor: Colors.white,
           body: SafeArea(
             child: Padding(
