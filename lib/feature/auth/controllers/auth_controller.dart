@@ -20,15 +20,14 @@ import '../presentation/screens/common/tourist_or_local_screen.dart';
 import '../sevices/tourist/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {
-
   ProfileController get profileController => Get.find<ProfileController>();
-
 
   // Avoid calling Get.find in constructor or onInit
   void someMethod() {
     // Access ProfileController only when needed
     print(profileController.userRole);
   }
+
   final AuthServiceInterface authServiceInterface;
 
   AuthController({required this.authServiceInterface});
@@ -191,8 +190,19 @@ class AuthController extends GetxController implements GetxService {
       } else {
         _isLoading = false;
         ApiChecker.checkApi(response);
+        if (response.statusCode == 400) {
+          showCustomSnackBar(
+            response.body['message'] ?? 'Something went wrong',
+            isError: true,
+          );
+        } else {
+          showCustomSnackBar(
+            response.body['message'] ?? "Registration failed. Please try again.",
+            isError: true,
+          );
+        }
         print(
-          ' ❌ Registration failed: ${response?.statusCode} ${response?.body} ',
+          ' ❌ Registration failed: ${response.statusCode} ${response.body} ',
         );
       }
       update();
@@ -239,7 +249,7 @@ class AuthController extends GetxController implements GetxService {
       // );
       await setUserToken(token, refreshToken);
 
-      debugPrint("Login tokens - Access: $token, Refresh: $refreshToken");
+      debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
 
       await _loadUserRole();
 
@@ -296,7 +306,6 @@ class AuthController extends GetxController implements GetxService {
   //   final prefs = SharedPreferences.getInstance();
   //   return prefs.then((value) => value.getString(AppConstants.TOKEN) != null);
   // }
-
 
   bool isLoggedIn() {
     return authServiceInterface.isLoggedIn();

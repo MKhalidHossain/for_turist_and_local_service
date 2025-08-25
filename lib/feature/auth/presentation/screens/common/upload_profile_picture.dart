@@ -301,7 +301,6 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                     nationality: model.nationality ?? '',
                                     description: model.description ?? '',
                                     languages: model.languages ?? [],
-
                                     profileImage: _imageFile ?? XFile(''),
                                   );
                                   // Navigate based on userRole
