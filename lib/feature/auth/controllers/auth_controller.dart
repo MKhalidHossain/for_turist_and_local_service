@@ -197,7 +197,8 @@ class AuthController extends GetxController implements GetxService {
           );
         } else {
           showCustomSnackBar(
-            response.body['message'] ?? "Registration failed. Please try again.",
+            response.body['message'] ??
+                "Registration failed. Please try again.",
             isError: true,
           );
         }
@@ -341,8 +342,10 @@ class AuthController extends GetxController implements GetxService {
 
     if (isLoggedIn() == true) {
       if (response!.statusCode == 200) {
-        await preferences.setString(AppConstants.token, '');
-        await preferences.setString(AppConstants.refreshToken, '');
+        // await preferences.setString(AppConstants.token, '');
+        await preferences.remove(AppConstants.token);
+        //await preferences.setString(AppConstants.refreshToken, '');
+        await preferences.remove(AppConstants.refreshToken);
 
         showCustomSnackBar('You have logout Successfully');
         Get.offAll(() => UserLoginScreen());

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
@@ -193,7 +192,6 @@ class ProfileController extends GetxController implements GetxService {
       final response = await profileServiceInterface.updateProfile(
         firstName: firstName,
         lastName: lastName,
-
         age: age,
         gender: gender,
         nationality: nationality,
