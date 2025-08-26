@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/auth/domain/common/singleton/user_profile.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
-
-import '../../../../core/constants/urls.dart';
-import '../../../../helpers/remote/data/api_client.dart';
 import '../../../auth/controllers/auth_controller.dart';
 import '../../domain/model/get_profile_response_model.dart';
-import '../../repositories/profile_repository.dart';
 import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';
@@ -93,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               .profileImage!
                                               .isNotEmpty)
                                       ? Image.network(
-                                        userProfileData!.profileImage!,
+                                        userProfileData.profileImage!,
                                         fit: BoxFit.cover,
                                         width: 70,
                                         height: 70,
