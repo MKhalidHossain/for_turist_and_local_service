@@ -18,10 +18,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late GetProfileResponseModel getProfileResponseModel;
-
-  // final profileScreenController =  Get.put(ProfileController(Get.find()));
-  final profileController = Get.find<ProfileController>();
 
   bool isLoading = true;
   String? userRole;
@@ -29,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    profileController.getUserProfile();
+    Get.find<ProfileController>().getUserProfile();
   }
 
   // void _loadUserProfile() async {
@@ -45,179 +41,166 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
       builder: (profileController) {
-        debugPrint(
-          "My Profile Data: ${profileController.getProfileResponseModel?.data?.profileImage}",
-        );
-        final userProfileData = profileController.getProfileResponseModel?.data;
-        return profileController.isLoading ? Center(
-          child: CircularProgressIndicator(),
-        ) : Scaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  // const SizedBox(height: 24),
-                  // ListTile(
-                  //   leading: CircleAvatar(
-                  //     radius: 30,
-                  //     backgroundImage: NetworkImage(
-                  //       "https://randomuser.me/api/portraits/women/44.jpg",
-                  //     ),
-                  //   ),
-                  //   title: const Text(
-                  //     'Kristin Watson',
-                  //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  //   ),
-                  //   subtitle: const Text('Tourist'),
-                  // ),
-                  Row(
+        return profileController.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Scaffold(
+              backgroundColor: Colors.white,
+              body: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      Stack(
-                        clipBehavior: Clip.none,
+                      // const SizedBox(height: 24),
+                      // ListTile(
+                      //   leading: CircleAvatar(
+                      //     radius: 30,
+                      //     backgroundImage: NetworkImage(
+                      //       "https://randomuser.me/api/portraits/women/44.jpg",
+                      //     ),
+                      //   ),
+                      //   title: const Text(
+                      //     'Kristin Watson',
+                      //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      //   ),
+                      //   subtitle: const Text('Tourist'),
+                      // ),
+                      Row(
                         children: [
-                          CircleAvatar(
-                            radius: 35,
-                            backgroundColor: Colors.grey[200],
-                            child: ClipOval(
-                              child:
-                                  (userProfileData?.profileImage != null &&
-                                          userProfileData!
-                                              .profileImage!
-                                              .isNotEmpty)
-                                      ? Image.network(
-                                        userProfileData.profileImage!,
-                                        fit: BoxFit.cover,
-                                        width: 70,
-                                        height: 70,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return Image.asset(
+                          Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              CircleAvatar(
+                                radius: 35,
+                                backgroundColor: Colors.grey[200],
+                                child: ClipOval(
+                                  child:
+                                      (profileController.getProfileResponseModel?.data?.profileImage!= null &&
+                                              (profileController
+                                                    .getProfileResponseModel
+                                                    ?.data
+                                                    ?.profileImage
+                                                    ?.isNotEmpty ??
+                                                false))
+                                          ? Image.network(
+                                            profileController.getProfileResponseModel?.data?.profileImage ?? 'No Image',
+                                            fit: BoxFit.cover,
+                                            width: 70,
+                                            height: 70,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              return Image.asset(
+                                                'assets/images/profileBlankImage.png',
+                                                fit: BoxFit.cover,
+                                                width: 70,
+                                                height: 70,
+                                              );
+                                            },
+                                          )
+                                          : Image.asset(
                                             'assets/images/profileBlankImage.png',
                                             fit: BoxFit.cover,
                                             width: 70,
                                             height: 70,
-                                          );
-                                        },
-                                      )
-                                      : Image.asset(
-                                        'assets/images/profileBlankImage.png',
-                                        fit: BoxFit.cover,
-                                        width: 70,
-                                        height: 70,
-                                      ),
-                            ),
-                          ),
-
-                          // CircleAvatar(
-                          //   radius: 35,
-                          //   backgroundImage: NetworkImage(
-                          //     userProfileData?.profileImage ??
-                          //         "https://randomuser.me/api/portraits/women/44.jpg",
-                          //   ),
-                          // ),
-                          Positioned(
-                            bottom: 0,
-                            right: -2,
-                            child: GestureDetector(
-                              onTap: () {
-                                // Handle image change
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.red,
-                                ),
-                                child: const Icon(
-                                  Icons.camera_alt,
-                                  size: 14,
-                                  color: Colors.white,
+                                          ),
                                 ),
                               ),
+                              Positioned(
+                                bottom: 0,
+                                right: -2,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Handle image change
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(4),
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red,
+                                    ),
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      size: 14,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                " ${profileController.getProfileResponseModel?.data?.firstName ?? 'No'} ${profileController.getProfileResponseModel?.data?.lastName ?? 'Name'}"
+                                    .text20Grey700(),
+                                "${profileController.getProfileResponseModel?.data?.nationality ?? 'Nationality'}".text16Grey(),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            " ${userProfileData?.firstName} ${userProfileData?.lastName}"
-                                .text20Grey700(),
-                            "${userProfileData?.nationality}".text16Grey(),
-                          ],
-                        ),
+                      const SizedBox(height: 24),
+                      _buildMenuItem(
+                        icon: Icons.settings,
+                        text: "Account Settings",
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AccountSettingsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+
+                      _buildMenuItem(
+                        icon: Icons.info_outline,
+                        text: "About App",
+                        onTap: () {
+                          Get.to(AboutAppScreen());
+                        },
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.privacy_tip_outlined,
+                        text: "Privacy Policy",
+                        onTap: () {
+                          Get.to(PrivacyPolicyScreen());
+                        },
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.article_outlined,
+                        text: "Term & Condition",
+                        onTap: () {
+                          Get.to(TermsConditionScreen());
+                        },
+                      ),
+                      _buildMenuItem(
+                        icon: Icons.help_outline,
+                        text: "Help & Support",
+                        onTap: () {
+                          Get.to(HelpSupportScreen());
+                        },
+                      ),
+
+                      _buildMenuItem(
+                        icon: Icons.logout,
+                        text: "Log Out",
+                        iconColor: Colors.red,
+                        textColor: Colors.red,
+                        showTrailing: true,
+                        onTap: () async {
+                          await Get.find<AuthController>().logOut();
+                        },
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                  _buildMenuItem(
-                    icon: Icons.settings,
-                    text: "Account Settings",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const AccountSettingsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-
-                  _buildMenuItem(
-                    icon: Icons.info_outline,
-                    text: "About App",
-                    onTap: () {
-                      Get.to(AboutAppScreen());
-                    },
-                  ),
-                  _buildMenuItem(
-                    icon: Icons.privacy_tip_outlined,
-                    text: "Privacy Policy",
-                    onTap: () {
-                      Get.to(PrivacyPolicyScreen());
-                    },
-                  ),
-                  _buildMenuItem(
-                    icon: Icons.article_outlined,
-                    text: "Term & Condition",
-                    onTap: () {
-                      Get.to(TermsConditionScreen());
-                    },
-                  ),
-                  _buildMenuItem(
-                    icon: Icons.help_outline,
-                    text: "Help & Support",
-                    onTap: () {
-                      Get.to(HelpSupportScreen());
-                    },
-                  ),
-
-                  _buildMenuItem(
-                    icon: Icons.logout,
-                    text: "Log Out",
-                    iconColor: Colors.red,
-                    textColor: Colors.red,
-                    showTrailing: true,
-                    onTap: () async {
-                      //  await   profileScreenController
-                      //         .getApicall(); // 👈 This logs out the user
-
-                      await Get.find<AuthController>().logOut();
-                      //  Get.offAll(() =>  UserLoginScreen());
-                    },
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
-        );
+            );
       },
     );
   }
