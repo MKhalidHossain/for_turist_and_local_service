@@ -30,7 +30,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
     List<String>? languages,
     required XFile profileImage,
   }) async {
-    debugPrint("Updating profile with image: ${profileImage?.path}");
+    debugPrint("Updating profile with image: ${profileImage.path}");
 
     return await apiClient.patchData(
       Urls.updateProfile,

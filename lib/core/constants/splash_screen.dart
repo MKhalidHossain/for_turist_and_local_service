@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
-import 'package:kobeur/feature/home/presentation/screens/tourist/home_screen.dart';
 import 'package:kobeur/main.dart';
 import '../widgets/app_logo.dart';
 import '../widgets/app_scaffold.dart';
