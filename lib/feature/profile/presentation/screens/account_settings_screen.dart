@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/language_picker_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/personal_informetion_screen.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_me_screen.dart';
 import '../../../../core/widgets/app_scaffold.dart';
+import '../../../auth/presentation/screens/common/language_picker_screen.dart';
+import '../../../auth/presentation/screens/common/personal_informetion_screen.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -29,85 +29,11 @@ class AccountSettingsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // const SizedBox(height: 24),
-              // ListTile(
-              //   leading: CircleAvatar(
-              //     radius: 30,
-              //     backgroundImage: NetworkImage(
-              //       "https://randomuser.me/api/portraits/women/44.jpg",
-              //     ),
-              //   ),
-              //   title: const Text(
-              //     'Kristin Watson',
-              //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              //   ),
-              //   subtitle: const Text('Tourist'),
-              // ),
-              // Row(
-              //   children: [
-              //     Stack(
-              //       clipBehavior: Clip.none,
-              //       children: [
-              //         const CircleAvatar(
-              //           radius: 35,
-              //           backgroundImage: NetworkImage(
-              //             "https://randomuser.me/api/portraits/women/44.jpg",
-              //           ),
-              //         ),
-              //         Positioned(
-              //           bottom: 0,
-              //           right: -2,
-              //           child: GestureDetector(
-              //             onTap: () {
-              //               // Handle image change
-              //             },
-              //             child: Container(
-              //               padding: const EdgeInsets.all(4),
-              //               decoration: const BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Colors.red,
-              //               ),
-              //               child: const Icon(
-              //                 Icons.camera_alt,
-              //                 size: 14,
-              //                 color: Colors.white,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //     const SizedBox(width: 16),
-              //     Expanded(
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           'Jerome Bell'.text20Grey700(),
-              //           'China'.text16Grey(),
-              //         ],
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(height: 24),
-
-              // _buildMenuItem(
-              //   icon: Icons.settings,
-              //   text: "Account Settings",
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (_) => const AccountSettingsScreen(),
-              //       ),
-              //     );
-              //   },
-              // ),
               _buildMenuItem(
                 icon: Icons.person,
                 text: "Personal Information",
                 onTap: () {
-                //  Get.to(PersonalInformetionScreen());
+                  Get.to(PersonalInformetionScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(
@@ -121,7 +47,7 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.language_outlined,
                 text: "Spoken Language",
                 onTap: () {
-                //  Get.to(LanguagePickerScreen());
+                  Get.to(LanguagePickerScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(

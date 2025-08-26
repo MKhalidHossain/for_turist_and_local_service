@@ -30,6 +30,8 @@ class GetProfileResponseModel {
       data['data'] = this.data!.toJson();
     }
     return data;
+
+   
   }
 }
 
