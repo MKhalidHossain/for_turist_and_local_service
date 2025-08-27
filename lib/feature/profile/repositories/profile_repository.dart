@@ -39,7 +39,6 @@ class ProfileRepository implements ProfileRepositoryInterface {
         'Authorization':
             'Bearer ${sharedPreferences.getString(AppConstants.token) ?? ''}',
       },
-
       {
         "firstName": firstName,
         "lastName": lastName,
@@ -55,7 +54,7 @@ class ProfileRepository implements ProfileRepositoryInterface {
   }
 
   @override
-  Future<Response> updateSpacificFieldUserProfile({
+  Future<Response> updateSpacificFieldUserProfile({ 
     String? firstName,
     String? lastName,
     int? age,

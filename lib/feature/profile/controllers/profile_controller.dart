@@ -12,16 +12,13 @@ import '../domain/model/update_profile_response_model.dart';
 import '../services/profile_service_interface.dart';
 
 class ProfileController extends GetxController implements GetxService {
-  
   final authController = Get.find<AuthController>();
-
-
 
   @override
   void onInit() async {
     super.onInit();
     await getUserProfile();
-    
+
     getUserRole();
     _getSafeToken();
   }
@@ -34,9 +31,8 @@ class ProfileController extends GetxController implements GetxService {
   UpdateProfileResponseModel updateProfileResponseModel =
       UpdateProfileResponseModel();
 
-
   String? userRole;
-  bool isValidUser=false;
+  bool isValidUser = false;
   bool isLoading = false;
   XFile? _pickedProfileFile;
   XFile? get pickedProfileFile => _pickedProfileFile;
@@ -56,8 +52,7 @@ class ProfileController extends GetxController implements GetxService {
       await authController.logOut();
       Get.offAll(() => UserLoginScreen());
       return null;
-    }else{
-     
+    } else {
       isValidUser = true;
       debugPrint("✅ User token retrieved successfully: $token");
     }
@@ -179,25 +174,6 @@ class ProfileController extends GetxController implements GetxService {
     required XFile profileImage, // Store as a File
   }) async {
     try {
-      // ✅ Ensure at least one field is provided
-    final noDataProvided =
-        firstName == null &&
-        lastName == null &&
-        age == null &&
-        userRole == null &&
-        gender == null &&
-        nationality == null &&
-        description == null &&
-        (languages == null || languages.isEmpty) &&
-        profileImage == null;
-
-    if (noDataProvided) {
-      Get.snackbar("Error", "Please provide at least one field to update.");
-      return;
-    }
-
-
-
       isLoading = true;
       update();
 
@@ -226,13 +202,13 @@ class ProfileController extends GetxController implements GetxService {
           response.body,
         );
         print("✅ Profile updated successfully\n");
-        if(isValidUser && userRole != null && userRole!.isNotEmpty){
-        // for Nevigation to Tourist or Local
+        if (isValidUser && userRole != null && userRole!.isNotEmpty) {
+          // for Nevigation to Tourist or Local
           if (userRole.toString().toLowerCase() == 'tourist') {
             debugPrint(
               'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
             );
-            Get.offAll(() => BottomNavbar(userRole: userRole,));
+            Get.offAll(() => BottomNavbar(userRole: userRole));
           } else if (userRole.toString().toLowerCase() == 'local') {
             Get.offAll(() => CreateFirstServiceScreen());
           } else {
@@ -241,13 +217,16 @@ class ProfileController extends GetxController implements GetxService {
               isError: true,
             );
             Get.offAll(() => UserLoginScreen());
-          }    
+          }
         }
       } else {
         debugPrint("❌ Failed to update profile: ${response.statusCode}");
-      Get.snackbar('Error', 'Failed to update profile: ${response.body['message']}');
+        Get.snackbar(
+          'Error',
+          'Failed to update profile: ${response.body['message']}',
+        );
       }
-    } catch (e ) {
+    } catch (e) {
       print("⚠️ Error updating profile: $e\n ");
       Get.snackbar('Exception', 'Error updating profile: $e');
     } finally {
@@ -257,88 +236,90 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   Future<void> updateSpacificFieldUserProfile({
-  String? firstName,
-  String? lastName,
-  int? age,
-  String? userRole,
-  String? gender,
-  String? nationality,
-  String? description,
-  List<String>? languages,
-  XFile? profileImage,
-}) async {
-  try {
-    // ✅ Ensure at least one field is provided
-    final noDataProvided =
-        firstName == null &&
-        lastName == null &&
-        age == null &&
-        userRole == null &&
-        gender == null &&
-        nationality == null &&
-        description == null &&
-        (languages == null || languages.isEmpty) &&
-        profileImage == null;
+    String? firstName,
+    String? lastName,
+    int? age,
+    String? userRole,
+    String? gender,
+    String? nationality,
+    String? description,
+    List<String>? languages,
+    XFile? profileImage,
+  }) async {
+    try {
+      // ✅ Ensure at least one field is provided
+      final noDataProvided =
+          firstName == null &&
+          lastName == null &&
+          age == null &&
+          userRole == null &&
+          gender == null &&
+          nationality == null &&
+          description == null &&
+          (languages == null || languages.isEmpty) &&
+          profileImage == null;
 
-    if (noDataProvided) {
-      Get.snackbar("Error", "Please provide at least one field to update.");
-      return;
-    }
-
-    isLoading = true;
-    update();
-
-    debugPrint(
-      "Updating profile with: "
-      "First Name: $firstName, Last Name: $lastName, "
-      "Age: $age, Gender: $gender, Nationality: $nationality, "
-      "Description: $description, Languages: $languages, "
-      "Profile Image: ${profileImage?.path}",
-    );
-
-    final response = await profileServiceInterface.updateSpacificFieldUserProfile(
-      firstName: firstName,
-      lastName: lastName,
-      age: age,
-      gender: gender,
-      nationality: nationality,
-      description: description,
-      languages: languages,
-      profileImage: profileImage,
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      updateProfileResponseModel = UpdateProfileResponseModel.fromJson(
-        response.body,
-      );
-      print("✅ Profile updated successfully\n");
-
-      // ✅ userRole handling stays the same
-      if (isValidUser && userRole != null && userRole.isNotEmpty) {
-        if (userRole.toLowerCase() == 'tourist') {
-          Get.offAll(() => BottomNavbar(userRole: userRole));
-        } else if (userRole.toLowerCase() == 'local') {
-          Get.offAll(() => CreateFirstServiceScreen());
-        } else {
-          showCustomSnackBar(
-            'You have not selected your role yet, please select your role',
-            isError: true,
-          );
-          Get.offAll(() => UserLoginScreen());
-        }
+      if (noDataProvided) {
+        Get.snackbar("Error", "Please provide at least one field to update.");
+        return;
       }
-    } else {
-      Get.snackbar('Error',
-          'Failed to update profile: ${response.body['message']}');
-    }
-  } catch (e) {
-    Get.snackbar('Exception', 'Error updating profile: $e');
-  } finally {
-    isLoading = false;
-    update();
-  }
-}
 
+      isLoading = true;
+      update();
+
+      debugPrint(
+        "Updating profile with: "
+        "First Name: $firstName, Last Name: $lastName, "
+        "Age: $age, Gender: $gender, Nationality: $nationality, "
+        "Description: $description, Languages: $languages, "
+        "Profile Image: ${profileImage?.path}",
+      );
+
+      final response = await profileServiceInterface
+          .updateSpacificFieldUserProfile(
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            gender: gender,
+            nationality: nationality,
+            description: description,
+            languages: languages,
+            profileImage: profileImage,
+          );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        updateProfileResponseModel = UpdateProfileResponseModel.fromJson(
+          response.body,
+        );
+        print("✅ Profile updated successfully\n");
+
+        // ✅ userRole handling stays the same
+        if (isValidUser && userRole != null && userRole.isNotEmpty) {
+          if (userRole.toLowerCase() == 'tourist') {
+            Get.offAll(() => BottomNavbar(userRole: userRole));
+          } else if (userRole.toLowerCase() == 'local') {
+            Get.offAll(() => CreateFirstServiceScreen());
+          } else {
+            showCustomSnackBar(
+              'You have not selected your role yet, please select your role',
+              isError: true,
+            );
+            Get.offAll(() => UserLoginScreen());
+          }
+        }
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to update profile: ${response.body['message']}',
+        );
+      }
+    } catch (e) {
+      Get.snackbar('Exception', 'Error updating profile: $e');
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
 
   Future<void> ChangePassword({
     required String currentPassword,
