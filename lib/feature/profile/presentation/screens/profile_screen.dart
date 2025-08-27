@@ -4,7 +4,6 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
 import '../../../auth/controllers/auth_controller.dart';
-import '../../domain/model/get_profile_response_model.dart';
 import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';

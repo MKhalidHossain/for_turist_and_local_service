@@ -55,6 +55,73 @@ class ProfileRepository implements ProfileRepositoryInterface {
   }
 
   @override
+  Future<Response> updateSpacificFieldUserProfile({
+    String? firstName,
+    String? lastName,
+    int? age,
+    String? gender,
+    String? nationality,
+    String? description,
+    List<String>? languages,
+    XFile? profileImage,
+  }) async {
+    String? updatedField;
+    // ✅ Ensure at least one field is provided
+    final noDataProvided =
+        firstName == null &&
+        lastName == null &&
+        age == null &&
+        gender == null &&
+        nationality == null &&
+        description == null &&
+        (languages == null || languages.isEmpty) &&
+        profileImage == null;
+
+    if (noDataProvided) {
+      throw Exception("Please provide at least one field to update.");
+    } else if (firstName != null) {
+      updatedField = 'firstName: $firstName';
+    } else if (lastName != null) {
+      updatedField = 'lastName: $lastName';
+    } else if (age != null) {
+      updatedField = 'age: $age';
+    } else if (gender != null) {
+      updatedField = 'gender: $gender';
+    } else if (nationality != null) {
+      updatedField = 'nationality: $nationality';
+    } else if (description != null) {
+      updatedField = 'description: $description';
+    } else if (languages != null && languages.isNotEmpty) {
+      updatedField = 'languages: ${languages.join(", ")}';
+    } else if (profileImage != null) {
+      updatedField = 'profileImage: ${profileImage.path}';
+    }
+    if (updatedField != null) {
+      debugPrint('Updating profile field: $updatedField');
+    }
+
+    return await apiClient.patchData(
+      Urls.updateProfile,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'Bearer ${sharedPreferences.getString(AppConstants.token) ?? ''}',
+      },
+      {
+        "firstName": firstName,
+        "lastName": lastName,
+        "age": age,
+        "gender": gender,
+        "nationality": nationality,
+        "languages": languages,
+        "description": description,
+        "profileImage":
+            await profileImage!.path, // Convert XFile to bytes if not null
+      },
+    );
+  }
+
+  @override
   Future<Response> changePassword({
     required String currentPassword,
     required String newPassword,
