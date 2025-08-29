@@ -147,14 +147,16 @@ import 'package:kobeur/feature/profile/presentation/screens/account_settings_scr
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/wide_custom_button.dart';
 
-class AboutMeScreenProfile extends StatefulWidget {
-  const AboutMeScreenProfile({super.key});
+class UpdateAboutMeScreenProfile extends StatefulWidget {
+  const UpdateAboutMeScreenProfile({super.key});
 
   @override
-  State<AboutMeScreenProfile> createState() => _AboutMeScreenProfileState();
+  State<UpdateAboutMeScreenProfile> createState() =>
+      _UpdateAboutMeScreenProfileState();
 }
 
-class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
+class _UpdateAboutMeScreenProfileState
+    extends State<UpdateAboutMeScreenProfile> {
   late TextEditingController _aboutMeController;
   final FocusNode _aboutMeFocus = FocusNode();
   final _formKey = GlobalKey<FormState>(); // Fixed typo: _fromKey to _formKey
@@ -205,7 +207,7 @@ class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
       await profileController.updateSpacificFieldUserProfile(
         description: _aboutMeController.text,
       );
-      Get.to(() => AccountSettingsScreen());
+      Get.to(() => UpdateAboutMeScreenProfile());
     }
   }
 
@@ -321,7 +323,7 @@ class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
                         WideCustomButton(
                           onPressed: () {
                             saveDescription();
-                            Get.to(AccountSettingsScreen());
+                            // routing also in Save Description Funciton
                           },
                           text: 'Update',
                           buttonColor:

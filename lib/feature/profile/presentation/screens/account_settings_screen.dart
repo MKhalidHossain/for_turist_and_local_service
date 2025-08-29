@@ -40,7 +40,7 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.document_scanner_outlined,
                 text: "About Me",
                 onTap: () {
-                  Get.to(AboutMeScreenProfile());
+                  Get.to(UpdateAboutMeScreenProfile());
                 },
               ),
               _buildMenuItem(

@@ -33,6 +33,8 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   bool isEditing = true;
 
   final _formKey = GlobalKey<FormState>();
+  // cheak  for data update or not
+  final Map<String, dynamic> updatedFields = {};
 
   final uniqueCountryNames = countries.map((c) => c.country).toSet().toList();
 
@@ -66,6 +68,62 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     setState(() {});
   }
 
+  // void savePersonalUpdatedInformetion() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     await profileController.updateSpacificFieldUserProfile(
+  //       firstName:
+  //     );
+  //     Get.to(() => UpdatePersonalInformetionScreen(userRole: widget.userRole));
+  //   }
+  // }
+
+  void savePersonalUpdatedInformetion() async {
+    if (_formKey.currentState!.validate()) {
+      final profileData = profileController.getProfileResponseModel?.data;
+
+      if (_firstNameController.text.trim() != (profileData?.firstName ?? '')) {
+        updatedFields['firstName'] = _firstNameController.text.trim();
+      }
+      if (_lastNameController.text.trim() != (profileData?.lastName ?? '')) {
+        updatedFields['lastName'] = _lastNameController.text.trim();
+      }
+      if (_ageController.text.trim() != (profileData?.age?.toString() ?? '')) {
+        updatedFields['age'] = int.tryParse(_ageController.text.trim());
+      }
+      if (selectedGender != null &&
+          selectedGender != (profileData?.gender ?? '')) {
+        updatedFields['gender'] = selectedGender;
+      }
+      if (selectedNationality != null &&
+          selectedNationality != (profileData?.nationality ?? '')) {
+        updatedFields['nationality'] = selectedNationality;
+      }
+
+      // 🟢 Print updated fields
+      if (updatedFields.isNotEmpty) {
+        print("✅ Updated fields: $updatedFields");
+      } else {
+        print("ℹ️ No fields updated");
+      }
+
+      if (updatedFields.isEmpty) {
+        Get.snackbar("No Changes", "You didn’t update any information.");
+        return;
+      }
+
+      // Call controller with spread operator
+      await profileController.updateSpacificFieldUserProfile(
+        firstName: updatedFields['firstName'],
+        lastName: updatedFields['lastName'],
+        age: updatedFields['age'],
+        gender: updatedFields['gender'],
+        nationality: updatedFields['nationality'],
+      );
+
+      Get.to(() => UpdatePersonalInformetionScreen(userRole: widget.userRole));
+    }
+  }
+
   bool get isFormValid {
     return Validators.name(_firstNameController.text) == null &&
         Validators.name(_lastNameController.text) == null &&
@@ -79,10 +137,10 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     final size = MediaQuery.of(context).size;
     final gender = profileController.getProfileResponseModel?.data?.gender;
 
-    final normalizedGender =
-        (gender != null)
-            ? gender[0].toUpperCase() + gender.substring(1).toLowerCase()
-            : null;
+    // final normalizedGender =
+    //     (gender != null)
+    //         ? gender[0].toUpperCase() + gender.substring(1).toLowerCase()
+    //         : null;
 
     return GetBuilder<ProfileController>(
       builder: (profileController) {
@@ -146,9 +204,9 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
 
                             _buildDropdown(
                               label: 'Gender',
-                              initialValue: normalizedGender,
+                              initialValue: gender,
                               value: selectedGender,
-                              items: ['Male', 'Female', 'Other'],
+                              items: ['male', 'female', 'other'],
                               onChanged:
                                   (val) => setState(() => selectedGender = val),
                               validator:
@@ -160,11 +218,11 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                             const SizedBox(height: 12),
                             _buildDropdown(
                               label: 'Nationality',
-                              // initialValue:
-                              //     profileController
-                              //         .getProfileResponseModel
-                              //         ?.data
-                              //         ?.nationality,
+                              initialValue:
+                                  profileController
+                                      .getProfileResponseModel
+                                      ?.data
+                                      ?.nationality,
                               value: selectedNationality,
                               items: uniqueCountryNames,
                               onChanged:
@@ -187,16 +245,17 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
               context.primaryButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    UserProfileService.instance.profile.firstName =
-                        _firstNameController.text;
-                    UserProfileService.instance.profile.lastName =
-                        _lastNameController.text;
-                    UserProfileService.instance.profile.age = int.tryParse(
-                      _ageController.text,
-                    );
-                    UserProfileService.instance.profile.gender = selectedGender;
-                    UserProfileService.instance.profile.nationality =
-                        selectedNationality;
+                    // UserProfileService.instance.profile.firstName =
+                    //     _firstNameController.text;
+                    // UserProfileService.instance.profile.lastName =
+                    //     _lastNameController.text;
+                    // UserProfileService.instance.profile.age = int.tryParse(
+                    //   _ageController.text,
+                    // );
+                    // UserProfileService.instance.profile.gender = selectedGender;
+                    // UserProfileService.instance.profile.nationality =
+                    //     selectedNationality;
+                    savePersonalUpdatedInformetion();
 
                     print(
                       'The user data is \n' +
