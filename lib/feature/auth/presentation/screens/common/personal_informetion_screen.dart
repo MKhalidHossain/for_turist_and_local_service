@@ -8,12 +8,10 @@ import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 import 'description_screen.dart';
 
-
 class PersonalInformetionScreen extends StatefulWidget {
   final String? userRole;
 
-  const PersonalInformetionScreen({super.key,required this.userRole});
-
+  const PersonalInformetionScreen({super.key, required this.userRole});
 
   @override
   State<PersonalInformetionScreen> createState() => UserSignupScreenState();
@@ -188,7 +186,10 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) =>  DescriptionScreen(userRole: widget.userRole,)),
+                  MaterialPageRoute(
+                    builder:
+                        (_) => DescriptionScreen(userRole: widget.userRole),
+                  ),
                 );
               }
             },
@@ -338,6 +339,3 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
     );
   }
 }
-
-
-

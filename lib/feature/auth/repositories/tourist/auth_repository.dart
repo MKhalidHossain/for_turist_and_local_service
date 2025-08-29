@@ -76,6 +76,8 @@ class AuthRepository implements AuthRepositoryInterface {
   @override
   Future logout() async {
     await sharedPreferences.remove('IsLoggedIn');
+    await sharedPreferences.remove(AppConstants.token);
+    await sharedPreferences.remove(AppConstants.refreshToken);
     apiClient.token = '';
     return await apiClient.postData(Urls.logOut, {});
   }
@@ -128,10 +130,13 @@ class AuthRepository implements AuthRepositoryInterface {
     print(
       'User Token ${token.toString()} ================================== from Repository ',
     );
+
+    await sharedPreferences.setString(AppConstants.refreshToken, refreshToken);
+    await sharedPreferences.setString(AppConstants.token, token);
     apiClient.token = token;
     apiClient.updateHeader(token);
-    await sharedPreferences.setString(AppConstants.refreshToken, refreshToken);
-    return await sharedPreferences.setString(AppConstants.token, token);
+    return true;
+    // return await sharedPreferences.setString(AppConstants.token, token);
   }
 
   @override

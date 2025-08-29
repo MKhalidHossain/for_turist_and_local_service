@@ -47,7 +47,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
   bool get isFormValid {
     return Validators.textLength(
           minLength: 3,
-          maxLength: 300,
+          maxLength: 600,
           _descriptionController.text,
         ) ==
         null;
@@ -94,7 +94,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                             keyboardType: TextInputType.multiline,
                             maxLines: 10,
                             minLines: 8,
-                            maxLength: 300,
+                            maxLength: 600,
                             buildCounter: (
                               BuildContext context, {
                               required int currentLength,
@@ -104,7 +104,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                               return null; // Hide default counter
                             },
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
                             ),
@@ -121,7 +121,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16,
                                 horizontal: 12,
-                              ).copyWith(bottom: 32),
+                              ).copyWith(bottom: 48),
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -131,10 +131,10 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                             },
                           ),
                           Positioned(
-                            bottom: 32,
+                            bottom: 8,
                             right: 12,
                             child: Text(
-                              '${_descriptionController.text.length}/300',
+                              '${_descriptionController.text.length}/600',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade600,

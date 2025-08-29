@@ -39,7 +39,6 @@ class ProfileRepository implements ProfileRepositoryInterface {
         'Authorization':
             'Bearer ${sharedPreferences.getString(AppConstants.token) ?? ''}',
       },
-
       {
         "firstName": firstName,
         "lastName": lastName,
@@ -53,6 +52,117 @@ class ProfileRepository implements ProfileRepositoryInterface {
       },
     );
   }
+
+  @override
+  Future<Response> updateSpacificFieldUserProfile({
+    String? firstName,
+    String? lastName,
+    int? age,
+    String? gender,
+    String? nationality,
+    String? description,
+    List<String>? languages,
+    XFile? profileImage,
+  }) async {
+    final Map<String, dynamic> body = {};
+
+    if (firstName != null) body["firstName"] = firstName;
+    if (lastName != null) body["lastName"] = lastName;
+    if (age != null) body["age"] = age;
+    if (gender != null) body["gender"] = gender;
+    if (nationality != null) body["nationality"] = nationality;
+    if (description != null) body["description"] = description;
+    if (languages != null && languages.isNotEmpty) {
+      body["languages"] = languages;
+    }
+    if (profileImage != null) {
+      body["profileImage"] = profileImage.path;
+    }
+
+    // ✅ Ensure at least one field exists
+    if (body.isEmpty) {
+      throw Exception("Please provide at least one field to update.");
+    }
+
+    debugPrint("Updating profile with payload: $body");
+
+    return await apiClient.patchData(
+      Urls.updateProfile,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization':
+            'Bearer ${sharedPreferences.getString(AppConstants.token)}',
+      },
+      body,
+    );
+  }
+
+  // @override
+  // Future<Response> updateSpacificFieldUserProfile({
+  //   String? firstName,
+  //   String? lastName,
+  //   int? age,
+  //   String? gender,
+  //   String? nationality,
+  //   String? description,
+  //   List<String>? languages,
+  //   XFile? profileImage,
+  // }) async {
+  //   String? updatedField;
+  //   // ✅ Ensure at least one field is provided
+  //   final noDataProvided =
+  //       firstName == null &&
+  //       lastName == null &&
+  //       age == null &&
+  //       gender == null &&
+  //       nationality == null &&
+  //       description == null &&
+  //       (languages == null || languages.isEmpty) &&
+  //       profileImage == null;
+
+  //   if (noDataProvided) {
+  //     throw Exception("Please provide at least one field to update.");
+  //   } else if (firstName != null) {
+  //     updatedField = 'firstName: $firstName';
+  //   } else if (lastName != null) {
+  //     updatedField = 'lastName: $lastName';
+  //   } else if (age != null) {
+  //     updatedField = 'age: $age';
+  //   } else if (gender != null) {
+  //     updatedField = 'gender: $gender';
+  //   } else if (nationality != null) {
+  //     updatedField = 'nationality: $nationality';
+  //   } else if (description != null) {
+  //     updatedField = 'description: $description';
+  //   } else if (languages != null && languages.isNotEmpty) {
+  //     updatedField = 'languages: ${languages.join(", ")}';
+  //   } else if (profileImage != null) {
+  //     updatedField = 'profileImage: ${profileImage.path}';
+  //   }
+  //   if (updatedField != null) {
+  //     debugPrint('Updating profile field: $updatedField');
+  //   }
+
+  //   return await apiClient.patchData(
+  //     Urls.updateProfile,
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization':
+  //           'Bearer ${sharedPreferences.getString(AppConstants.token)}',
+  //     },
+  //     {
+  //       "firstName": firstName,
+  //       "lastName": lastName,
+  //       "age": age,
+  //       "gender": gender,
+  //       "nationality": nationality,
+  //       "languages": languages,
+  //       "description": description,
+  //       "profileImage":
+  //        profileImage.path, // Convert XFile to bytes if not null
+  //     },
+  //   );
+  // }
 
   @override
   Future<Response> changePassword({
