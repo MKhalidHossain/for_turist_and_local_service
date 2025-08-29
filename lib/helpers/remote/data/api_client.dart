@@ -138,7 +138,7 @@ class ApiClient extends GetxService {
 
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
-        return handleResponse(response, uri);
+        return handleResponse(response, uri );
       }
       // Otherwise use regular PATCH with JSON
       else {
