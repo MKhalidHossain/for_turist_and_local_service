@@ -5,6 +5,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/change_password_
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
+import 'package:kobeur/feature/auth/repositories/tourist/auth_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
@@ -229,7 +230,6 @@ class AuthController extends GetxController implements GetxService {
       print("No response found");
     }
     if (response!.statusCode == 200) {
-      Map map = response.body;
       // _loadUserRole();
 
       //  final String refreshToken = '';
@@ -250,13 +250,20 @@ class AuthController extends GetxController implements GetxService {
       // );
       await setUserToken(token, refreshToken);
 
+    
+
       debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
 
       await _loadUserRole();
 
-      debugPrint("✅ Access Token: $token");
-      debugPrint("✅ Refresh Token: $refreshToken");
-      debugPrint("✅ User Role: $userRole");
+
+    
+
+      debugPrint("✅ Access Token: $token\n");
+      debugPrint("✅ Refresh Token: $refreshToken\n");
+      debugPrint("✅ User Role: $userRole\n");
+
+        authServiceInterface.chooseRole(userRole!, token);
 
       debugPrint(
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',

@@ -28,6 +28,9 @@ class ProfileController extends GetxController implements GetxService {
   ProfileController(this.profileServiceInterface);
 
   GetProfileResponseModel? getProfileResponseModel = GetProfileResponseModel();
+  RxString name = "".obs;
+  RxString image = "".obs;
+  RxString nationality = "".obs;
   UpdateProfileResponseModel updateProfileResponseModel =
       UpdateProfileResponseModel();
 
@@ -112,6 +115,21 @@ class ProfileController extends GetxController implements GetxService {
         getProfileResponseModel = GetProfileResponseModel.fromJson(
           response.body,
         );
+
+        name.value =
+            "${getProfileResponseModel?.data?.firstName} ${getProfileResponseModel?.data?.lastName}" ??
+            '';
+        image.value = getProfileResponseModel?.data?.profileImage ?? '';
+        nationality.value = getProfileResponseModel?.data?.nationality ?? '';
+
+        name.refresh();
+        image.refresh();
+        nationality.refresh();
+
+        update();
+
+        refresh();
+
         print("✅ Profile fetched successfully\n");
       } else if (response.statusCode == 401) {
         // Handle unauthorized access, maybe redirect to login
@@ -247,9 +265,8 @@ class ProfileController extends GetxController implements GetxService {
     XFile? profileImage,
   }) async {
     try {
-      // ✅ Ensure at least one field is provided
-      final noDataProvided =
-          firstName == null &&
+      // ✅ Check if at least one field is provided
+      if (firstName == null &&
           lastName == null &&
           age == null &&
           userRole == null &&
@@ -257,9 +274,7 @@ class ProfileController extends GetxController implements GetxService {
           nationality == null &&
           description == null &&
           (languages == null || languages.isEmpty) &&
-          profileImage == null;
-
-      if (noDataProvided) {
+          profileImage == null) {
         Get.snackbar("Error", "Please provide at least one field to update.");
         return;
       }
@@ -267,14 +282,7 @@ class ProfileController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      debugPrint(
-        "Updating profile with: "
-        "First Name: $firstName, Last Name: $lastName, "
-        "Age: $age, Gender: $gender, Nationality: $nationality, "
-        "Description: $description, Languages: $languages, "
-        "Profile Image: ${profileImage?.path}",
-      );
-
+      // Call repository
       final response = await profileServiceInterface
           .updateSpacificFieldUserProfile(
             firstName: firstName,
@@ -291,9 +299,14 @@ class ProfileController extends GetxController implements GetxService {
         updateProfileResponseModel = UpdateProfileResponseModel.fromJson(
           response.body,
         );
-        print("✅ Profile updated successfully\n");
+        debugPrint("✅ Profile updated successfully: ${response.body}");
 
-        // ✅ userRole handling stays the same
+        Get.snackbar(
+          "Profile Update Successfully",
+          "New data added successfully",
+        );
+
+        // ✅ Handle userRole navigation logic
         if (isValidUser && userRole != null && userRole.isNotEmpty) {
           if (userRole.toLowerCase() == 'tourist') {
             Get.offAll(() => BottomNavbar(userRole: userRole));
@@ -314,12 +327,98 @@ class ProfileController extends GetxController implements GetxService {
         );
       }
     } catch (e) {
-      Get.snackbar('Exception', 'Error updating profile: $e');
+      Get.snackbar('Exception', 'Error updating specific field of profile: $e');
     } finally {
       isLoading = false;
       update();
     }
   }
+
+  // Future<void> updateSpacificFieldUserProfile({
+  //   String? firstName,
+  //   String? lastName,
+  //   int? age,
+  //   String? userRole,
+  //   String? gender,
+  //   String? nationality,
+  //   String? description,
+  //   List<String>? languages,
+  //   XFile? profileImage,
+  // }) async {
+  //   try {
+  //     // ✅ Ensure at least one field is provided
+  //     final noDataProvided =
+  //         firstName == null &&
+  //         lastName == null &&
+  //         age == null &&
+  //         userRole == null &&
+  //         gender == null &&
+  //         nationality == null &&
+  //         description == null &&
+  //         (languages == null || languages.isEmpty) &&
+  //         profileImage == null;
+
+  //     if (noDataProvided) {
+  //       Get.snackbar("Error", "Please provide at least one field to update.");
+  //       return;
+  //     }
+
+  //     isLoading = true;
+  //     update();
+
+  //     debugPrint(
+  //       "Updating profile with: "
+  //       "First Name: $firstName, Last Name: $lastName, "
+  //       "Age: $age, Gender: $gender, Nationality: $nationality, "
+  //       "Description: $description, Languages: $languages, "
+  //       "Profile Image: ${profileImage?.path}",
+  //     );
+
+  //     final response = await profileServiceInterface
+  //         .updateSpacificFieldUserProfile(
+  //           firstName: firstName,
+  //           lastName: lastName,
+  //           age: age,
+  //           gender: gender,
+  //           nationality: nationality,
+  //           description: description,
+  //           languages: languages,
+  //           profileImage: profileImage,
+  //         );
+
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       updateProfileResponseModel = UpdateProfileResponseModel.fromJson(
+  //         response.body,
+  //       );
+  //       print("✅ Profile updated successfully\n");
+
+  //       // ✅ userRole handling stays the same
+  //       if (isValidUser && userRole != null && userRole.isNotEmpty) {
+  //         if (userRole.toLowerCase() == 'tourist') {
+  //           Get.offAll(() => BottomNavbar(userRole: userRole));
+  //         } else if (userRole.toLowerCase() == 'local') {
+  //           Get.offAll(() => CreateFirstServiceScreen());
+  //         } else {
+  //           showCustomSnackBar(
+  //             'You have not selected your role yet, please select your role',
+  //             isError: true,
+  //           );
+  //           Get.offAll(() => UserLoginScreen());
+  //         }
+  //       }
+  //     } else {
+  //       Get.snackbar(
+  //         'Error',
+  //         'Failed to update profile: ${response.body['message']}',
+  //       );
+  //     }
+  //   } catch (e) {
+  //     Get.snackbar('Exception', 'Error updating Spacific field off profile: $e');
+  //   } finally {
+  //     isLoading = false;
+  //     update();
+  //   }
+  // }
 
   Future<void> ChangePassword({
     required String currentPassword,

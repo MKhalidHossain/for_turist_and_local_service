@@ -4,7 +4,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/change_password_
 import 'package:kobeur/feature/profile/presentation/screens/common/update_about_me_screen.dart';
 import '../../../../core/widgets/app_scaffold.dart';
 import '../../../auth/presentation/screens/common/language_picker_screen.dart';
-import '../../../auth/presentation/screens/common/personal_informetion_screen.dart';
+import 'common/update_personal_informetion_screen.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -33,7 +33,7 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.person,
                 text: "Personal Information",
                 onTap: () {
-                  Get.to(PersonalInformetionScreen(userRole: 'tourist'));
+                  Get.to(UpdatePersonalInformetionScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(
