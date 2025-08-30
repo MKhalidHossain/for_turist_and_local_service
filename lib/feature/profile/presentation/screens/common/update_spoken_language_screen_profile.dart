@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/personal_informetion_screen.dart';
+import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import '../../../../../core/widgets/choose_country/model/country.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 
@@ -16,9 +17,10 @@ class UpdateSpokenLanguageScreen extends StatefulWidget {
 
 class _UpdateSpokenLanguageScreenState
     extends State<UpdateSpokenLanguageScreen> {
-  //String? selectedCountryCode;
+  late ProfileController profileController;
   Set<String> selectedLanguages = {};
   List<Country> filteredCountries = countries;
+  String? language;
 
   void onSearch(String query) {
     setState(() {
@@ -40,6 +42,14 @@ class _UpdateSpokenLanguageScreenState
         selectedLanguages.add(country.name);
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    profileController = Get.find<ProfileController>();
+    profileController.getUserProfile();
+    language = profileController.getProfileResponseModel?.data?.languages.toString() ?? '';
   }
 
   // void onSelect(Country country) {
@@ -69,7 +79,6 @@ class _UpdateSpokenLanguageScreenState
       ),
       body: Column(
         children: [
-          // Search Box
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: TextField(
