@@ -189,10 +189,10 @@ class AuthRepository implements AuthRepositoryInterface {
     String newPassword,
     String confirmPassword,
   ) async {
-    return await apiClient.putData(Urls.changePassword, {
+    return await apiClient.patchData(Urls.changePassword, {
       "currentPassword": currentPassword,
       "newPassword": newPassword,
-      "confirmNewPassword": confirmPassword,
+      "confirmPassword": confirmPassword,
     });
   }
 

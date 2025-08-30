@@ -41,6 +41,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
+  bool get isFormValid {
+    return Validators.email(_emailController.text) == null;
+  }
+
   @override
   Widget build(BuildContext context) {
     // final focusedBorderColor = AppColors.context(context).primaryColor;
@@ -108,7 +112,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         'Email',
                         style: TextStyle(color: AppColors.secondayText),
                       ),
+                      filled: true,
+                      fillColor: const Color(0xffC4C4C4).withOpacity(0.25),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
+                    onChanged: (value) {
+                      setState(() {});
+                    },
                     onFieldSubmitted:
                         (_) => FocusScope.of(context).requestFocus(_emailFocus),
                     textInputAction: TextInputAction.done,
@@ -175,20 +188,30 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   // ),
                   //const SizedBox(height: 4),
                   WideCustomButton(
-                    buttonColor: Color(0xff4D4D4D),
                     text: 'Continue',
                     onPressed: () {
                       final fEmail = _emailController.text;
                       if (fEmail.isEmpty) {
-                        showCustomSnackBar('email is required'.tr);
+                        Get.snackbar(
+                          'Enter a valid Email',
+                          'email is required'.tr,
+                        );
                       }
-                      // else if (email.isEmail) {
-                      //   showCustomSnackBar('email is not valid'.tr);
+                      //  else if (fEmail.isEmail) {
+                      //   Get.snackbar(
+                      //     'Envalid email',
+                      //     'Entered email is not valid'.tr,
+                      //   );
                       // }
                       else {
                         AuthController.forgetPassword(fEmail);
                       }
                     },
+
+                    buttonColor:
+                        isFormValid
+                            ? AppColors.context(context).primaryColor
+                            : AppColors.secondaryColor,
                   ),
 
                   // context.primaryButton(
