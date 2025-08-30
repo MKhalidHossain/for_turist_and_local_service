@@ -124,12 +124,48 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     }
   }
 
+  // bool get isFormValid {
+  //   final profileData = profileController.getProfileResponseModel?.data;
+  //   return Validators.name(_firstNameController.text) == null &&
+  //           Validators.name(_lastNameController.text) == null &&
+  //           Validators.age(_ageController.text) == null &&
+  //           selectedGender != null &&
+  //           selectedNationality != null ||
+  //       _firstNameController.text.trim() != (profileData?.firstName ?? '') ||
+  //       _lastNameController.text.trim() != (profileData?.lastName ?? '') ||
+  //       _ageController.text.trim() != (profileData?.age.toString() ?? '') ||
+  //       selectedGender != profileData?.gender ||
+  //       selectedNationality != profileData?.nationality;
+  // }
+
   bool get isFormValid {
-    return Validators.name(_firstNameController.text) == null &&
-        Validators.name(_lastNameController.text) == null &&
-        Validators.age(_ageController.text) == null &&
-        selectedGender != null &&
-        selectedNationality != null;
+    final profileData = profileController.getProfileResponseModel?.data;
+    if (profileData == null) return false;
+
+    // ✅ Step 1: check validity
+    final isFirstNameValid = Validators.name(_firstNameController.text) == null;
+    final isLastNameValid = Validators.name(_lastNameController.text) == null;
+    final isAgeValid = Validators.age(_ageController.text) == null;
+    final isGenderValid = selectedGender != null;
+    final isNationalityValid = selectedNationality != null;
+
+    final allValid =
+        isFirstNameValid &&
+        isLastNameValid &&
+        isAgeValid &&
+        isGenderValid &&
+        isNationalityValid;
+
+    // ✅ Step 2: check if there are changes
+    final hasChanges =
+        _firstNameController.text.trim() != (profileData.firstName ?? '') ||
+        _lastNameController.text.trim() != (profileData.lastName ?? '') ||
+        _ageController.text.trim() != (profileData.age?.toString() ?? '') ||
+        selectedGender != profileData.gender ||
+        selectedNationality != profileData.nationality;
+
+    // ✅ Step 3: only enable if BOTH are true
+    return allValid && hasChanges;
   }
 
   @override
@@ -244,44 +280,8 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
               ),
               context.primaryButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    // UserProfileService.instance.profile.firstName =
-                    //     _firstNameController.text;
-                    // UserProfileService.instance.profile.lastName =
-                    //     _lastNameController.text;
-                    // UserProfileService.instance.profile.age = int.tryParse(
-                    //   _ageController.text,
-                    // );
-                    // UserProfileService.instance.profile.gender = selectedGender;
-                    // UserProfileService.instance.profile.nationality =
-                    //     selectedNationality;
+                  if (_formKey.currentState!.validate() && isFormValid) {
                     savePersonalUpdatedInformetion();
-
-                    print(
-                      'The user data is \n' +
-                          '\nFirst name:' +
-                          (UserProfileService.instance.profile.firstName ??
-                              '') +
-                          '\nLast name:' +
-                          (UserProfileService.instance.profile.lastName ?? '') +
-                          '\nAge:' +
-                          ((UserProfileService.instance.profile.age
-                                  ?.toString()) ??
-                              '') +
-                          '\nGender:' +
-                          (UserProfileService.instance.profile.gender ?? '') +
-                          '\nNationality:' +
-                          (UserProfileService.instance.profile.nationality ??
-                              ''),
-                    );
-
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder:
-                    //         (_) => DescriptionScreen(userRole: widget.userRole),
-                    //   ),
-                    // );
                   }
                 },
                 text: "Save",

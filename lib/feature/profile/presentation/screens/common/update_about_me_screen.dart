@@ -181,7 +181,6 @@ class _UpdateAboutMeScreenProfileState
                         WideCustomButton(
                           onPressed: () {
                             saveDescription();
-                            // routing also in Save Description Funciton
                           },
                           text: 'Save',
                           buttonColor:
