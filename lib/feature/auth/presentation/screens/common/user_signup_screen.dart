@@ -61,7 +61,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     _scrollController.dispose();
-        // Remove listeners to prevent memory leaks
+    // Remove listeners to prevent memory leaks
     _emailFocus.removeListener(_scrollToShowButton);
     _passwordFocus.removeListener(_scrollToShowButton);
     _confirmPasswordFocus.removeListener(_scrollToShowButton);
@@ -139,6 +139,14 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                   hintStyle: TextStyle(
                                     color: AppColors.secondayText,
                                   ),
+                                  filled: true,
+                                  fillColor: const Color(
+                                    0xffC4C4C4,
+                                  ).withOpacity(0.25),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
+                                  ),
                                 ),
                                 onFieldSubmitted:
                                     (_) => FocusScope.of(
@@ -166,6 +174,14 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                   hintText: 'Password',
                                   hintStyle: TextStyle(
                                     color: AppColors.secondayText,
+                                  ),
+                                  filled: true,
+                                  fillColor: const Color(
+                                    0xffC4C4C4,
+                                  ).withOpacity(0.25),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
                                   ),
                                 ),
                                 onFieldSubmitted:
@@ -201,6 +217,14 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                   hintText: 'Confirm Password',
                                   hintStyle: TextStyle(
                                     color: AppColors.secondayText,
+                                  ),
+                                  filled: true,
+                                  fillColor: const Color(
+                                    0xffC4C4C4,
+                                  ).withOpacity(0.25),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
                                   ),
                                 ),
                                 onFieldSubmitted:

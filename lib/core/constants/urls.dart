@@ -46,7 +46,7 @@ class Urls {
   static const String login = '/auth/login';
   static const String refreshAccessToken = '/auth/refresh-token';
   // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
-  static const String changePassword = '/api/v1/auth/change-password';
+  static const String changePassword = '/profile/change-password';
   static const String forgetPassword = '/auth/forgot-password';
   static const String resetPassword = '/auth/reset-password';
   static const String verifyCode = '/auth/verify-otp';

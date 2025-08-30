@@ -17,10 +17,13 @@ class ChangePasswordFromProfileScreen extends StatefulWidget {
 }
 
 class _RestartPasswordState extends State<ChangePasswordFromProfileScreen> {
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _repeatPasswordController =
       TextEditingController();
 
+  bool _showCurrentPassword = false;
   bool _showNewPassword = false;
   bool _showRepeatPassword = false;
 
@@ -59,16 +62,19 @@ class _RestartPasswordState extends State<ChangePasswordFromProfileScreen> {
   @override
   void initState() {
     super.initState();
+    _currentPasswordController.addListener(_updateState);
     _newPasswordController.addListener(_updateState);
     _repeatPasswordController.addListener(_updateState);
   }
 
   @override
   void dispose() {
+    _currentPasswordController.removeListener(_updateState);
     _newPasswordController.removeListener(_updateState);
     _repeatPasswordController.removeListener(_updateState);
-    // _newPasswordController.dispose();
-    // _repeatPasswordController.dispose();
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _repeatPasswordController.dispose();
     super.dispose();
   }
 
@@ -105,6 +111,39 @@ class _RestartPasswordState extends State<ChangePasswordFromProfileScreen> {
                           child: Column(
                             children: [
                               const SizedBox(height: 32),
+                              //current password
+                              TextFormField(
+                                controller: _currentPasswordController,
+                                obscureText: !_showCurrentPassword,
+                                style: TextStyle(color: AppColors.secondayText),
+                                decoration: _buildInputDecoration(
+                                  hintText: "Current Password",
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _showCurrentPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppColors.secondayText,
+                                    ),
+                                    onPressed: () {
+                                      setState(
+                                        () =>
+                                            _showCurrentPassword =
+                                                !_showCurrentPassword,
+                                      );
+                                    },
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a password';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 16),
 
                               /// New Password
                               TextFormField(
@@ -208,13 +247,15 @@ class _RestartPasswordState extends State<ChangePasswordFromProfileScreen> {
                                         // print(
                                         //   "CONFIRM PASS: ${_repeatPasswordController.text}",
                                         // );
+                                        final String currentPass =
+                                            _currentPasswordController.text;
 
                                         final String pass =
                                             _newPasswordController.text;
                                         final String repPass =
                                             _repeatPasswordController.text;
-                                        authController.resetPassword(
-                                          widget.userEmail,
+                                        authController.changePassword(
+                                          currentPass,
                                           pass,
                                           repPass,
                                         );
