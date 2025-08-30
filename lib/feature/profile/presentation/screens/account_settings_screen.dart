@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/update_about_me_screen.dart';
 import '../../../../core/widgets/app_scaffold.dart';
-import '../../../auth/presentation/screens/common/language_picker_screen.dart';
 import 'common/update_personal_informetion_screen.dart';
+import 'common/update_spoken_language_screen_profile.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -47,7 +47,7 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.language_outlined,
                 text: "Spoken Language",
                 onTap: () {
-                  Get.to(LanguagePickerScreen(userRole: 'tourist'));
+                  Get.to(UpdateSpokenLanguageScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(

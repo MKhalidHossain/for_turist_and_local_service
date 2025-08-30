@@ -55,7 +55,7 @@ class _UpdateSpokenLanguageScreenState
         leading: BackButton(),
         title: const Text(
           maxLines: 2,
-          'What is your spoken  language?',
+          'Update your spoken language',
           style: TextStyle(
             color: Colors.black,
             fontSize: 24,
@@ -201,7 +201,7 @@ class _UpdateSpokenLanguageScreenState
                 //         }
                 //         : null,
                 child: const Text(
-                  "Continue",
+                  "Save",
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),

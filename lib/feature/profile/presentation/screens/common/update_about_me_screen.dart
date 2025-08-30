@@ -143,7 +143,6 @@ import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/validation/validators.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
-import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/wide_custom_button.dart';
 
@@ -159,9 +158,9 @@ class _UpdateAboutMeScreenProfileState
     extends State<UpdateAboutMeScreenProfile> {
   late TextEditingController _aboutMeController;
   final FocusNode _aboutMeFocus = FocusNode();
-  final _formKey = GlobalKey<FormState>(); // Fixed typo: _fromKey to _formKey
+  final _formKey = GlobalKey<FormState>(); 
   String? aboutMeText;
-  late ProfileController profileController; // Store controller reference
+  late ProfileController profileController; 
 
   @override
   void initState() {
@@ -325,7 +324,7 @@ class _UpdateAboutMeScreenProfileState
                             saveDescription();
                             // routing also in Save Description Funciton
                           },
-                          text: 'Update',
+                          text: 'Save',
                           buttonColor:
                               isFormValid
                                   ? AppColors.context(context).primaryColor

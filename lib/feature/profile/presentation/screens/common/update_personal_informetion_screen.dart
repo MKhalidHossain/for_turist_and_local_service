@@ -284,7 +284,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                     // );
                   }
                 },
-                text: "Update",
+                text: "Save",
                 backgroundColor:
                     isFormValid
                         ? AppColors.context(context).primaryColor
