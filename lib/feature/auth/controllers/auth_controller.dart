@@ -577,7 +577,7 @@ class AuthController extends GetxController implements GetxService {
   ) async {
     changePasswordIsLoading = true;
     update();
-
+    Response? response;
     try {
       Response? response = await authServiceInterface.changePassword(
         currentPassword,
@@ -596,10 +596,12 @@ class AuthController extends GetxController implements GetxService {
       }
     } catch (e) {
       print("❌ Error changing password: $e");
-      showCustomSnackBar(
-        "Something went wrong. Please try again later.",
-        isError: true,
-      );
+      // ApiChecker.checkApi(response!);
+      Get.snackbar('Error occures', 'error is : $e');
+      // showCustomSnackBar(
+      //   "Something went wrong. Please try again later. Error is : $e",
+      //   isError: true,
+      // );
     }
 
     changePasswordIsLoading = false;
