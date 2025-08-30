@@ -1,165 +1,26 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import '../../../../../core/constants/app_colors.dart';
-// import '../../../../../core/widgets/wide_custom_button.dart';
-// import '../../../controllers/profile_controller.dart';
-// import '../account_settings_screen.dart';
-
-// class AboutMeScreenProfile extends StatefulWidget {
-//   const AboutMeScreenProfile({Key? key}) : super(key: key);
-
-//   @override
-//   State<AboutMeScreenProfile> createState() => _AboutMeScreenProfileState();
-// }
-
-// class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
-//   final _formKey = GlobalKey<FormState>();
-//   final TextEditingController _aboutMeController = TextEditingController();
-
-//   late ProfileController profileController;
-
-//   String? _initialDescription;
-//   bool _isFormValid = false;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     profileController = Get.find<ProfileController>();
-
-//     // Load current description after widget builds
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       final currentDescription =
-//           profileController.getProfileResponseModel?.data?.description ?? "";
-//       _aboutMeController.text = currentDescription;
-//       _initialDescription = currentDescription;
-//       _validateForm();
-//     });
-
-//     _aboutMeController.addListener(_onFieldChanged);
-//   }
-
-//   void _onFieldChanged() {
-//     _validateForm();
-//   }
-
-//   void _validateForm() {
-//     final text = _aboutMeController.text.trim();
-//     final isChanged = text != _initialDescription;
-//     final isValid = text.isNotEmpty;
-
-//     setState(() {
-//       _isFormValid = isChanged && isValid;
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     _aboutMeController.dispose();
-//     super.dispose();
-//   }
-
-//   Future<void> _saveDescription() async {
-//     if (!_formKey.currentState!.validate()) return;
-
-//     await profileController.updateSpacificFieldUserProfile(
-//       description: _aboutMeController.text.trim(),
-//     );
-
-//     if (!mounted) return;
-
-//     // Update initial description so Save button disables again
-//     setState(() {
-//       _initialDescription = _aboutMeController.text.trim();
-//       _isFormValid = false;
-//     });
-
-//     // Navigate back to Account Settings
-//     Get.to(() => const AccountSettingsScreen());
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("About Me"),
-//         backgroundColor: AppColors.context(context).primaryColor,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Form(
-//           key: _formKey,
-//           child: Column(
-//             children: [
-//               TextFormField(
-//                 controller: _aboutMeController,
-//                 maxLines: 4,
-//                 decoration: const InputDecoration(
-//                   labelText: "Tell us about yourself",
-//                   border: OutlineInputBorder(),
-//                 ),
-//                 validator: (value) {
-//                   if (value == null || value.trim().isEmpty) {
-//                     return "Description cannot be empty";
-//                   }
-//                   return null;
-//                 },
-//               ),
-//               const SizedBox(height: 24),
-//               WideCustomButton(
-//                 onPressed: () async {
-//                   if (!_formKey.currentState!.validate()) return;
-
-//                   await profileController.updateSpacificFieldUserProfile(
-//                     description: _aboutMeController.text.trim(),
-//                   );
-
-//                   if (!mounted) return;
-
-//                   // Update initial description so Save button disables again
-//                   setState(() {
-//                     _initialDescription = _aboutMeController.text.trim();
-//                     _isFormValid = false;
-//                   });
-
-//                   // Navigate back to Account Settings
-//                   Get.to(() => const AccountSettingsScreen());
-//                 },
-//                 text: 'Save',
-//                 buttonColor:
-//                     _isFormValid
-//                         ? AppColors.context(context).primaryColor
-//                         : AppColors.secondaryColor,
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/validation/validators.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
-import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/widgets/wide_custom_button.dart';
 
-class AboutMeScreenProfile extends StatefulWidget {
-  const AboutMeScreenProfile({super.key});
+class UpdateAboutMeScreenProfile extends StatefulWidget {
+  const UpdateAboutMeScreenProfile({super.key});
 
   @override
-  State<AboutMeScreenProfile> createState() => _AboutMeScreenProfileState();
+  State<UpdateAboutMeScreenProfile> createState() =>
+      _UpdateAboutMeScreenProfileState();
 }
 
-class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
+class _UpdateAboutMeScreenProfileState
+    extends State<UpdateAboutMeScreenProfile> {
   late TextEditingController _aboutMeController;
   final FocusNode _aboutMeFocus = FocusNode();
-  final _formKey = GlobalKey<FormState>(); // Fixed typo: _fromKey to _formKey
+  final _formKey = GlobalKey<FormState>(); 
   String? aboutMeText;
-  late ProfileController profileController; // Store controller reference
+  late ProfileController profileController; 
 
   @override
   void initState() {
@@ -199,13 +60,12 @@ class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
         null;
   }
 
-  //  Save description using ProfileController
   void saveDescription() async {
     if (_formKey.currentState!.validate()) {
       await profileController.updateSpacificFieldUserProfile(
         description: _aboutMeController.text,
       );
-      Get.to(() => AccountSettingsScreen());
+      Get.to(() => UpdateAboutMeScreenProfile());
     }
   }
 
@@ -321,9 +181,8 @@ class _AboutMeScreenProfileState extends State<AboutMeScreenProfile> {
                         WideCustomButton(
                           onPressed: () {
                             saveDescription();
-                            Get.to(AccountSettingsScreen());
                           },
-                          text: 'Update',
+                          text: 'Save',
                           buttonColor:
                               isFormValid
                                   ? AppColors.context(context).primaryColor

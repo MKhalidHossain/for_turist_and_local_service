@@ -6,6 +6,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/user_login_scree
 import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
 import 'package:kobeur/feature/auth/repositories/tourist/auth_repository.dart';
+import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
@@ -218,6 +219,98 @@ class AuthController extends GetxController implements GetxService {
     }
   }
 
+  // Future<void> login(String email, String password) async {
+  //   _isLoading = true;
+  //   update();
+  //   print("LOGIN API BODY: {email: $email, password: $password}");
+
+  //   try {
+  //     Response? response = await authServiceInterface.login(email, password);
+
+  //     if (response == null) {
+  //       _isLoading = false;
+  //       update();
+  //       print("❌ No response from server");
+  //       showCustomSnackBar("No response from server", isError: true);
+  //       return;
+  //     }
+
+  //     if (response.statusCode == 200) {
+  //       // Successful login
+  //       logInResponseModel = LogInResponseModel.fromJson(response.body);
+
+  //       final String refreshToken = logInResponseModel!.data!.refreshToken!;
+  //       final String token = logInResponseModel!.data!.accessToken!;
+
+  //       print(
+  //         "LOGIN SUCCESS: AccessToken: $token, RefreshToken: $refreshToken",
+  //       );
+
+  //       await setUserToken(token, refreshToken);
+  //       await _loadUserRole();
+
+  //       authServiceInterface.chooseRole(userRole!, token);
+
+  //       // Navigate based on user role
+  //       if (userRole != null && userRole!.isNotEmpty) {
+  //         final role = userRole!.toLowerCase();
+  //         if (role == 'tourist') {
+  //           Get.offAll(() => BottomNavbar(userRole: userRole));
+  //         } else if (role == 'local') {
+  //           Get.offAll(() => CreateFirstServiceScreen());
+  //         } else {
+  //           showCustomSnackBar(
+  //             'You have not selected your role yet, please select your role',
+  //             isError: true,
+  //           );
+  //         }
+  //       } else {
+  //         showCustomSnackBar(
+  //           'You have not selected your role yet, please select your role',
+  //           isError: true,
+  //         );
+  //         Get.offAll(() => UserLoginScreen());
+  //       }
+
+  //       showCustomSnackBar('Welcome, you have successfully Logged In');
+  //     } else if (response.statusCode == 202) {
+  //       // Optional: handle unverified phone
+  //       final isPhoneVerified = response.body['data']['is_phone_verified'];
+  //       if (isPhoneVerified == 0) {
+  //         print("❌ Phone not verified");
+  //         showCustomSnackBar('Please verify your phone first', isError: true);
+  //       }
+  //     } else if (response.statusCode == 401) {
+  //       print("❌ Unauthorized login attempt");
+  //       showCustomSnackBar(
+  //         "Sorry, you don't have an account. Please create an account.",
+  //         isError: true,
+  //       );
+  //       Get.offAll(() => UserSignupScreen());
+  //     } else {
+  //       // Any other API error
+  //       print('❌ Login failed: ${response.statusCode} ${response.body}');
+  //       ApiChecker.checkApi(response);
+  //       showCustomSnackBar(
+  //         response.body['message'] ?? "Login failed. Please try again.",
+  //         isError: true,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     _isLoading = false;
+  //     print("❌ Error during login: $e");
+  //     showCustomSnackBar(
+  //       "Something went wrong. Please try again later.",
+  //       isError: true,
+  //     );
+  //   } finally {
+  //     _isLoading = false;
+  //     update();
+  //   }
+  // }
+
+  //testing to commnet this main file can not remove this
+
   Future<void> login(String email, String password) async {
     _isLoading = true;
     update();
@@ -250,20 +343,15 @@ class AuthController extends GetxController implements GetxService {
       // );
       await setUserToken(token, refreshToken);
 
-    
-
       debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
 
       await _loadUserRole();
-
-
-    
 
       debugPrint("✅ Access Token: $token\n");
       debugPrint("✅ Refresh Token: $refreshToken\n");
       debugPrint("✅ User Role: $userRole\n");
 
-        authServiceInterface.chooseRole(userRole!, token);
+      authServiceInterface.chooseRole(userRole!, token);
 
       debugPrint(
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
@@ -299,9 +387,11 @@ class AuthController extends GetxController implements GetxService {
       _isLoading = false;
     } else if (response.statusCode == 202) {
       if (response.body['data']['is_phone_verified'] == 0) {}
-    } else if (response.statusCode == 400) {
+    } else if (response.statusCode == 401) {
       Get.offAll(UserSignupScreen());
-      showCustomSnackBar('Sorry you have no account, please create a account');
+      showCustomSnackBar(
+        "Sorry you don't have no account, please create a account",
+      );
     } else {
       _isLoading = false;
       ApiChecker.checkApi(response);
@@ -470,9 +560,7 @@ class AuthController extends GetxController implements GetxService {
     );
     if (response!.statusCode == 200) {
       showCustomSnackBar('Password Change Successfully');
-      // logOut();
-      // Get.to(UserLoginScreen());
-      Get.offAll(() => UserLoginScreen());
+      Get.offAll(() => AccountSettingsScreen());
     } else {
       showCustomSnackBar(response.body['message'] ?? 'Something went wrong');
       ApiChecker.checkApi(response);
@@ -489,7 +577,7 @@ class AuthController extends GetxController implements GetxService {
   ) async {
     changePasswordIsLoading = true;
     update();
-
+    Response? response;
     try {
       Response? response = await authServiceInterface.changePassword(
         currentPassword,
@@ -501,17 +589,19 @@ class AuthController extends GetxController implements GetxService {
 
       if (response!.statusCode == 200) {
         showCustomSnackBar('Password Change Successfully');
-        // logOut();
-        Get.offAll(() => UserLoginScreen());
+        debugPrint(response.body);
+        Get.offAll(() => AccountSettingsScreen());
       } else {
         ApiChecker.checkApi(response);
       }
     } catch (e) {
       print("❌ Error changing password: $e");
-      showCustomSnackBar(
-        "Something went wrong. Please try again later.",
-        isError: true,
-      );
+      // ApiChecker.checkApi(response!);
+      Get.snackbar('Error occures', 'error is : $e');
+      // showCustomSnackBar(
+      //   "Something went wrong. Please try again later. Error is : $e",
+      //   isError: true,
+      // );
     }
 
     changePasswordIsLoading = false;

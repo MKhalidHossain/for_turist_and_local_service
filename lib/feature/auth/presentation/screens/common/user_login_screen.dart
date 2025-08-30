@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
@@ -17,9 +15,7 @@ import 'user_signup_screen.dart';
 //import '../widgets/app_scaffold.dart';
 
 class UserLoginScreen extends StatefulWidget {
-
-
-  UserLoginScreen({super.key, });
+  UserLoginScreen({super.key});
 
   @override
   State<UserLoginScreen> createState() => UserLoginScreenState();
@@ -49,10 +45,6 @@ class UserLoginScreenState extends State<UserLoginScreen> {
 
     super.dispose();
   }
-  
-
-   
-
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +114,14 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                     color: AppColors.secondayText,
                                   ),
                                 ),
+                                filled: true,
+                                fillColor: const Color(
+                                  0xffC4C4C4,
+                                ).withOpacity(0.25),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
                               ),
                               onFieldSubmitted:
                                   (_) => FocusScope.of(
@@ -158,6 +158,14 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                   style: TextStyle(
                                     color: AppColors.secondayText,
                                   ),
+                                ),
+                                filled: true,
+                                fillColor: const Color(
+                                  0xffC4C4C4,
+                                ).withOpacity(0.25),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
                                 ),
                               ),
                               obscureText: true,
@@ -203,11 +211,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                     'minimum password length is 8',
                                   );
                                 } else {
-                                  authController.login(
-                                    email,
-                                    password,
-                                    
-                                  );
+                                  authController.login(email, password);
                                   // bool success = await authController.login(email, password);
                                   // if (success && widget.onLoginSuccess != null) {
                                   //   widget.onLoginSuccess?.call();

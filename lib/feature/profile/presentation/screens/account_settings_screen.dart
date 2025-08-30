@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/update_about_me_screen.dart';
 import '../../../../core/widgets/app_scaffold.dart';
-import '../../../auth/presentation/screens/common/language_picker_screen.dart';
+import 'common/change_password_from_profile_screen.dart';
 import 'common/update_personal_informetion_screen.dart';
+import 'common/update_spoken_language_screen_profile.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -40,21 +41,21 @@ class AccountSettingsScreen extends StatelessWidget {
                 icon: Icons.document_scanner_outlined,
                 text: "About Me",
                 onTap: () {
-                  Get.to(AboutMeScreenProfile());
+                  Get.to(UpdateAboutMeScreenProfile());
                 },
               ),
               _buildMenuItem(
                 icon: Icons.language_outlined,
                 text: "Spoken Language",
                 onTap: () {
-                  Get.to(LanguagePickerScreen(userRole: 'tourist'));
+                  Get.to(UpdateSpokenLanguageScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(
                 icon: Icons.lock_outline_rounded,
                 text: "Change Password",
                 onTap: () {
-                  Get.to(ChangePassword(userEmail: 'compilefiller@gmail'));
+                  Get.to(ChangePasswordFromProfileScreen(userEmail: 'compilefiller@gmail.com',));
                 },
               ),
 
