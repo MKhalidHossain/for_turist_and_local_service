@@ -20,7 +20,9 @@ class _UpdateSpokenLanguageScreenState
   late ProfileController profileController;
   Set<String> selectedLanguages = {};
   List<Country> filteredCountries = countries;
-  String? language;
+  List<String>? userLanguage;
+
+
 
   void onSearch(String query) {
     setState(() {
@@ -36,10 +38,10 @@ class _UpdateSpokenLanguageScreenState
 
   void onSelect(Country country) {
     setState(() {
-      if (selectedLanguages.contains(country.name)) {
-        selectedLanguages.remove(country.name);
+      if (selectedLanguages.contains( country.name)) {
+        selectedLanguages.remove( country.name);
       } else {
-        selectedLanguages.add(country.name);
+        selectedLanguages.add( country.name);
       }
     });
   }
@@ -48,8 +50,16 @@ class _UpdateSpokenLanguageScreenState
   void initState() {
     super.initState();
     profileController = Get.find<ProfileController>();
-    profileController.getUserProfile();
-    language = profileController.getProfileResponseModel?.data?.languages.toString() ?? '';
+    profileController.getUserProfile().then(
+     final userLanguages = profileController.getProfileResponseModel?.data?.languages;
+      if (userLanguages != null && userLanguages.isNotEmpty) {
+        setState(() {
+          // assuming languages is a List<String>
+          selectedLanguages = userLanguages.toSet();
+        })
+        }
+    );
+
   }
 
   // void onSelect(Country country) {
