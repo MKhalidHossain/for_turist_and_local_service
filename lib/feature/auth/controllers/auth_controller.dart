@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -577,7 +579,6 @@ class AuthController extends GetxController implements GetxService {
   ) async {
     changePasswordIsLoading = true;
     update();
-    Response? response;
     try {
       Response? response = await authServiceInterface.changePassword(
         currentPassword,
@@ -588,20 +589,37 @@ class AuthController extends GetxController implements GetxService {
       print("Check the response data-> ${response}");
 
       if (response!.statusCode == 200) {
-        showCustomSnackBar('Password Change Successfully');
-        debugPrint(response.body);
-        Get.offAll(() => AccountSettingsScreen());
+        Get.snackbar("Success", "Password Change Successfully");
+        // debugPrint(response.body.toString());
+        debugPrint(jsonEncode(response.body));
+        Get.off(() => AccountSettingsScreen());
       } else {
+        _isLoading = false;
         ApiChecker.checkApi(response);
+        if (response.statusCode == 400) {
+          Get.snackbar(
+            "Failed",
+            response.body['message'] ?? 'Something went wrong',
+          );
+        } else {
+          Get.snackbar(
+            "Failed",
+            response.body['message'] ??
+                "Registration failed. Please try again.",
+          );
+        }
+        print(
+          ' ❌ Registration failed: ${response.statusCode} ${response.body} ',
+        );
       }
     } catch (e) {
+      _isLoading = false;
       print("❌ Error changing password: $e");
-      // ApiChecker.checkApi(response!);
       Get.snackbar('Error occures', 'error is : $e');
-      // showCustomSnackBar(
-      //   "Something went wrong. Please try again later. Error is : $e",
-      //   isError: true,
-      // );
+      showCustomSnackBar(
+        "Something went wrong. Please try again later. Error is : $e",
+        isError: true,
+      );
     }
 
     changePasswordIsLoading = false;
