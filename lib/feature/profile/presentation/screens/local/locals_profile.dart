@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/booking_tourist/presentation/screens/offer_screen.dart';
+import 'package:kobeur/feature/booking_module/presentation/screens/offer_screen.dart';
 
 class LocalsProfileScreen extends StatelessWidget {
   const LocalsProfileScreen({super.key});
