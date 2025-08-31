@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../core/themes/app_color.dart';
 import '../feature/home/presentation/screens/tourist/home_screen.dart';
 import '../feature/trip_local/presentation/screens/bookings_screen.dart';
