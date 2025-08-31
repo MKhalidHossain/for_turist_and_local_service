@@ -72,7 +72,7 @@ class _UpdateSpokenLanguageScreenState
         original.contains(selectedLanguages);
   }
 
-  void saveSpokenLanguagesScreen() async {
+  void saveSpokenLanguages() async {
     if (selectedLanguages.isNotEmpty && isFormValid) {
       await profileController.updateSpacificFieldUserProfile(
         languages: selectedLanguages.toList(),
@@ -168,7 +168,7 @@ class _UpdateSpokenLanguageScreenState
                     onPressed:
                         selectedLanguages.isNotEmpty && isFormValid
                             ? () {
-                              saveSpokenLanguagesScreen();
+                              saveSpokenLanguages();
                             }
                             : null,
                     child: const Text(

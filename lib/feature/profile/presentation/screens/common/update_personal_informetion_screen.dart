@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
+import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/validation/validators.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
@@ -183,7 +183,12 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
         return AppScaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            leading: const BackButton(),
+            leading: BackButton(
+              color: Colors.black,
+              onPressed: () {
+                Get.back();
+              },
+            ),
             title: const Text(
               'Update Personal Information',
               style: TextStyle(
