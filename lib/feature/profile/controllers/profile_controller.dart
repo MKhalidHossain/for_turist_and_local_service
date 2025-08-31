@@ -306,20 +306,20 @@ class ProfileController extends GetxController implements GetxService {
           "New data added successfully",
         );
 
-        // ✅ Handle userRole navigation logic
-        if (isValidUser && userRole != null && userRole.isNotEmpty) {
-          if (userRole.toLowerCase() == 'tourist') {
-            Get.offAll(() => BottomNavbar(userRole: userRole));
-          } else if (userRole.toLowerCase() == 'local') {
-            Get.offAll(() => CreateFirstServiceScreen());
-          } else {
-            showCustomSnackBar(
-              'You have not selected your role yet, please select your role',
-              isError: true,
-            );
-            Get.offAll(() => UserLoginScreen());
-          }
-        }
+        // // ✅ Handle userRole navigation logic
+        // if (isValidUser && userRole != null && userRole.isNotEmpty) {
+        //   if (userRole.toLowerCase() == 'tourist') {
+        //     Get.offAll(() => BottomNavbar(userRole: userRole));
+        //   } else if (userRole.toLowerCase() == 'local') {
+        //     Get.offAll(() => CreateFirstServiceScreen());
+        //   } else {
+        //     showCustomSnackBar(
+        //       'You have not selected your role yet, please select your role',
+        //       isError: true,
+        //     );
+        //     Get.offAll(() => UserLoginScreen());
+        //   }
+        // }
       } else {
         Get.snackbar(
           'Error',
