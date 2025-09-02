@@ -73,8 +73,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CircleAvatar(
                         radius: 35,
                         backgroundColor: Colors.grey[200],
-                        child: Obx(() =>
-                           ClipOval(
+                        child: Obx(
+                          () => ClipOval(
                             child:
                                 (profileController.image.value != null &&
                                         (profileController
@@ -88,7 +88,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fit: BoxFit.cover,
                                       width: 70,
                                       height: 70,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorBuilder: (
+                                        context,
+                                        error,
+                                        stackTrace,
+                                      ) {
                                         return Image.asset(
                                           'assets/images/profileBlankImage.png',
                                           fit: BoxFit.cover,
@@ -136,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       () => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          " ${profileController.name.value ?? 'No'} ${profileController.getProfileResponseModel?.data?.lastName ?? 'Name'}"
+                          " ${profileController.name.value ?? 'No'}"
                               .text20Grey700(),
                           "${profileController.nationality.value ?? 'Nationality'}"
                               .text16Grey(),

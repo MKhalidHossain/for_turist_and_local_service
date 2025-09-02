@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
-
 import '../../../../core/common/button/button_widget.dart';
 import '../../../trip_module/presentation/screens/booking_details_screen.dart';
 import '../../../trip_module/presentation/widgets/bookingtabber_widget.dart';
 import '../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 
-class BookingsPage extends StatefulWidget {
-  const BookingsPage({super.key});
+class TripScreen extends StatefulWidget {
+  const TripScreen({super.key});
 
   @override
-  State<BookingsPage> createState() => _BookingsPageState();
+  State<TripScreen> createState() => _TripScreenState();
 }
 
-class _BookingsPageState extends State<BookingsPage> {
+class _TripScreenState extends State<TripScreen> {
   int selectedTab = 0;
 
   @override
@@ -23,7 +22,7 @@ class _BookingsPageState extends State<BookingsPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: 'My Bookings'.text24Black(),
+        title: 'My Trip'.text24Black(),
         centerTitle: false,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -102,7 +101,7 @@ class _BookingsPageState extends State<BookingsPage> {
           ),
         );
       case 2:
-        return Center(child: 'No cancelled bookings yet!'.text16Grey());
+        return Center(child: 'No cancelled Trip yet!'.text16Grey());
       default:
         return Center(child: 'Unknown Tab'.text16Grey());
     }

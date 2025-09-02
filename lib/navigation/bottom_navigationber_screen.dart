@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:kobeur/feature/trip_module/presentation/screens/trip_screen.dart';
 import '../core/themes/app_color.dart';
-import '../feature/home/presentation/screens/tourist/home_screen.dart';
-import '../feature/trip_local/presentation/screens/bookings_screen.dart';
+import '../feature/home/presentation/screens/local/home_screen_local.dart';
+import '../feature/home/presentation/screens/tourist/home_screen_tourist.dart';
+import '../feature/trip_module/presentation/screens/bookings_screen.dart';
 import '../feature/chat/tourist/message/presentation/screens/message_screen.dart';
 import '../feature/profile/presentation/screens/profile_screen.dart';
 
@@ -15,13 +17,18 @@ class BottomNavbar extends StatefulWidget {
 
 class _BottomNavbarState extends State<BottomNavbar> {
   int _selectedIndex = 0;
+  late List<Widget> _screens;
 
-  final List<Widget> _screens = [
-    HomeScreen(),
-    BookingsPage(),
-    MessagesScreen(),
-    ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      widget.userRole == 'tourist' ? HomeScreen() : HomeScreenLocal(),
+      widget.userRole == 'tourist' ? BookingsScreen() : TripScreen(),
+      MessagesScreen(),
+      ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +63,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 //   'assets/icons/chat.png',
                 //   'assets/icons/profile.png',
                 // ];
-                final labels = ['Home', 'Bookings', 'Messages', 'Profile'];
+                final labels = [
+                  'Home',
+                  widget.userRole == 'tourist' ? 'Bookings' : 'My Trip',
+                  'Messages',
+                  'Profile',
+                ];
 
                 return GestureDetector(
                   onTap: () {
