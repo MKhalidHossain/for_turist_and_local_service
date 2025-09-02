@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 import '../../../../../core/widgets/choose_country/model/country.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/booking_tourist/presentation/screens/booking_confarm.dart';
+import 'package:kobeur/feature/booking_module/presentation/screens/booking_confarm.dart';
 
 class BookingOfferSummaryScreen extends StatefulWidget {
   @override
