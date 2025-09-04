@@ -234,7 +234,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Search Bar
               Padding(
                 padding: EdgeInsets.all(16),
                 child: GestureDetector(
