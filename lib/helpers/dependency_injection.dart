@@ -1,4 +1,9 @@
 import 'package:get/get.dart';
+import 'package:kobeur/feature/home/controllers/local_home_controller.dart';
+import 'package:kobeur/feature/home/repositories/local/local_home_repository.dart';
+import 'package:kobeur/feature/home/repositories/local/local_home_repository_interface.dart';
+import 'package:kobeur/feature/home/services/local/local_home_service.dart';
+import 'package:kobeur/feature/home/services/local/local_home_service_interface.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/urls.dart';
@@ -44,21 +49,6 @@ Future<void> initDI() async {
   ///
   ///
 
-  // // 1. Register ProfileRepository as ProfileRepositoryInterface
-  // Get.lazyPut<ProfileRepositoryInterface>(
-  //   () => ProfileRepository(apiClient: apiClient, sharedPreferences: prefs),
-  // );
-
-  // // 2. Register ProfileService as ProfileServiceInterface
-  // Get.lazyPut<ProfileServiceInterface>(
-  //   () => ProfileService(profileRepositoryInterface: Get.find()),
-  // );
-
-  // // 3. Register ProfileController
-  // Get.lazyPut(() => ProfileController(profileServiceInterface: Get.find()));
-
-  //
-
   ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
     apiClient,
     prefs,
@@ -68,6 +58,22 @@ Future<void> initDI() async {
   Get.lazyPut(() => profileServiceInterface);
   Get.lazyPut(() => ProfileController(profileServiceInterface));
   Get.lazyPut(() => ProfileService(Get.find()));
+
+
+
+    //////////// Profile Service, Repository and Controller ////////////////////////////////
+  ///
+  ///
+
+  LocalHomeRepositoryInterface localHomeRepositoryInterface = LocalHomeRepository(
+    apiClient,
+    prefs,
+  );
+  Get.lazyPut(() => localHomeRepositoryInterface);
+  LocalHomeServiceInterface localHomeServiceInterface = LocalHomeService(Get.find());
+  Get.lazyPut(() => localHomeServiceInterface);
+  Get.lazyPut(() => LocalHomeController( localHomeServiceInterface));
+  Get.lazyPut(() => LocalHomeService(Get.find()));
 
   //
 

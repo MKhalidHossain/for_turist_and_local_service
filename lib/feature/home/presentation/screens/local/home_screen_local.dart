@@ -6,179 +6,210 @@ import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_sc
 import '../../../../../core/common/button/button_widget.dart';
 import '../../../../trip_module/presentation/screens/booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
+import '../../../controllers/local_home_controller.dart';
 
-class HomeScreenLocal extends StatelessWidget {
+class HomeScreenLocal extends StatefulWidget {
   const HomeScreenLocal({super.key});
 
   @override
+  State<HomeScreenLocal> createState() => _HomeScreenLocalState();
+}
+
+class _HomeScreenLocalState extends State<HomeScreenLocal> {
+  @override
+  late LocalHomeController localHomeController;
+
+  void initState() {
+    super.initState();
+    localHomeController = Get.find<LocalHomeController>();
+    localHomeController.getHome();
+
+    print(
+      "Home Screen (initState): ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length}",
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 28,
-                    backgroundImage: AssetImage("assets/images/user.png"),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
+    return GetBuilder<LocalHomeController>(
+      builder: (localHomeController) {
+        return localHomeController.isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Scaffold(
+              backgroundColor: const Color(0xFFF5F5F5),
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      "Hello, User Name".text22Black700(),
-                      "@username".text14Grey(),
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            radius: 28,
+                            backgroundImage: AssetImage(
+                              "assets/images/user.png",
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              "Hello, User Name".text22Black700(),
+                              "@username".text14Grey(),
+                            ],
+                          ),
+                          const Spacer(),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4),
+                            child: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 36,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      /// Stats Row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Expanded(
+                            child: _StatCard(
+                              image: 'assets/icons/dolar.png',
+                              label: "Earnings",
+                              value: "\$5250",
+                              subText: "All time",
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: _StatCard(
+                              image: 'assets/icons/totalTour.png',
+                              label: "Total Tour",
+                              value: "105",
+                              subText: "All time",
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: _StatCard(
+                              image: 'assets/icons/starIcon.png',
+                              label: "Rating",
+                              value: "4.9",
+                              subText: "5.0",
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+                      "Live Trip".text20Black700(),
+
+                      const SizedBox(height: 12),
+                      GestureDetector(
+                        onTap: () => Get.to(() => BookingDetailsScreen()),
+                        child: Column(
+                          children: List.generate(
+                            2, // itemCount
+                            (index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: BookingCard(
+                                name: 'Jerome Bell',
+                                country: 'China',
+                                imageUrl: 'assets/images/user.png',
+                                category: 'Restaurant',
+                                dateTime: '9:00 AM, 11/06/25',
+                                people: '04 People',
+                                price: '\$125.00',
+                                actionButton: SecondaryButton(
+                                  text: "Message Tourist",
+                                  onPressed: () {
+                                    Get.to(() => ChatScreen());
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      /// Upcoming Trip + See All
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          "Upcoming Trip".text20Black700(),
+                          Text(
+                            "See All",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 12),
+
+                      /// Upcoming Trip List
+                      GestureDetector(
+                        onTap: () => Get.to(() => BookingDetailsScreen()),
+                        child: Column(
+                          children: List.generate(
+                            3, // itemCount
+                            (index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: BookingCard(
+                                name: 'Jerome Bell',
+                                country: 'China',
+                                imageUrl: 'assets/images/user.png',
+                                category: 'Restaurant',
+                                dateTime: '9:00 AM, 11/06/25',
+                                people: '04 People',
+                                price: '\$125.00',
+                                actionButton: SecondaryButton(
+                                  text: "Message Tourist",
+                                  onPressed: () {
+                                    Get.to(() => ChatScreen());
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Column(
+                      //   children: List.generate(
+                      //     3,
+                      //     (index) => Padding(
+                      //       padding: const EdgeInsets.only(bottom: 12),
+                      //       child: TripCardWidget(
+                      //         name: "Kristin Watson",
+                      //         country: "China",
+                      //         category: "Restaurant",
+                      //         dateTime: "9:00 AM, 11/06/25",
+                      //         people: "04 People",
+                      //         price: "\$125.00",
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
-                  const Spacer(),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(Icons.add, color: Colors.white, size: 36),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 16),
-
-              /// Stats Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Expanded(
-                    child: _StatCard(
-                      image: 'assets/icons/dolar.png',
-                      label: "Earnings",
-                      value: "\$5250",
-                      subText: "All time",
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _StatCard(
-                      image: 'assets/icons/totalTour.png',
-                      label: "Total Tour",
-                      value: "105",
-                      subText: "All time",
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _StatCard(
-                      image: 'assets/icons/starIcon.png',
-                      label: "Rating",
-                      value: "4.9",
-                      subText: "5.0",
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-              "Live Trip".text20Black700(),
-
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () => Get.to(() => BookingDetailsScreen()),
-                child: Column(
-                  children: List.generate(
-                    2, // itemCount
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: BookingCard(
-                        name: 'Jerome Bell',
-                        country: 'China',
-                        imageUrl: 'assets/images/user.png',
-                        category: 'Restaurant',
-                        dateTime: '9:00 AM, 11/06/25',
-                        people: '04 People',
-                        price: '\$125.00',
-                        actionButton: SecondaryButton(
-                          text: "Message Tourist",
-                          onPressed: () {
-                            Get.to(() => ChatScreen());
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
-
-              const SizedBox(height: 20),
-
-              /// Upcoming Trip + See All
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  "Upcoming Trip".text20Black700(),
-                  Text(
-                    "See All",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              /// Upcoming Trip List
-              GestureDetector(
-                onTap: () => Get.to(() => BookingDetailsScreen()),
-                child: Column(
-                  children: List.generate(
-                    3, // itemCount
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: BookingCard(
-                        name: 'Jerome Bell',
-                        country: 'China',
-                        imageUrl: 'assets/images/user.png',
-                        category: 'Restaurant',
-                        dateTime: '9:00 AM, 11/06/25',
-                        people: '04 People',
-                        price: '\$125.00',
-                        actionButton: SecondaryButton(
-                          text: "Message Tourist",
-                          onPressed: () {
-                            Get.to(() => ChatScreen());
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Column(
-              //   children: List.generate(
-              //     3,
-              //     (index) => Padding(
-              //       padding: const EdgeInsets.only(bottom: 12),
-              //       child: TripCardWidget(
-              //         name: "Kristin Watson",
-              //         country: "China",
-              //         category: "Restaurant",
-              //         dateTime: "9:00 AM, 11/06/25",
-              //         people: "04 People",
-              //         price: "\$125.00",
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        ),
-      ),
+            );
+      },
     );
   }
 }
