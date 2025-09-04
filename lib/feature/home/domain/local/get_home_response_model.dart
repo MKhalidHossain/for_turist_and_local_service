@@ -1,14 +1,14 @@
 class GetHomeResponseModel {
-  final int statusCode;
-  final bool success;
-  final String message;
-  final HomeData data;
+   int? statusCode;
+   bool? success;
+   String? message;
+   HomeData? data;
 
   GetHomeResponseModel({
-    required this.statusCode,
-    required this.success,
-    required this.message,
-    required this.data,
+     this.statusCode,
+     this.success,
+     this.message,
+     this.data,
   });
 
   factory GetHomeResponseModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class GetHomeResponseModel {
       'statusCode': statusCode,
       'success': success,
       'message': message,
-      'data': data.toJson(),
+      'data': data?.toJson(),
     };
   }
 }

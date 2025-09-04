@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 
 abstract class ProfileServiceInterface {
   Future<Response> getProfile();
+
   Future<Response> updateProfile({
     required String firstName,
     required String lastName,

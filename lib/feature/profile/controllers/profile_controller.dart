@@ -24,7 +24,6 @@ class ProfileController extends GetxController implements GetxService {
   }
 
   final ProfileServiceInterface profileServiceInterface;
-
   ProfileController(this.profileServiceInterface);
 
   GetProfileResponseModel? getProfileResponseModel = GetProfileResponseModel();
@@ -143,6 +142,7 @@ class ProfileController extends GetxController implements GetxService {
         );
       } else {
         print("❌ Failed to fetch profile: ${response.statusCode}\n");
+
       }
     } catch (e) {
       print("⚠️ Error fetching profile: $e\n");
