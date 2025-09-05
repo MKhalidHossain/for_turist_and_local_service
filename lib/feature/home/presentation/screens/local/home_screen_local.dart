@@ -19,6 +19,7 @@ class HomeScreenLocal extends StatefulWidget {
 class _HomeScreenLocalState extends State<HomeScreenLocal> {
   late LocalHomeController localHomeController;
   String? liveTripId;
+  // String? totalPrice;
 
   @override
   void initState() {
@@ -63,6 +64,11 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
       return "0:00 AM, 00/00/00";
     }
   }
+
+  // String totalPrice(String pricePerPerson, String participants) {
+  //   int total = int.parse(pricePerPerson) * int.parse(participants);
+  //   return total.toString();
+  // }
 
   @override
   Widget build(BuildContext context) {
