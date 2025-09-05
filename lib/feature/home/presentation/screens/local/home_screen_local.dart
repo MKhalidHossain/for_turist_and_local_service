@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/themes/app_color.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
 import '../../../../../core/common/button/button_widget.dart';
-import '../../../../trip_module/presentation/screens/booking_details_screen.dart';
+import '../../../../trip_module/presentation/screens/local/booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 import '../../../controllers/local_home_controller.dart';
 
@@ -16,23 +17,61 @@ class HomeScreenLocal extends StatefulWidget {
 }
 
 class _HomeScreenLocalState extends State<HomeScreenLocal> {
-  @override
   late LocalHomeController localHomeController;
+  String? liveTripId;
 
+  @override
   void initState() {
     super.initState();
     localHomeController = Get.find<LocalHomeController>();
-    localHomeController.getHome();
+
+    _initializeHomeData();
 
     print(
       "Home Screen (initState): ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length}",
     );
   }
 
+  Future<void> _initializeHomeData() async {
+    await localHomeController.getHome();
+    setState(() {
+      liveTripId = localHomeController.getHomeResponseModel.data?.liveTrip?.id;
+      if (liveTripId != null) {
+        localHomeController.getBookingDetails(liveTripId!);
+      }
+    });
+    print(
+      "Home Screen (initState): Upcoming Trips: ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length ?? 0}",
+    );
+    print(
+      "Home Screen (initState): Total Tours: ${localHomeController.getHomeResponseModel.data?.totalTours ?? 0}",
+    );
+  }
+
+  String formatTripDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) {
+      return "0:00 AM, 00/00/00";
+    }
+
+    try {
+      DateTime parsedDate = DateTime.parse(dateStr);
+      String formattedDate = DateFormat(
+        "h:mm a, dd/MM/yy",
+      ).format(parsedDate.toLocal());
+      return formattedDate;
+    } catch (e) {
+      return "0:00 AM, 00/00/00";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<LocalHomeController>(
       builder: (localHomeController) {
+        final bookingDetails =
+            localHomeController.getBookingDetailsResponseModel.data;
+        print("Booking Details: $bookingDetails");
+
         return localHomeController.isLoading
             ? const Center(child: CircularProgressIndicator())
             : Scaffold(
@@ -80,12 +119,14 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                       /// Stats Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
+                        children: [
                           Expanded(
                             child: _StatCard(
                               image: 'assets/icons/dolar.png',
                               label: "Earnings",
-                              value: "\$5250",
+                              value:
+                                  "\$${localHomeController.getHomeResponseModel.data?.earnings.toString() ?? 'no data'}",
+
                               subText: "All time",
                             ),
                           ),
@@ -94,7 +135,8 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                             child: _StatCard(
                               image: 'assets/icons/totalTour.png',
                               label: "Total Tour",
-                              value: "105",
+                              value:
+                                  "${localHomeController.getHomeResponseModel.data?.totalTours.toString() ?? 'no data'}",
                               subText: "All time",
                             ),
                           ),
@@ -103,7 +145,8 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                             child: _StatCard(
                               image: 'assets/icons/starIcon.png',
                               label: "Rating",
-                              value: "4.9",
+                              value:
+                                  "${localHomeController.getHomeResponseModel.data?.averageRating ?? 'no data'}",
                               subText: "5.0",
                             ),
                           ),
@@ -114,21 +157,75 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                       "Live Trip".text20Black700(),
 
                       const SizedBox(height: 12),
+
+                      //                       Column(
+                      //   children: bookingDetailsList != null && bookingDetailsList!.isNotEmpty
+                      //       ? bookingDetailsList!.map((booking) {
+                      //           return Padding(
+                      //             padding: const EdgeInsets.only(bottom: 12),
+                      //             child: GestureDetector(
+                      //               onTap: () => Get.to(() => BookingDetailsScreen(
+                      //                     bookingDetails: booking,
+                      //                   )),
+                      //               child: BookingCard(
+                      //                 name: booking.touristName ?? 'No Name',
+                      //                 country: booking.touristCountry ?? 'No Data',
+                      //                 imageUrl: 'assets/images/user.png',
+                      //                 category: booking.offerId?.category ?? 'No Category',
+                      //                 dateTime: formatTripDate(booking.date),
+                      //                 people:
+                      //                     '${booking.participants?.toString().padLeft(2, '0')} People',
+                      //                 price:
+                      //                     "\$${booking.offerId?.pricePerPerson?.toStringAsFixed(2) ?? '0.00'}",
+                      //                 actionButton: SecondaryButton(
+                      //                   text: "Message Tourist",
+                      //                   onPressed: () => Get.to(() => ChatScreen()),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           );
+                      //         }).toList()
+                      //       : [
+                      //           Center(
+                      //             child: Text(
+                      //               "No bookings found",
+                      //               style: TextStyle(color: Colors.grey),
+                      //             ),
+                      //           ),
+                      //         ],
+                      // )
                       GestureDetector(
-                        onTap: () => Get.to(() => BookingDetailsScreen()),
+                        onTap:
+                            () => Get.to(
+                              () => BookingDetailsScreen(
+                                bookingDetails: bookingDetails,
+                              ),
+                            ),
                         child: Column(
-                          children: List.generate(
-                            2, // itemCount
-                            (index) => Padding(
+                          children: [
+                            Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: BookingCard(
-                                name: 'Jerome Bell',
-                                country: 'China',
+                                name:
+                                    "${bookingDetails?.touristName} " ??
+                                    'No Name',
+                                country:
+                                    "${bookingDetails?.touristCountry} " ??
+                                    'No data',
+                                //
+                                // need to image add
                                 imageUrl: 'assets/images/user.png',
-                                category: 'Restaurant',
-                                dateTime: '9:00 AM, 11/06/25',
-                                people: '04 People',
-                                price: '\$125.00',
+                                category:
+                                    "${bookingDetails?.offerId?.category}",
+
+                                dateTime: formatTripDate(bookingDetails?.date),
+
+                                people:
+                                    '${bookingDetails?.participants?.toString().padLeft(2, '0')} People' ??
+                                    'No Data',
+                                // people: '04 People',
+                                price:
+                                    "\$${bookingDetails?.offerId!.pricePerPerson?.toStringAsFixed(2) ?? 'no data'}",
                                 actionButton: SecondaryButton(
                                   text: "Message Tourist",
                                   onPressed: () {
@@ -137,7 +234,7 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                                 ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ),
 

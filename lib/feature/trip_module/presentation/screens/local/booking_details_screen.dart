@@ -1,18 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
-import '../../../../core/widgets/app_scaffold.dart';
-import '../../../../core/extensions/text_extensions.dart';
-import '../../../chat/tourist/message/presentation/screens/chat_screen.dart';
+import '../../../../../core/widgets/app_scaffold.dart';
+import '../../../../../core/extensions/text_extensions.dart';
+import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
+import '../../../../home/domain/local/get_booking_details_response_model.dart';
 
 class BookingDetailsScreen extends StatelessWidget {
-  BookingDetailsScreen({super.key});
+  TripDetailsData? bookingDetails;
+  BookingDetailsScreen({super.key, this.bookingDetails});
 
   final instructions = [
     'Bring comfortable walking shoes and weather appropriate clothing.',
     'Your local guide will be wearing a blue badge for easy identification.',
     'Please arrive at the point 5 minutes before the scheduled time.',
   ];
+
+  String formatTripDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) {
+      return "0:00 AM, 00/00/00";
+    }
+
+    try {
+      DateTime parsedDate = DateTime.parse(dateStr);
+      String formattedDate = DateFormat(
+        "h:mm a, dd/MM/yy",
+      ).format(parsedDate.toLocal());
+      return formattedDate;
+    } catch (e) {
+      return "0:00 AM, 00/00/00";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +68,8 @@ class BookingDetailsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      'Jerome Bell'.text14Black600(),
-                      'China'.text14Grey(),
+                      "${bookingDetails?.touristName}".text14Black600(),
+                      '${bookingDetails?.touristCountry}'.text14Grey(),
                     ],
                   ),
                 ),
@@ -66,7 +85,7 @@ class BookingDetailsScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            'Experience'.text16Black600(),
+            '${bookingDetails?.offerId?.category}?.'.text16Black600(),
             const SizedBox(height: 12),
             Container(
               width: double.infinity,
@@ -80,8 +99,9 @@ class BookingDetailsScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      'City Tour'.text14Black600(),
-                      '\$125.00'.text16LightRed(),
+                      '${bookingDetails?.offerId?.offerType}'.text14Black600(),
+                      '\$ (${bookingDetails?.offerId?.pricePerPerson}.* ${bookingDetails?.participants})'
+                          .text16LightRed(),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -97,14 +117,16 @@ class BookingDetailsScreen extends StatelessWidget {
                             size: 14,
                           ),
                           const SizedBox(width: 4),
-                          '9:00 AM, 11/06/25'.text14Black(),
+                          '${formatTripDate(bookingDetails?.date)}'
+                              .text14Black(),
                         ],
                       ),
                       Row(
                         children: [
                           Image.asset('assets/icons/persons.png', height: 14),
                           const SizedBox(width: 4),
-                          '04 People'.text14Black(),
+                          '${bookingDetails?.participants.toString().padLeft(2, '0')} People'
+                              .text14Black(),
                         ],
                       ),
                     ],

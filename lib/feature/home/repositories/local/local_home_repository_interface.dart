@@ -15,7 +15,7 @@ abstract class LocalHomeRepositoryInterface {
     required String availabilityTimeSlots,
   });
   Future<Response> getHome();
-  Future<Response> getBookingDetails();
+  Future<Response> getBookingDetails(String tripId);
   Future<Response> getBookings(String status);
   Future<Response> cencelBookings(String id);
 }

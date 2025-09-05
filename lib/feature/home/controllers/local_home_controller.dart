@@ -6,16 +6,20 @@ import 'package:kobeur/feature/home/domain/local/get_home_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
 import 'package:kobeur/feature/home/services/local/local_home_service_interface.dart';
 
+import '../domain/local/get_booking_details_response_model.dart';
+
 class LocalHomeController extends GetxController implements GetxService {
-  final localHomeController = Get.find<LocalHomeController>();
+  // final localHomeController = Get.find<LocalHomeController>();
 
   final LocalHomeServiceInterface localHomeServiceInterface;
 
-  LocalHomeController( this.localHomeServiceInterface);
+  LocalHomeController(this.localHomeServiceInterface);
 
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
   GetHomeResponseModel getHomeResponseModel = GetHomeResponseModel();
+  GetTripsDetailsResponseModel getBookingDetailsResponseModel = 
+      GetTripsDetailsResponseModel();
 
   bool isLoading = false;
 
@@ -97,7 +101,7 @@ class LocalHomeController extends GetxController implements GetxService {
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        print("✅ Home for local fetched successfully\n");
+        print("✅ getHome : for local fetched successfully\n");
         getHomeResponseModel = GetHomeResponseModel.fromJson(response.body);
 
         isLoading = false;
@@ -109,6 +113,32 @@ class LocalHomeController extends GetxController implements GetxService {
       isLoading = false;
       update();
     }
-    update();
+  }
+
+  Future<void> getBookingDetails(String tripId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await localHomeServiceInterface.getBookingDetails(
+        tripId,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getBookingDetails: for local fetched successfully\n");
+        getBookingDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getBookingDetails : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
   }
 }
