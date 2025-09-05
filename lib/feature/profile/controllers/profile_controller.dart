@@ -15,10 +15,8 @@ class ProfileController extends GetxController implements GetxService {
   final authController = Get.find<AuthController>();
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
-    await getUserProfile();
-
     getUserRole();
     _getSafeToken();
   }
@@ -142,7 +140,6 @@ class ProfileController extends GetxController implements GetxService {
         );
       } else {
         print("❌ Failed to fetch profile: ${response.statusCode}\n");
-
       }
     } catch (e) {
       print("⚠️ Error fetching profile: $e\n");
