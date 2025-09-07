@@ -9,16 +9,17 @@ import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
 import '../../../../home/controllers/local_home_controller.dart';
 import '../../../../home/domain/local/get_booking_details_response_model.dart';
 
-class BookingDetailsScreen extends StatefulWidget {
+class LocalBookingDetailsScreen extends StatefulWidget {
   final String? tripId;
 
-  const BookingDetailsScreen({super.key, this.tripId});
+  const LocalBookingDetailsScreen({super.key, this.tripId});
 
   @override
-  State<BookingDetailsScreen> createState() => _BookingDetailsScreenState();
+  State<LocalBookingDetailsScreen> createState() =>
+      _LocalBookingDetailsScreenState();
 }
 
-class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
+class _LocalBookingDetailsScreenState extends State<LocalBookingDetailsScreen> {
   late LocalHomeTripController localHomeController;
 
   final instructions = [
@@ -220,13 +221,15 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                                 image: DecorationImage(
                                   image:
                                       bookingDetails
-                                                  .trip?.offerId
+                                                  .trip
+                                                  ?.offerId
                                                   ?.photos
                                                   ?.isNotEmpty ??
                                               false
                                           ? NetworkImage(
                                             bookingDetails
-                                                .trip!.offerId!
+                                                .trip!
+                                                .offerId!
                                                 .photos!
                                                 .first,
                                           )
@@ -244,7 +247,8 @@ class _BookingDetailsScreenState extends State<BookingDetailsScreen> {
                                 children: [
                                   (bookingDetails.trip?.offerId?.title ?? 'N/A')
                                       .text14Black600(),
-                                  (bookingDetails.trip?.offerId?.category ?? 'N/A')
+                                  (bookingDetails.trip?.offerId?.category ??
+                                          'N/A')
                                       .text14Grey(),
                                   Row(
                                     mainAxisAlignment:

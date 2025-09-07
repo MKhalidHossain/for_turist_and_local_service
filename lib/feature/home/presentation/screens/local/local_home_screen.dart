@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/themes/app_color.dart';
-import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import '../../../../../core/common/button/button_widget.dart';
-import '../../../../trip_module/presentation/screens/local/booking_details_screen.dart';
+import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
+import '../../../../offer/presentation/screens/category_selection_screen.dart';
+import '../../../../trip_module/presentation/screens/local/local_booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 import '../../../controllers/local_home_controller.dart';
 
@@ -38,12 +39,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
 
   Future<void> _initializeHomeData() async {
     await localHomeController.getHome();
-    // setState(() {
-    //   // liveTripId = localHomeController.getHomeResponseModel.data?.liveTrip?;
-    //   if (liveTripId != null) {
-    //     localHomeController.getBookingDetails(liveTripId!);
-    //   }
-    // });
+
     print(
       "Home Screen (initState): Upcoming Trips: ${localHomeController.getHomeResponseModel.data?.upcomingTrips?.length ?? 0}",
     );
@@ -51,27 +47,6 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
       "Home Screen (initState): Total Tours: ${localHomeController.getHomeResponseModel.data?.totalTours ?? 0}",
     );
   }
-
-  // String formatTripDate(String? dateStr) {
-  //   if (dateStr == null || dateStr.isEmpty) {
-  //     return "0:00 AM, 00/00/00";
-  //   }
-
-  //   try {
-  //     DateTime parsedDate = DateTime.parse(dateStr);
-  //     String formattedDate = DateFormat(
-  //       "h:mm a, dd/MM/yy",
-  //     ).format(parsedDate.toLocal());
-  //     return formattedDate;
-  //   } catch (e) {
-  //     return "0:00 AM, 00/00/00";
-  //   }
-  // }
-
-  // String totalPrice(String pricePerPerson, String participants) {
-  //   int total = int.parse(pricePerPerson) * int.parse(participants);
-  //   return total.toString();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -145,21 +120,24 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                 children: [
                                   " ${profileController.name.value ?? 'No Name'}"
                                       .text22Black700(),
-                                  "${profileController.nationality.value ?? 'Nationality'}"
+                                  "${profileController.getProfileResponseModel?.data?.email ?? '@username'}"
                                       .text14Grey(),
                                 ],
                               ),
                               const Spacer(),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(4),
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 36,
+                              InkWell(
+                                onTap: () => Get.to(CategorySelectionScreen()),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: AppColors.primaryColor,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: const EdgeInsets.all(4),
+                                  child: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 36,
+                                  ),
                                 ),
                               ),
                             ],
@@ -254,13 +232,13 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                           bottom: 12,
                                         ),
                                         child: GestureDetector(
-                                          onTap: () {},
-                                          // => Get.to(
-                                          //   () => BookingDetailsScreen(
-                                          //     bookingDetails:
-                                          //         trip, // Pass whole Trip object
-                                          //   ),
-                                          // ),
+                                          onTap:
+                                              () => Get.to(
+                                                () => LocalBookingDetailsScreen(
+                                                  tripId:
+                                                      trip.id, // Pass whole Trip object
+                                                ),
+                                              ),
                                           child: BookingCard(
                                             name:
                                                 "${trip.touristId?.firstName ?? ''} ${trip.touristId?.lastName ?? ''}",
@@ -355,7 +333,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                         child: GestureDetector(
                                           onTap:
                                               () => Get.to(
-                                                () => BookingDetailsScreen(
+                                                () => LocalBookingDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
                                                 ),
