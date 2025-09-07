@@ -55,7 +55,8 @@ class _BookingsScreenState extends State<BookingsScreen> {
     switch (index) {
       case 0:
         return GestureDetector(
-          onTap: () => Get.to(() => BookingDetailsScreen()),
+           onTap: (){},
+          //  => Get.to(() => BookingDetailsScreen()),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: 5,
@@ -79,7 +80,8 @@ class _BookingsScreenState extends State<BookingsScreen> {
         );
       case 1:
         return GestureDetector(
-          onTap: () => Get.to(() => BookingDetailsScreen()),
+           onTap: (){},
+          //  => Get.to(() => BookingDetailsScreen()),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: 3,

@@ -8,17 +8,17 @@ import 'package:kobeur/feature/home/services/local/local_home_service_interface.
 
 import '../domain/local/get_booking_details_response_model.dart';
 
-class LocalHomeController extends GetxController implements GetxService {
+class LocalHomeTripController extends GetxController implements GetxService {
   // final localHomeController = Get.find<LocalHomeController>();
 
   final LocalHomeServiceInterface localHomeServiceInterface;
 
-  LocalHomeController(this.localHomeServiceInterface);
+  LocalHomeTripController(this.localHomeServiceInterface);
 
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
   GetHomeResponseModel getHomeResponseModel = GetHomeResponseModel();
-  GetTripsDetailsResponseModel getBookingDetailsResponseModel = 
+  GetTripsDetailsResponseModel getBookingDetailsResponseModel =
       GetTripsDetailsResponseModel();
 
   bool isLoading = false;
@@ -129,7 +129,9 @@ class LocalHomeController extends GetxController implements GetxService {
 
       if (response.statusCode == 200) {
         print("✅ getBookingDetails: for local fetched successfully\n");
-        getBookingDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(response.body);
+        getBookingDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(
+          response.body,
+        );
 
         isLoading = false;
         update();

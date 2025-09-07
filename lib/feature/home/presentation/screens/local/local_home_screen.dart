@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/themes/app_color.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
-import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.dart';
 import '../../../../../core/common/button/button_widget.dart';
 import '../../../../trip_module/presentation/screens/local/booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 import '../../../controllers/local_home_controller.dart';
 
-class HomeScreenLocal extends StatefulWidget {
-  const HomeScreenLocal({super.key});
+class LocalHomeScreen extends StatefulWidget {
+  const LocalHomeScreen({super.key});
 
   @override
-  State<HomeScreenLocal> createState() => _HomeScreenLocalState();
+  State<LocalHomeScreen> createState() => _LocalHomeScreenState();
 }
 
-class _HomeScreenLocalState extends State<HomeScreenLocal> {
-  late LocalHomeController localHomeController;
+class _LocalHomeScreenState extends State<LocalHomeScreen> {
+  late LocalHomeTripController localHomeController;
   late ProfileController profileController;
   String? liveTripId;
   // String? totalPrice;
@@ -27,48 +25,48 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
   @override
   void initState() {
     super.initState();
-    localHomeController = Get.find<LocalHomeController>();
+    localHomeController = Get.find<LocalHomeTripController>();
     profileController = Get.find<ProfileController>();
     profileController.getUserProfile();
 
     _initializeHomeData();
 
     print(
-      "Home Screen (initState): ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length}",
+      "Home Screen (initState): ${localHomeController.getHomeResponseModel.data?.upcomingTrips?.length}",
     );
   }
 
   Future<void> _initializeHomeData() async {
     await localHomeController.getHome();
-    setState(() {
-      liveTripId = localHomeController.getHomeResponseModel.data?.liveTrip?.id;
-      if (liveTripId != null) {
-        localHomeController.getBookingDetails(liveTripId!);
-      }
-    });
+    // setState(() {
+    //   // liveTripId = localHomeController.getHomeResponseModel.data?.liveTrip?;
+    //   if (liveTripId != null) {
+    //     localHomeController.getBookingDetails(liveTripId!);
+    //   }
+    // });
     print(
-      "Home Screen (initState): Upcoming Trips: ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length ?? 0}",
+      "Home Screen (initState): Upcoming Trips: ${localHomeController.getHomeResponseModel.data?.upcomingTrips?.length ?? 0}",
     );
     print(
       "Home Screen (initState): Total Tours: ${localHomeController.getHomeResponseModel.data?.totalTours ?? 0}",
     );
   }
 
-  String formatTripDate(String? dateStr) {
-    if (dateStr == null || dateStr.isEmpty) {
-      return "0:00 AM, 00/00/00";
-    }
+  // String formatTripDate(String? dateStr) {
+  //   if (dateStr == null || dateStr.isEmpty) {
+  //     return "0:00 AM, 00/00/00";
+  //   }
 
-    try {
-      DateTime parsedDate = DateTime.parse(dateStr);
-      String formattedDate = DateFormat(
-        "h:mm a, dd/MM/yy",
-      ).format(parsedDate.toLocal());
-      return formattedDate;
-    } catch (e) {
-      return "0:00 AM, 00/00/00";
-    }
-  }
+  //   try {
+  //     DateTime parsedDate = DateTime.parse(dateStr);
+  //     String formattedDate = DateFormat(
+  //       "h:mm a, dd/MM/yy",
+  //     ).format(parsedDate.toLocal());
+  //     return formattedDate;
+  //   } catch (e) {
+  //     return "0:00 AM, 00/00/00";
+  //   }
+  // }
 
   // String totalPrice(String pricePerPerson, String participants) {
   //   int total = int.parse(pricePerPerson) * int.parse(participants);
@@ -79,11 +77,14 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
       builder: (profileController) {
-        return GetBuilder<LocalHomeController>(
+        return GetBuilder<LocalHomeTripController>(
           builder: (localHomeController) {
-            final bookingDetails =
-                localHomeController.getBookingDetailsResponseModel.data;
-            print("Booking Details: $bookingDetails");
+            final liveTrip =
+                localHomeController.getHomeResponseModel.data?.liveTrip ?? [];
+
+            final upcomingTrips =
+                localHomeController.getHomeResponseModel.data?.upcomingTrips ??
+                [];
 
             return localHomeController.isLoading && profileController.isLoading
                 ? const Center(child: CircularProgressIndicator())
@@ -175,7 +176,7 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                                   image: 'assets/icons/dolar.png',
                                   label: "Earnings",
                                   value:
-                                      "\$${localHomeController.getHomeResponseModel.data?.earnings.toString() ?? 'no data'}",
+                                      "\$${localHomeController.getHomeResponseModel.data?.earnings.toString() ?? '0.00'}",
 
                                   subText: "All time",
                                 ),
@@ -186,7 +187,7 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                                   image: 'assets/icons/totalTour.png',
                                   label: "Total Tour",
                                   value:
-                                      "${localHomeController.getHomeResponseModel.data?.totalTours.toString() ?? 'no data'}",
+                                      "${localHomeController.getHomeResponseModel.data?.totalTours.toString() ?? '0.00'}",
                                   subText: "All time",
                                 ),
                               ),
@@ -196,7 +197,7 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                                   image: 'assets/icons/starIcon.png',
                                   label: "Rating",
                                   value:
-                                      "${localHomeController.getHomeResponseModel.data?.averageRating ?? 'no data'}",
+                                      "${localHomeController.getHomeResponseModel.data?.averageRating ?? '0.00'}",
                                   subText: "5.0",
                                 ),
                               ),
@@ -208,7 +209,7 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
 
                           const SizedBox(height: 12),
 
-                          //                       Column(
+                          //   Column(
                           //   children: bookingDetailsList != null && bookingDetailsList!.isNotEmpty
                           //       ? bookingDetailsList!.map((booking) {
                           //           return Padding(
@@ -244,50 +245,56 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                           //           ),
                           //         ],
                           // )
-                          GestureDetector(
-                            onTap:
-                                () => Get.to(
-                                  () => BookingDetailsScreen(
-                                    bookingDetails: bookingDetails,
-                                  ),
-                                ),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: BookingCard(
-                                    name:
-                                        "${bookingDetails?.touristName} " ??
-                                        'No Name',
-                                    country:
-                                        "${bookingDetails?.touristCountry} " ??
-                                        'No data',
-                                    //
-                                    // need to image add
-                                    imageUrl: 'assets/images/user.png',
-                                    category:
-                                        "${bookingDetails?.offerId?.category}",
-
-                                    dateTime: formatTripDate(
-                                      bookingDetails?.date,
-                                    ),
-
-                                    people:
-                                        '${bookingDetails?.participants?.toString().padLeft(2, '0')} People' ??
-                                        'No Data',
-                                    // people: '04 People',
-                                    price:
-                                        "\$${bookingDetails?.offerId!.pricePerPerson?.toStringAsFixed(2) ?? 'no data'}",
-                                    actionButton: SecondaryButton(
-                                      text: "Message Tourist",
-                                      onPressed: () {
-                                        Get.to(() => ChatScreen());
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          Column(
+                            children:
+                                liveTrip.isNotEmpty
+                                    ? liveTrip.map((trip) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {},
+                                          // => Get.to(
+                                          //   () => BookingDetailsScreen(
+                                          //     bookingDetails:
+                                          //         trip, // Pass whole Trip object
+                                          //   ),
+                                          // ),
+                                          child: BookingCard(
+                                            name:
+                                                "${trip.touristId?.firstName ?? ''} ${trip.touristId?.lastName ?? ''}",
+                                            country:
+                                                trip.touristId?.location ??
+                                                "No Data",
+                                            imageUrl:
+                                                trip.touristId?.profileImage ??
+                                                'assets/images/profileBlankImage.png',
+                                            category:
+                                                "Tour", // replace if your `offerId` has category
+                                            dateTime: trip.date ?? "",
+                                            people:
+                                                "${trip.participants?.toString().padLeft(2, '0') ?? '00'} People",
+                                            price:
+                                                "\$${trip.totalAmount?.toString() ?? '0.00'}",
+                                            actionButton: SecondaryButton(
+                                              text: "Message Tourist",
+                                              onPressed: () {
+                                                Get.to(() => ChatScreen());
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList()
+                                    : [
+                                      const Center(
+                                        child: Text(
+                                          "No Live Trips found",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ),
+                                    ],
                           ),
 
                           const SizedBox(height: 20),
@@ -311,48 +318,83 @@ class _HomeScreenLocalState extends State<HomeScreenLocal> {
                           const SizedBox(height: 12),
 
                           /// Upcoming Trip List
-                          GestureDetector(
-                            onTap: () => Get.to(() => BookingDetailsScreen()),
-                            child: Column(
-                              children: List.generate(
-                                3, // itemCount
-                                (index) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: BookingCard(
-                                    name: 'Jerome Bell',
-                                    country: 'China',
-                                    imageUrl: 'assets/images/user.png',
-                                    category: 'Restaurant',
-                                    dateTime: '9:00 AM, 11/06/25',
-                                    people: '04 People',
-                                    price: '\$125.00',
-                                    actionButton: SecondaryButton(
-                                      text: "Message Tourist",
-                                      onPressed: () {
-                                        Get.to(() => ChatScreen());
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Column(
-                          //   children: List.generate(
-                          //     3,
-                          //     (index) => Padding(
-                          //       padding: const EdgeInsets.only(bottom: 12),
-                          //       child: TripCardWidget(
-                          //         name: "Kristin Watson",
-                          //         country: "China",
-                          //         category: "Restaurant",
-                          //         dateTime: "9:00 AM, 11/06/25",
-                          //         people: "04 People",
-                          //         price: "\$125.00",
+                          // GestureDetector(
+                          //   onTap: () => Get.to(() => BookingDetailsScreen()),
+                          //   child: Column(
+                          //     children: List.generate(
+                          //       3, // itemCount
+                          //       (index) => Padding(
+                          //         padding: const EdgeInsets.only(bottom: 12),
+                          //         child: BookingCard(
+                          //           name: 'Jerome Bell',
+                          //           country: 'China',
+                          //           imageUrl: 'assets/images/user.png',
+                          //           category: 'Restaurant',
+                          //           dateTime: bookingDetails?.date ?? '',
+                          //           people: '04 People',
+                          //           price: '\$125.00',
+                          //           actionButton: SecondaryButton(
+                          //             text: "Message Tourist",
+                          //             onPressed: () {
+                          //               Get.to(() => ChatScreen());
+                          //             },
+                          //           ),
+                          //         ),
                           //       ),
                           //     ),
                           //   ),
                           // ),
+                          Column(
+                            children:
+                                upcomingTrips.isNotEmpty
+                                    ? upcomingTrips.map((trip) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 12,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap:
+                                              () => Get.to(
+                                                () => BookingDetailsScreen(
+                                                  tripId:
+                                                      trip.id, // Pass whole Trip object
+                                                ),
+                                              ),
+                                          child: BookingCard(
+                                            name:
+                                                "${trip.touristId?.firstName ?? ''} ${trip.touristId?.lastName ?? ''}",
+                                            country:
+                                                trip.touristId?.location ??
+                                                "No Data",
+                                            imageUrl:
+                                                trip.touristId?.profileImage ??
+                                                'assets/images/profileBlankImage.png',
+                                            category:
+                                                "Tour", // replace if your `offerId` has category
+                                            dateTime: trip.date ?? "",
+                                            people:
+                                                "${trip.participants?.toString().padLeft(2, '0') ?? '00'} People",
+                                            price:
+                                                "\$${trip.totalAmount?.toString() ?? '0.00'}",
+                                            actionButton: SecondaryButton(
+                                              text: "Message Tourist",
+                                              onPressed: () {
+                                                Get.to(() => ChatScreen());
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList()
+                                    : [
+                                      const Center(
+                                        child: Text(
+                                          "No Live Trips found",
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ),
+                                    ],
+                          ),
                         ],
                       ),
                     ),

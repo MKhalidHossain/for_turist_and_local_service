@@ -1,22 +1,17 @@
 class GetTripsDetailsResponseModel {
-  final int? statusCode;
-  final bool? success;
-  final String? message;
-  final TripDetailsData? data;
+  int? statusCode;
+  bool? success;
+  String? message;
+  TripData? data;
 
-  GetTripsDetailsResponseModel({
-    this.statusCode,
-    this.success,
-    this.message,
-    this.data,
-  });
+  GetTripsDetailsResponseModel({this.statusCode, this.success, this.message, this.data});
 
   factory GetTripsDetailsResponseModel.fromJson(Map<String, dynamic> json) {
     return GetTripsDetailsResponseModel(
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: json['data'] != null ? TripDetailsData.fromJson(json['data']) : null,
+      data: json['data'] != null ? TripData.fromJson(json['data']) : null,
     );
   }
 
@@ -30,21 +25,38 @@ class GetTripsDetailsResponseModel {
   }
 }
 
-class TripDetailsData {
-  final String? id;
-  final String? localId;
-  final String? touristId;
-  final Offer? offerId;
-  final String? booking;
-  final String? date;
-  final int? participants;
-  final String? status;
-  final String? createdAt;
-  final int? v;
-  final String? touristName;
-  final String? touristCountry;
+class TripData {
+  TripDetails? trip;
 
-  TripDetailsData({
+  TripData({this.trip});
+
+  factory TripData.fromJson(Map<String, dynamic> json) {
+    return TripData(
+      trip: json['trip'] != null ? TripDetails.fromJson(json['trip']) : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'trip': trip?.toJson(),
+    };
+  }
+}
+
+class TripDetails {
+  String? id;
+  Local? localId;
+  Tourist? touristId;
+  Offer? offerId;
+  Booking? booking;
+  DateTime? date;
+  int? participants;
+  String? status;
+  DateTime? createdAt;
+  int? v;
+  int? totalAmount;
+
+  TripDetails({
     this.id,
     this.localId,
     this.touristId,
@@ -55,58 +67,121 @@ class TripDetailsData {
     this.status,
     this.createdAt,
     this.v,
-    this.touristName,
-    this.touristCountry,
+    this.totalAmount,
   });
 
-  factory TripDetailsData.fromJson(Map<String, dynamic> json) {
-    return TripDetailsData(
+  factory TripDetails.fromJson(Map<String, dynamic> json) {
+    return TripDetails(
       id: json['_id'],
-      localId: json['localId'],
-      touristId: json['touristId'],
+      localId: json['localId'] != null ? Local.fromJson(json['localId']) : null,
+      touristId: json['touristId'] != null ? Tourist.fromJson(json['touristId']) : null,
       offerId: json['offerId'] != null ? Offer.fromJson(json['offerId']) : null,
-      booking: json['booking'],
-      date: json['date'],
+      booking: json['booking'] != null ? Booking.fromJson(json['booking']) : null,
+      date: json['date'] != null ? DateTime.parse(json['date']) : null,
       participants: json['participants'],
       status: json['status'],
-      createdAt: json['createdAt'],
+      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       v: json['__v'],
-      touristName: json['touristName'],
-      touristCountry: json['touristCountry'],
+      totalAmount: json['totalAmount'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'localId': localId,
-      'touristId': touristId,
+      'localId': localId?.toJson(),
+      'touristId': touristId?.toJson(),
       'offerId': offerId?.toJson(),
-      'booking': booking,
-      'date': date,
+      'booking': booking?.toJson(),
+      'date': date?.toIso8601String(),
       'participants': participants,
       'status': status,
-      'createdAt': createdAt,
+      'createdAt': createdAt?.toIso8601String(),
       '__v': v,
-      'touristName': touristName,
-      'touristCountry': touristCountry,
+      'totalAmount': totalAmount,
+    };
+  }
+}
+
+class Local {
+  String? id;
+  String? email;
+  String? firstName;
+  String? lastName;
+  String? profileImage;
+  String? location;
+
+  Local({this.id, this.email, this.firstName, this.lastName, this.profileImage, this.location});
+
+  factory Local.fromJson(Map<String, dynamic> json) {
+    return Local(
+      id: json['_id'],
+      email: json['email'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      profileImage: json['profileImage'],
+      location: json['location'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'profileImage': profileImage,
+      'location': location,
+    };
+  }
+}
+
+class Tourist {
+  String? id;
+  String? email;
+  String? firstName;
+  String? lastName;
+  String? profileImage;
+  String? location;
+
+  Tourist({this.id, this.email, this.firstName, this.lastName, this.profileImage, this.location});
+
+  factory Tourist.fromJson(Map<String, dynamic> json) {
+    return Tourist(
+      id: json['_id'],
+      email: json['email'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      profileImage: json['profileImage'],
+      location: json['location'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'profileImage': profileImage,
+      'location': location,
     };
   }
 }
 
 class Offer {
-  final String? id;
-  final String? userId;
-  final String? category;
-  final String? offerType;
-  final int? pricePerPerson;
-  final int? maxParticipants;
-  final String? description;
-  final String? title;
-  final List<String>? languages;
-  final List<dynamic>? photos;
-  final List<Availability>? availability;
-  final int? v;
+  String? id;
+  String? userId;
+  String? category;
+  String? offerType;
+  int? pricePerPerson;
+  int? maxParticipants;
+  String? description;
+  String? title;
+  List<String>? languages;
+  List<String>? photos;
+  List<Availability>? availability;
+  int? v;
 
   Offer({
     this.id,
@@ -133,13 +208,11 @@ class Offer {
       maxParticipants: json['maxParticipants'],
       description: json['description'],
       title: json['title'],
-      languages: (json['languages'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList(),
-      photos: json['photos'] ?? [],
-      availability: (json['availability'] as List<dynamic>?)
-          ?.map((e) => Availability.fromJson(e))
-          .toList(),
+      languages: json['languages'] != null ? List<String>.from(json['languages']) : null,
+      photos: json['photos'] != null ? List<String>.from(json['photos']) : null,
+      availability: json['availability'] != null
+          ? List<Availability>.from(json['availability'].map((x) => Availability.fromJson(x)))
+          : null,
       v: json['__v'],
     );
   }
@@ -156,38 +229,53 @@ class Offer {
       'title': title,
       'languages': languages,
       'photos': photos,
-      'availability': availability?.map((e) => e.toJson()).toList(),
+      'availability': availability?.map((x) => x.toJson()).toList(),
       '__v': v,
     };
   }
 }
 
 class Availability {
-  final String? date;
-  final List<String>? timeSlots;
-  final String? id;
+  DateTime? date;
+  List<String>? timeSlots;
+  String? id;
 
-  Availability({
-    this.date,
-    this.timeSlots,
-    this.id,
-  });
+  Availability({this.date, this.timeSlots, this.id});
 
   factory Availability.fromJson(Map<String, dynamic> json) {
     return Availability(
-      date: json['date'],
-      timeSlots: (json['timeSlots'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList(),
+      date: json['date'] != null ? DateTime.parse(json['date']) : null,
+      timeSlots: json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : null,
       id: json['_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'date': date,
+      'date': date?.toIso8601String(),
       'timeSlots': timeSlots,
       '_id': id,
+    };
+  }
+}
+
+class Booking {
+  String? id;
+  String? bookingCode;
+
+  Booking({this.id, this.bookingCode});
+
+  factory Booking.fromJson(Map<String, dynamic> json) {
+    return Booking(
+      id: json['_id'],
+      bookingCode: json['bookingCode'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'bookingCode': bookingCode,
     };
   }
 }

@@ -4,12 +4,12 @@ import 'package:kobeur/feature/profile/presentation/screens/local/locals_profile
 import '../../widgets/favorite_button.dart';
 import 'search_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class TouristHomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _TouristHomeScreenState createState() => _TouristHomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TouristHomeScreenState extends State<TouristHomeScreen> {
   TextEditingController searchController = TextEditingController(text: 'Paris');
 
   // Categories for horizontal scroll
