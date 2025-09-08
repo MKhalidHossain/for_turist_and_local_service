@@ -40,19 +40,25 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   @override
   void initState() {
     super.initState();
-    profileController = Get.find<ProfileController>();
-    profileController.getUserProfile();
-    final profileData = profileController.getProfileResponseModel?.data;
-    _firstNameController = TextEditingController(text: profileData?.firstName)
-      ..addListener(_onFieldChanged);
-    _lastNameController = TextEditingController(text: profileData?.lastName)
-      ..addListener(_onFieldChanged);
-    _ageController = TextEditingController(text: (profileData?.age.toString()))
-      ..addListener(_onFieldChanged);
 
-    print(
-      "fristName (initState): ${profileData?.firstName}\n LastName (initState): ${profileData?.lastName}\n Age (initState): ${profileData?.age}\n",
-    );
+    profileController = Get.find<ProfileController>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      profileController.getUserProfile();
+      final profileData = profileController.getProfileResponseModel?.data;
+      _firstNameController = TextEditingController(text: profileData?.firstName)
+        ..addListener(_onFieldChanged);
+      _lastNameController = TextEditingController(text: profileData?.lastName)
+        ..addListener(_onFieldChanged);
+      _ageController = TextEditingController(
+        text: (profileData?.age.toString()),
+      )..addListener(_onFieldChanged);
+
+      setState(() {});
+      print(
+        "fristName (initState): ${profileData?.firstName}\n LastName (initState): ${profileData?.lastName}\n Age (initState): ${profileData?.age}\n",
+      );
+    });
   }
 
   @override
@@ -259,10 +265,17 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                             _buildDropdown(
                               label: 'Nationality',
                               initialValue:
-                                  profileController
-                                      .getProfileResponseModel
-                                      ?.data
-                                      ?.nationality,
+                                  uniqueCountryNames.contains(
+                                        profileController
+                                            .getProfileResponseModel
+                                            ?.data
+                                            ?.nationality,
+                                      )
+                                      ? profileController
+                                          .getProfileResponseModel
+                                          ?.data
+                                          ?.nationality
+                                      : null,
                               value: selectedNationality,
                               items: uniqueCountryNames,
                               onChanged:
