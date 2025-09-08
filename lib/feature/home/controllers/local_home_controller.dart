@@ -150,6 +150,34 @@ class LocalHomeTripController extends GetxController implements GetxService {
     }
   }
 
+  Future<void> getBookingsAll() async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await localHomeServiceInterface.getBookingsAll();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getBookingsAll : for local fetched successfully\n");
+        getTripResponseApiBookingsModel =
+            GetTripResponseApiBookingsModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      } else {
+        getTripResponseApiBookingsModel =
+            GetTripResponseApiBookingsModel.fromJson(response.body);
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getBookingsAll : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
   Future<void> getBookings(String status) async {
     try {
       isLoading = true;

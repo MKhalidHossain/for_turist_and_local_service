@@ -46,6 +46,11 @@ class LocalHomeService implements LocalHomeServiceInterface {
   }
 
   @override
+  Future<Response> getBookingsAll() async {
+    return await localHomeRepositoryInterface.getBookingsAll();
+  }
+
+  @override
   Future<Response> getBookings(String status) async {
     return await localHomeRepositoryInterface.getBookings(status);
   }
