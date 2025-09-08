@@ -38,7 +38,7 @@ class Urls {
   // ................................Auth...............................with render
 
   static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
-  // static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+  // static const String baseUrl = 'https://api.hatchr.app/api/v1';
 
   // Auth Module
 
@@ -85,7 +85,7 @@ class Urls {
   // ................................Local  Module...............................
 
   static const String updateOffer = '/local/update';
-  
+
   static const String getHome = '/local/';
 
   static const String getBookingDetails = '/local/trip/';

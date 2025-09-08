@@ -1,8 +1,8 @@
 class GetHomeResponseModel {
-  int? statusCode;
-  bool? success;
-  String? message;
-  HomeData? data;
+  final int? statusCode;
+  final bool? success;
+  final String? message;
+  final HomeData? data;
 
   GetHomeResponseModel({
     this.statusCode,
@@ -16,7 +16,7 @@ class GetHomeResponseModel {
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: HomeData.fromJson(json['data']),
+      data: json['data'] != null ? HomeData.fromJson(json['data']) : null,
     );
   }
 
@@ -31,32 +31,31 @@ class GetHomeResponseModel {
 }
 
 class HomeData {
-  final int earnings;
-  final int totalTours;
-  final double averageRating;
-  final LiveTrip? liveTrip;
-  final List<Trip> upcomingTrips;
+  final int? earnings;
+  final int? totalTours;
+  final int? averageRating;
+  final List<Trip>? liveTrip;
+  final List<Trip>? upcomingTrips;
 
   HomeData({
-    required this.earnings,
-    required this.totalTours,
-    required this.averageRating,
+    this.earnings,
+    this.totalTours,
+    this.averageRating,
     this.liveTrip,
-    required this.upcomingTrips,
+    this.upcomingTrips,
   });
 
   factory HomeData.fromJson(Map<String, dynamic> json) {
     return HomeData(
       earnings: json['earnings'],
       totalTours: json['totalTours'],
-      averageRating: (json['averageRating'] as num).toDouble(),
-      liveTrip:
-          json['liveTrip'] != null ? LiveTrip.fromJson(json['liveTrip']) : null,
-      upcomingTrips:
-          (json['upcomingTrips'] as List<dynamic>?)
-              ?.map((e) => Trip.fromJson(e))
-              .toList() ??
-          [],
+      averageRating: json['averageRating'],
+      liveTrip: json['liveTrip'] != null
+          ? (json['liveTrip'] as List).map((e) => Trip.fromJson(e)).toList()
+          : [],
+      upcomingTrips: json['upcomingTrips'] != null
+          ? (json['upcomingTrips'] as List).map((e) => Trip.fromJson(e)).toList()
+          : [],
     );
   }
 
@@ -65,81 +64,132 @@ class HomeData {
       'earnings': earnings,
       'totalTours': totalTours,
       'averageRating': averageRating,
-      'liveTrip': liveTrip?.toJson(),
-      'upcomingTrips': upcomingTrips.map((e) => e.toJson()).toList(),
+      'liveTrip': liveTrip?.map((e) => e.toJson()).toList(),
+      'upcomingTrips': upcomingTrips?.map((e) => e.toJson()).toList(),
     };
   }
 }
 
-class LiveTrip {
-  final String id;
-  final String localId;
-  final String touristId;
-  final String offerId;
-  final String booking;
-  final DateTime date;
-  final int participants;
-  final String status;
-  final DateTime createdAt;
-  final int v;
+class Trip {
+  final String? id;
+  final UserInfo? localId;
+  final UserInfo? touristId;
+  final String? offerId;
+  final Booking? booking;
+  final String? date;
+  final int? participants;
+  final String? status;
+  final String? createdAt;
+  final int? v;
+  final int? totalAmount;
 
-  LiveTrip({
-    required this.id,
-    required this.localId,
-    required this.touristId,
-    required this.offerId,
-    required this.booking,
-    required this.date,
-    required this.participants,
-    required this.status,
-    required this.createdAt,
-    required this.v,
+  Trip({
+    this.id,
+    this.localId,
+    this.touristId,
+    this.offerId,
+    this.booking,
+    this.date,
+    this.participants,
+    this.status,
+    this.createdAt,
+    this.v,
+    this.totalAmount,
   });
 
-  factory LiveTrip.fromJson(Map<String, dynamic> json) {
-    return LiveTrip(
-      id: json['_id'] ?? '',
-      localId: json['localId'] ?? '',
-      touristId: json['touristId'] ?? '',
-      offerId: json['offerId'] ?? '',
-      booking: json['booking'] ?? '',
-      date: DateTime.parse(json['date']),
-      participants: json['participants'] ?? 0,
-      status: json['status'] ?? '',
-      createdAt: DateTime.parse(json['createdAt']),
-      v: json['__v'] ?? 0,
+  factory Trip.fromJson(Map<String, dynamic> json) {
+    return Trip(
+      id: json['_id'],
+      localId: json['localId'] != null ? UserInfo.fromJson(json['localId']) : null,
+      touristId: json['touristId'] != null ? UserInfo.fromJson(json['touristId']) : null,
+      offerId: json['offerId'],
+      booking: json['booking'] != null ? Booking.fromJson(json['booking']) : null,
+      date: json['date'],
+      participants: json['participants'],
+      status: json['status'],
+      createdAt: json['createdAt'],
+      v: json['__v'],
+      totalAmount: json['totalAmount'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'localId': localId,
-      'touristId': touristId,
+      'localId': localId?.toJson(),
+      'touristId': touristId?.toJson(),
       'offerId': offerId,
-      'booking': booking,
-      'date': date.toIso8601String(),
+      'booking': booking?.toJson(),
+      'date': date,
       'participants': participants,
       'status': status,
-      'createdAt': createdAt.toIso8601String(),
+      'createdAt': createdAt,
       '__v': v,
+      'totalAmount': totalAmount,
     };
   }
 }
 
-class Trip {
-  // Add fields based on your upcomingTrips structure
-  Trip();
+class UserInfo {
+  final String? id;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
+  final String? profileImage;
+  final String? location;
 
-  factory Trip.fromJson(Map<String, dynamic> json) {
-    return Trip(
-      // map fields here
+  UserInfo({
+    this.id,
+    this.email,
+    this.firstName,
+    this.lastName,
+    this.profileImage,
+    this.location,
+  });
+
+  factory UserInfo.fromJson(Map<String, dynamic> json) {
+    return UserInfo(
+      id: json['_id'],
+      email: json['email'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      profileImage: json['profileImage'],
+      location: json['location'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      // map fields here
+      '_id': id,
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'profileImage': profileImage,
+      'location': location,
+    };
+  }
+}
+
+class Booking {
+  final String? id;
+  final String? bookingCode;
+
+  Booking({
+    this.id,
+    this.bookingCode,
+  });
+
+  factory Booking.fromJson(Map<String, dynamic> json) {
+    return Booking(
+      id: json['_id'],
+      bookingCode: json['bookingCode'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'bookingCode': bookingCode,
     };
   }
 }

@@ -15,6 +15,8 @@ void main() async {
   runApp(MyApp());
 }
 
+
+// http://localhost:5001/api/v1
 class MyApp extends StatelessWidget {
   // final bool isFirstTimeInstall;
   const MyApp({super.key});

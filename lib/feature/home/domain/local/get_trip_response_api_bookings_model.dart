@@ -1,17 +1,19 @@
-class GetTripsDetailsResponseModel {
+class GetTripResponseApiBookingsModel {
   int? statusCode;
   bool? success;
   String? message;
-  TripData? data;
+  List<TripItem>? data;
 
-  GetTripsDetailsResponseModel({this.statusCode, this.success, this.message, this.data});
+  GetTripResponseApiBookingsModel({this.statusCode, this.success, this.message, this.data});
 
-  factory GetTripsDetailsResponseModel.fromJson(Map<String, dynamic> json) {
-    return GetTripsDetailsResponseModel(
+  factory GetTripResponseApiBookingsModel.fromJson(Map<String, dynamic> json) {
+    return GetTripResponseApiBookingsModel(
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: json['data'] != null ? TripData.fromJson(json['data']) : null,
+      data: json['data'] != null
+          ? List<TripItem>.from(json['data'].map((x) => TripItem.fromJson(x)))
+          : null,
     );
   }
 
@@ -20,30 +22,12 @@ class GetTripsDetailsResponseModel {
       'statusCode': statusCode,
       'success': success,
       'message': message,
-      'data': data?.toJson(),
+      'data': data?.map((x) => x.toJson()).toList(),
     };
   }
 }
 
-class TripData {
-  TripDetails? trip;
-
-  TripData({this.trip});
-
-  factory TripData.fromJson(Map<String, dynamic> json) {
-    return TripData(
-      trip: json['trip'] != null ? TripDetails.fromJson(json['trip']) : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'trip': trip?.toJson(),
-    };
-  }
-}
-
-class TripDetails {
+class TripItem {
   String? id;
   Local? localId;
   Tourist? touristId;
@@ -55,8 +39,9 @@ class TripDetails {
   DateTime? createdAt;
   int? v;
   int? totalAmount;
+  int? rating;
 
-  TripDetails({
+  TripItem({
     this.id,
     this.localId,
     this.touristId,
@@ -68,10 +53,11 @@ class TripDetails {
     this.createdAt,
     this.v,
     this.totalAmount,
+    this.rating,
   });
 
-  factory TripDetails.fromJson(Map<String, dynamic> json) {
-    return TripDetails(
+  factory TripItem.fromJson(Map<String, dynamic> json) {
+    return TripItem(
       id: json['_id'],
       localId: json['localId'] != null ? Local.fromJson(json['localId']) : null,
       touristId: json['touristId'] != null ? Tourist.fromJson(json['touristId']) : null,
@@ -83,6 +69,7 @@ class TripDetails {
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       v: json['__v'],
       totalAmount: json['totalAmount'],
+      rating: json['rating'],
     );
   }
 
@@ -99,6 +86,7 @@ class TripDetails {
       'createdAt': createdAt?.toIso8601String(),
       '__v': v,
       'totalAmount': totalAmount,
+      'rating': rating,
     };
   }
 }
@@ -141,10 +129,10 @@ class Tourist {
   String? email;
   String? firstName;
   String? lastName;
-  String? profileImage;
   String? location;
+  String? profileImage;
 
-  Tourist({this.id, this.email, this.firstName, this.lastName, this.profileImage, this.location});
+  Tourist({this.id, this.email, this.firstName, this.lastName, this.location, this.profileImage});
 
   factory Tourist.fromJson(Map<String, dynamic> json) {
     return Tourist(
@@ -152,8 +140,8 @@ class Tourist {
       email: json['email'],
       firstName: json['firstName'],
       lastName: json['lastName'],
-      profileImage: json['profileImage'],
       location: json['location'],
+      profileImage: json['profileImage'],
     );
   }
 
@@ -163,8 +151,8 @@ class Tourist {
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
-      'profileImage': profileImage,
       'location': location,
+      'profileImage': profileImage,
     };
   }
 }

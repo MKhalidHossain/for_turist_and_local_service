@@ -18,7 +18,6 @@ import '../feature/profile/services/profile_service.dart';
 import '../feature/profile/services/profile_service_interface.dart';
 import 'remote/data/api_client.dart';
 
-
 Future<void> initDI() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -59,20 +58,18 @@ Future<void> initDI() async {
   Get.lazyPut(() => ProfileController(profileServiceInterface));
   Get.lazyPut(() => ProfileService(Get.find()));
 
-
-
-    //////////// Profile Service, Repository and Controller ////////////////////////////////
+  //////////// Profile Service, Repository and Controller ////////////////////////////////
   ///
   ///
 
-  LocalHomeRepositoryInterface localHomeRepositoryInterface = LocalHomeRepository(
-    apiClient,
-    prefs,
-  );
+  LocalHomeRepositoryInterface localHomeRepositoryInterface =
+      LocalHomeRepository(apiClient, prefs);
   Get.lazyPut(() => localHomeRepositoryInterface);
-  LocalHomeServiceInterface localHomeServiceInterface = LocalHomeService(Get.find());
+  LocalHomeServiceInterface localHomeServiceInterface = LocalHomeService(
+    Get.find(),
+  );
   Get.lazyPut(() => localHomeServiceInterface);
-  Get.lazyPut(() => LocalHomeController( localHomeServiceInterface));
+  Get.lazyPut(() => LocalHomeTripController(localHomeServiceInterface));
   Get.lazyPut(() => LocalHomeService(Get.find()));
 
   //

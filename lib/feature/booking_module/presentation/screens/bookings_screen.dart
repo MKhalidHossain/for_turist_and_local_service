@@ -4,7 +4,6 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
 
 import '../../../../core/common/button/button_widget.dart';
-import '../../../trip_module/presentation/screens/local/booking_details_screen.dart';
 import '../../../trip_module/presentation/widgets/bookingtabber_widget.dart';
 import '../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 
@@ -55,7 +54,8 @@ class _BookingsPageState extends State<BookingsPage> {
     switch (index) {
       case 0:
         return GestureDetector(
-          onTap: () => Get.to(() => BookingDetailsScreen()),
+          onTap: () {},
+          //  => Get.to(() => BookingDetailsScreen()),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: 5,
@@ -79,7 +79,8 @@ class _BookingsPageState extends State<BookingsPage> {
         );
       case 1:
         return GestureDetector(
-          onTap: () => Get.to(() => BookingDetailsScreen()),
+          onTap: () {},
+          //  => Get.to(() => BookingDetailsScreen()),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: 3,

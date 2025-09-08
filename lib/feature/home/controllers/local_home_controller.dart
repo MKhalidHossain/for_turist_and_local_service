@@ -7,19 +7,22 @@ import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dar
 import 'package:kobeur/feature/home/services/local/local_home_service_interface.dart';
 
 import '../domain/local/get_booking_details_response_model.dart';
+import '../domain/local/get_trip_response_api_bookings_model.dart';
 
-class LocalHomeController extends GetxController implements GetxService {
+class LocalHomeTripController extends GetxController implements GetxService {
   // final localHomeController = Get.find<LocalHomeController>();
 
   final LocalHomeServiceInterface localHomeServiceInterface;
 
-  LocalHomeController(this.localHomeServiceInterface);
+  LocalHomeTripController(this.localHomeServiceInterface);
 
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
   GetHomeResponseModel getHomeResponseModel = GetHomeResponseModel();
-  GetTripsDetailsResponseModel getBookingDetailsResponseModel = 
+  GetTripsDetailsResponseModel getBookingDetailsResponseModel =
       GetTripsDetailsResponseModel();
+  GetTripResponseApiBookingsModel getTripResponseApiBookingsModel =
+      GetTripResponseApiBookingsModel();
 
   bool isLoading = false;
 
@@ -129,13 +132,44 @@ class LocalHomeController extends GetxController implements GetxService {
 
       if (response.statusCode == 200) {
         print("✅ getBookingDetails: for local fetched successfully\n");
-        getBookingDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(response.body);
+        getBookingDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(
+          response.body,
+        );
 
         isLoading = false;
         update();
       }
     } catch (e) {
       print("⚠️ Error fetching profile : getBookingDetails : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+   Future<void> getBookings(String status) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await localHomeServiceInterface.getBookings(status);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getBookings : for local fetched successfully\n");
+        getTripResponseApiBookingsModel =
+            GetTripResponseApiBookingsModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      } else {
+        getTripResponseApiBookingsModel =
+            GetTripResponseApiBookingsModel.fromJson(response.body);
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getBookings : $e\n");
     } finally {
       isLoading = false;
       update();

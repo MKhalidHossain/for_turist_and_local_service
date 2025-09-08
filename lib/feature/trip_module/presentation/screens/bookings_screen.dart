@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/trip_module/presentation/screens/local/booking_details_screen.dart';
+import 'package:kobeur/feature/trip_module/presentation/screens/local/local_booking_details_screen.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
 
 import '../../../../core/common/button/button_widget.dart';
@@ -55,7 +55,8 @@ class _BookingsScreenState extends State<BookingsScreen> {
     switch (index) {
       case 0:
         return GestureDetector(
-          onTap: () => Get.to(() => BookingDetailsScreen()),
+           onTap: (){},
+          //  => Get.to(() => BookingDetailsScreen()),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: 5,
@@ -79,7 +80,8 @@ class _BookingsScreenState extends State<BookingsScreen> {
         );
       case 1:
         return GestureDetector(
-          onTap: () => Get.to(() => BookingDetailsScreen()),
+           onTap: (){},
+          //  => Get.to(() => BookingDetailsScreen()),
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             itemCount: 3,
