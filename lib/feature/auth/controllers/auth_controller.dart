@@ -337,20 +337,12 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = true;
     update();
 
-    // Response? response = Response();
-
     Response? response = await authServiceInterface.login(email, password);
 
     if (response == null) {
       print("No response found");
     }
     if (response!.statusCode == 200) {
-      // _loadUserRole();
-
-      //  final String refreshToken = '';
-
-      // print(token.toString());
-
       logInResponseModel = LogInResponseModel.fromJson(response.body);
 
       final String refreshToken = logInResponseModel!.data!.refreshToken!;
@@ -364,11 +356,11 @@ class AuthController extends GetxController implements GetxService {
       //   'User Token $token  ================================== from comtroller ',
       // );
       await setUserToken(token, refreshToken);
+      update();
 
       debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
 
       await _loadUserRole();
-
       debugPrint("✅ Access Token: $token\n");
       debugPrint("✅ Refresh Token: $refreshToken\n");
       debugPrint("✅ User Role: $userRole\n");
@@ -476,6 +468,9 @@ class AuthController extends GetxController implements GetxService {
       } else {
         logging = false;
         ApiChecker.checkApi(response);
+        print(response.body['message'] + ' for logout from controller');
+        Get.snackbar('Error', response.body['message']);
+        Get.offAll(() => UserLoginScreen());
       }
     } else {
       print(response.toString() + ' from controller');
