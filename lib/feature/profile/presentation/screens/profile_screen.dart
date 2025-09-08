@@ -140,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       () => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          " ${profileController.name.value ?? 'No'}"
+                          " ${profileController.name.value ?? 'No Name'}"
                               .text20Grey700(),
                           "${profileController.nationality.value ?? 'Nationality'}"
                               .text16Grey(),

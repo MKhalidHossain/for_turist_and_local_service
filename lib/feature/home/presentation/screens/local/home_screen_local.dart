@@ -1,184 +1,366 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/themes/app_color.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
+import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
+import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.dart';
 import '../../../../../core/common/button/button_widget.dart';
-import '../../../../trip_module/presentation/screens/booking_details_screen.dart';
+import '../../../../trip_module/presentation/screens/local/booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
+import '../../../controllers/local_home_controller.dart';
 
-class HomeScreenLocal extends StatelessWidget {
+class HomeScreenLocal extends StatefulWidget {
   const HomeScreenLocal({super.key});
 
   @override
+  State<HomeScreenLocal> createState() => _HomeScreenLocalState();
+}
+
+class _HomeScreenLocalState extends State<HomeScreenLocal> {
+  late LocalHomeController localHomeController;
+  late ProfileController profileController;
+  String? liveTripId;
+  // String? totalPrice;
+
+  @override
+  void initState() {
+    super.initState();
+    localHomeController = Get.find<LocalHomeController>();
+    profileController = Get.find<ProfileController>();
+    profileController.getUserProfile();
+
+    _initializeHomeData();
+
+    print(
+      "Home Screen (initState): ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length}",
+    );
+  }
+
+  Future<void> _initializeHomeData() async {
+    await localHomeController.getHome();
+    setState(() {
+      liveTripId = localHomeController.getHomeResponseModel.data?.liveTrip?.id;
+      if (liveTripId != null) {
+        localHomeController.getBookingDetails(liveTripId!);
+      }
+    });
+    print(
+      "Home Screen (initState): Upcoming Trips: ${localHomeController.getHomeResponseModel.data?.upcomingTrips.length ?? 0}",
+    );
+    print(
+      "Home Screen (initState): Total Tours: ${localHomeController.getHomeResponseModel.data?.totalTours ?? 0}",
+    );
+  }
+
+  String formatTripDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) {
+      return "0:00 AM, 00/00/00";
+    }
+
+    try {
+      DateTime parsedDate = DateTime.parse(dateStr);
+      String formattedDate = DateFormat(
+        "h:mm a, dd/MM/yy",
+      ).format(parsedDate.toLocal());
+      return formattedDate;
+    } catch (e) {
+      return "0:00 AM, 00/00/00";
+    }
+  }
+
+  // String totalPrice(String pricePerPerson, String participants) {
+  //   int total = int.parse(pricePerPerson) * int.parse(participants);
+  //   return total.toString();
+  // }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 28,
-                    backgroundImage: AssetImage("assets/images/user.png"),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      "Hello, User Name".text22Black700(),
-                      "@username".text14Grey(),
-                    ],
-                  ),
-                  const Spacer(),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.primaryColor,
-                      shape: BoxShape.circle,
-                    ),
-                    padding: const EdgeInsets.all(4),
-                    child: const Icon(Icons.add, color: Colors.white, size: 36),
-                  ),
-                ],
-              ),
+    return GetBuilder<ProfileController>(
+      builder: (profileController) {
+        return GetBuilder<LocalHomeController>(
+          builder: (localHomeController) {
+            final bookingDetails =
+                localHomeController.getBookingDetailsResponseModel.data;
+            print("Booking Details: $bookingDetails");
 
-              const SizedBox(height: 16),
+            return localHomeController.isLoading && profileController.isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : Scaffold(
+                  backgroundColor: const Color(0xFFF5F5F5),
+                  body: SafeArea(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 35,
+                                backgroundColor: Colors.grey[200],
+                                child: Obx(
+                                  () => ClipOval(
+                                    child:
+                                        (profileController.image.value !=
+                                                    null &&
+                                                (profileController
+                                                        .getProfileResponseModel
+                                                        ?.data
+                                                        ?.profileImage
+                                                        ?.isNotEmpty ??
+                                                    false))
+                                            ? Image.network(
+                                              profileController.image.value,
+                                              fit: BoxFit.cover,
+                                              width: 70,
+                                              height: 70,
+                                              errorBuilder: (
+                                                context,
+                                                error,
+                                                stackTrace,
+                                              ) {
+                                                return Image.asset(
+                                                  'assets/images/profileBlankImage.png',
+                                                  fit: BoxFit.cover,
+                                                  width: 70,
+                                                  height: 70,
+                                                );
+                                              },
+                                            )
+                                            : Image.asset(
+                                              'assets/images/profileBlankImage.png',
+                                              fit: BoxFit.cover,
+                                              width: 70,
+                                              height: 70,
+                                            ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  " ${profileController.name.value ?? 'No Name'}"
+                                      .text22Black700(),
+                                  "${profileController.nationality.value ?? 'Nationality'}"
+                                      .text14Grey(),
+                                ],
+                              ),
+                              const Spacer(),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: const EdgeInsets.all(4),
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 36,
+                                ),
+                              ),
+                            ],
+                          ),
 
-              /// Stats Row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Expanded(
-                    child: _StatCard(
-                      image: 'assets/icons/dolar.png',
-                      label: "Earnings",
-                      value: "\$5250",
-                      subText: "All time",
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _StatCard(
-                      image: 'assets/icons/totalTour.png',
-                      label: "Total Tour",
-                      value: "105",
-                      subText: "All time",
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: _StatCard(
-                      image: 'assets/icons/starIcon.png',
-                      label: "Rating",
-                      value: "4.9",
-                      subText: "5.0",
-                    ),
-                  ),
-                ],
-              ),
+                          const SizedBox(height: 16),
 
-              const SizedBox(height: 20),
-              "Live Trip".text20Black700(),
+                          /// Stats Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: _StatCard(
+                                  image: 'assets/icons/dolar.png',
+                                  label: "Earnings",
+                                  value:
+                                      "\$${localHomeController.getHomeResponseModel.data?.earnings.toString() ?? 'no data'}",
 
-              const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () => Get.to(() => BookingDetailsScreen()),
-                child: Column(
-                  children: List.generate(
-                    2, // itemCount
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: BookingCard(
-                        name: 'Jerome Bell',
-                        country: 'China',
-                        imageUrl: 'assets/images/user.png',
-                        category: 'Restaurant',
-                        dateTime: '9:00 AM, 11/06/25',
-                        people: '04 People',
-                        price: '\$125.00',
-                        actionButton: SecondaryButton(
-                          text: "Message Tourist",
-                          onPressed: () {
-                            Get.to(() => ChatScreen());
-                          },
-                        ),
+                                  subText: "All time",
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: _StatCard(
+                                  image: 'assets/icons/totalTour.png',
+                                  label: "Total Tour",
+                                  value:
+                                      "${localHomeController.getHomeResponseModel.data?.totalTours.toString() ?? 'no data'}",
+                                  subText: "All time",
+                                ),
+                              ),
+                              SizedBox(width: 8),
+                              Expanded(
+                                child: _StatCard(
+                                  image: 'assets/icons/starIcon.png',
+                                  label: "Rating",
+                                  value:
+                                      "${localHomeController.getHomeResponseModel.data?.averageRating ?? 'no data'}",
+                                  subText: "5.0",
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 20),
+                          "Live Trip".text20Black700(),
+
+                          const SizedBox(height: 12),
+
+                          //                       Column(
+                          //   children: bookingDetailsList != null && bookingDetailsList!.isNotEmpty
+                          //       ? bookingDetailsList!.map((booking) {
+                          //           return Padding(
+                          //             padding: const EdgeInsets.only(bottom: 12),
+                          //             child: GestureDetector(
+                          //               onTap: () => Get.to(() => BookingDetailsScreen(
+                          //                     bookingDetails: booking,
+                          //                   )),
+                          //               child: BookingCard(
+                          //                 name: booking.touristName ?? 'No Name',
+                          //                 country: booking.touristCountry ?? 'No Data',
+                          //                 imageUrl: 'assets/images/user.png',
+                          //                 category: booking.offerId?.category ?? 'No Category',
+                          //                 dateTime: formatTripDate(booking.date),
+                          //                 people:
+                          //                     '${booking.participants?.toString().padLeft(2, '0')} People',
+                          //                 price:
+                          //                     "\$${booking.offerId?.pricePerPerson?.toStringAsFixed(2) ?? '0.00'}",
+                          //                 actionButton: SecondaryButton(
+                          //                   text: "Message Tourist",
+                          //                   onPressed: () => Get.to(() => ChatScreen()),
+                          //                 ),
+                          //               ),
+                          //             ),
+                          //           );
+                          //         }).toList()
+                          //       : [
+                          //           Center(
+                          //             child: Text(
+                          //               "No bookings found",
+                          //               style: TextStyle(color: Colors.grey),
+                          //             ),
+                          //           ),
+                          //         ],
+                          // )
+                          GestureDetector(
+                            onTap:
+                                () => Get.to(
+                                  () => BookingDetailsScreen(
+                                    bookingDetails: bookingDetails,
+                                  ),
+                                ),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: BookingCard(
+                                    name:
+                                        "${bookingDetails?.touristName} " ??
+                                        'No Name',
+                                    country:
+                                        "${bookingDetails?.touristCountry} " ??
+                                        'No data',
+                                    //
+                                    // need to image add
+                                    imageUrl: 'assets/images/user.png',
+                                    category:
+                                        "${bookingDetails?.offerId?.category}",
+
+                                    dateTime: formatTripDate(
+                                      bookingDetails?.date,
+                                    ),
+
+                                    people:
+                                        '${bookingDetails?.participants?.toString().padLeft(2, '0')} People' ??
+                                        'No Data',
+                                    // people: '04 People',
+                                    price:
+                                        "\$${bookingDetails?.offerId!.pricePerPerson?.toStringAsFixed(2) ?? 'no data'}",
+                                    actionButton: SecondaryButton(
+                                      text: "Message Tourist",
+                                      onPressed: () {
+                                        Get.to(() => ChatScreen());
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          /// Upcoming Trip + See All
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              "Upcoming Trip".text20Black700(),
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          /// Upcoming Trip List
+                          GestureDetector(
+                            onTap: () => Get.to(() => BookingDetailsScreen()),
+                            child: Column(
+                              children: List.generate(
+                                3, // itemCount
+                                (index) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: BookingCard(
+                                    name: 'Jerome Bell',
+                                    country: 'China',
+                                    imageUrl: 'assets/images/user.png',
+                                    category: 'Restaurant',
+                                    dateTime: '9:00 AM, 11/06/25',
+                                    people: '04 People',
+                                    price: '\$125.00',
+                                    actionButton: SecondaryButton(
+                                      text: "Message Tourist",
+                                      onPressed: () {
+                                        Get.to(() => ChatScreen());
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Column(
+                          //   children: List.generate(
+                          //     3,
+                          //     (index) => Padding(
+                          //       padding: const EdgeInsets.only(bottom: 12),
+                          //       child: TripCardWidget(
+                          //         name: "Kristin Watson",
+                          //         country: "China",
+                          //         category: "Restaurant",
+                          //         dateTime: "9:00 AM, 11/06/25",
+                          //         people: "04 People",
+                          //         price: "\$125.00",
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              /// Upcoming Trip + See All
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  "Upcoming Trip".text20Black700(),
-                  Text(
-                    "See All",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              /// Upcoming Trip List
-              GestureDetector(
-                onTap: () => Get.to(() => BookingDetailsScreen()),
-                child: Column(
-                  children: List.generate(
-                    3, // itemCount
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: BookingCard(
-                        name: 'Jerome Bell',
-                        country: 'China',
-                        imageUrl: 'assets/images/user.png',
-                        category: 'Restaurant',
-                        dateTime: '9:00 AM, 11/06/25',
-                        people: '04 People',
-                        price: '\$125.00',
-                        actionButton: SecondaryButton(
-                          text: "Message Tourist",
-                          onPressed: () {
-                            Get.to(() => ChatScreen());
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Column(
-              //   children: List.generate(
-              //     3,
-              //     (index) => Padding(
-              //       padding: const EdgeInsets.only(bottom: 12),
-              //       child: TripCardWidget(
-              //         name: "Kristin Watson",
-              //         country: "China",
-              //         category: "Restaurant",
-              //         dateTime: "9:00 AM, 11/06/25",
-              //         people: "04 People",
-              //         price: "\$125.00",
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        ),
-      ),
+                );
+          },
+        );
+      },
     );
   }
 }

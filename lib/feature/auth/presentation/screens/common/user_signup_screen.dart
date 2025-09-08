@@ -47,7 +47,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
         _confirmPasswordFocus.hasFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
+          _scrollController.position.maxScrollExtent / 2,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );

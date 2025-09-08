@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,27 +30,36 @@ class ProfileRepository implements ProfileRepositoryInterface {
     required String nationality,
     required String description,
     List<String>? languages,
-    required XFile profileImage,
+    required XFile profileImage, // Changed to required for clarity
   }) async {
     debugPrint("Updating profile with image: ${profileImage.path}");
 
-    return await apiClient.patchData(
+    
+
+    // Prepare the fields for the multipart request
+    final Map<String, String> fields = {
+      "firstName": firstName,
+      "lastName": lastName,
+      "age": age.toString(),
+      "gender": gender.toLowerCase(),
+      "nationality": nationality,
+      "description": description,
+      if (languages != null && languages.isNotEmpty)
+        "languages": jsonEncode(languages), // Encode list as JSON string
+    };
+
+    // Prepare the file for the multipart request
+    final Map<String, XFile> files = {
+      "profileImage": profileImage, // Field name must match backend expectation
+    };
+
+    return await apiClient.patchMultipartData(
       Urls.updateProfile,
+      fields: fields,
+      files: files,
       headers: {
-        'Content-Type': 'application/json',
         'Authorization':
             'Bearer ${sharedPreferences.getString(AppConstants.token) ?? ''}',
-      },
-      {
-        "firstName": firstName,
-        "lastName": lastName,
-        "age": age,
-        "gender": gender.toLowerCase(),
-        "nationality": nationality,
-        "languages": languages,
-        "description": description,
-        "profileImage":
-            await profileImage.path, // Convert XFile to bytes if not null
       },
     );
   }

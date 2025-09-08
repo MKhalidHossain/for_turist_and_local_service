@@ -96,6 +96,7 @@ class ApiClient extends GetxService {
   Future<Response> patchData(
     String uri,
     dynamic body, {
+   
     Map<String, String>? headers,
     XFile? file,
     String fileFieldName = 'profileImage',

@@ -21,7 +21,6 @@ void showCustomSnackBar(
       margin: const EdgeInsets.all(10).copyWith(right: 10),
       duration: Duration(seconds: seconds),
       backgroundColor: Colors.white,
-
       borderRadius: 10,
       messageText: Row(
         children: [
