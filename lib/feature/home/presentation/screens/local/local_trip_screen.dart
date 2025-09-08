@@ -112,7 +112,8 @@ class _LocalTripScreenState extends State<LocalTripScreen> {
           onTap:
               () => Get.to(
                 () => LocalBookingDetailsScreen(
-                  tripId: trip.id, // Pass whole Trip object
+                  tripId: trip.id,
+                  bookingId: trip.booking?.id, // Pass whole Trip object
                 ),
               ),
           child: BookingCard(

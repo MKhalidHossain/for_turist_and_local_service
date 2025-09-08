@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/formatTripDateText.dart';
 
