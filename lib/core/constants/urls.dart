@@ -37,8 +37,8 @@ class Urls {
 
   // ................................Auth...............................with render
 
-  static const String baseUrl = 'http://10.10.5.85:5002/api/v1';
-  // static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+  static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
+  // static const String baseUrl = 'https://api.hatchr.app/api/v1';
 
   // Auth Module
 
@@ -59,8 +59,6 @@ class Urls {
   static const String getProfile = '/profile';
 
   static const String updateProfile = '/profile';
-
-  //static const String changePassword = '/profile/change-password';
 
   // ................................Tourist Module...............................
 
@@ -84,39 +82,41 @@ class Urls {
 
   static const String cencelTripForTuourist = '/local/trip/:tripId/cancel';
 
-  // ................................Booking Module...............................
+  // ................................Local  Module...............................
 
-  static const String createBooking = '/booking/';
-
-  static const String confirmBooking = '/booking/confirm-booking';
-
-  static const String updateBooking = '/booking/:bookingId';
-
-  static const String getBookingDetails =
-      '/booking/'; // need bookingId here in last of the url
-
-  static const String getBookingsByStatus = '/booking?status=confirmed';
-
-  // ................................Local Module...............................
-
-  static const String createOffer = '/local';
-
-  static const String updateOffer = '/local/:offerId/update';
+  static const String updateOffer = '/local/update';
 
   static const String getHome = '/local/';
 
-  static const String getTrips =
-      '/trips'; // need bookingId here in last of the url
+  static const String getBookingDetails = '/local/trip/';
 
-  static const String cencelTripForLocal = '/local/trip/:tripId/cancel';
+  // static const String getBookingsUpcoming = '/local/trips?status=upcoming';
 
-  // ................................Message Module...............................
+  // static const String getBookingsConfirmed = '/local/trips?status=confirmed';
+  static const String getBookings = '/local/trips?status=';
 
-  static const String sendMessage = '/chat/message';
+  static const String cencelBooking = '/local/trip/cancel/';
 
-  static const String getMessage = '/messages/history/:receiverId';
+  // // ................................Booking Module...............................
 
-  static const String getUserAssociatWithChat = '/messages/list';
+  // static const String createBooking = '/booking/';
+
+  // static const String confirmBooking = '/booking/confirm-booking';
+
+  // static const String updateBooking = '/booking/:bookingId';
+
+  // static const String getBookingDetails =
+  //     '/booking/'; // need bookingId here in last of the url
+
+  // static const String getBookingsByStatus = '/booking?status=confirmed';
+
+  // // ................................Message Module...............................
+
+  // static const String sendMessage = '/chat/message';
+
+  // static const String getMessage = '/messages/history/:receiverId';
+
+  // static const String getUserAssociatWithChat = '/messages/list';
 
   // ................................Payment Module...............................
 

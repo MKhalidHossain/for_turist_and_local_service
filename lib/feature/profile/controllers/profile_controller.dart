@@ -15,16 +15,13 @@ class ProfileController extends GetxController implements GetxService {
   final authController = Get.find<AuthController>();
 
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
-    await getUserProfile();
-
     getUserRole();
     _getSafeToken();
   }
 
   final ProfileServiceInterface profileServiceInterface;
-
   ProfileController(this.profileServiceInterface);
 
   GetProfileResponseModel? getProfileResponseModel = GetProfileResponseModel();

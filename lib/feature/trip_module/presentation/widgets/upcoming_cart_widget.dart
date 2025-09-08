@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/widgets/formatTripDateText.dart';
 
 class BookingCard extends StatelessWidget {
   final String name;
@@ -38,7 +39,35 @@ class BookingCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(radius: 20, backgroundImage: AssetImage(imageUrl)),
+                // CircleAvatar(radius: 20, backgroundImage: AssetImage(imageUrl)),
+                CircleAvatar(
+                  radius: 20,
+                  backgroundColor: Colors.grey[200],
+                  child: ClipOval(
+                    child:
+                        (imageUrl.isNotEmpty && (imageUrl != 'null' ?? false))
+                            ? Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              width: 40,
+                              height: 40,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/images/profileBlankImage.png',
+                                  fit: BoxFit.cover,
+                                  width: 40,
+                                  height: 40,
+                                );
+                              },
+                            )
+                            : Image.asset(
+                              'assets/images/profileBlankImage.png',
+                              fit: BoxFit.cover,
+                              width: 40,
+                              height: 40,
+                            ),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -65,7 +94,8 @@ class BookingCard extends StatelessWidget {
                   color: AppColors.primaryTextBlack,
                 ),
                 const SizedBox(width: 8),
-                dateTime.text14Black(),
+                FormatTripDateText(dateStr: dateTime),
+                // dateTime.text14Black(),
                 const Spacer(),
                 Icon(
                   Icons.people_outline,
@@ -86,3 +116,22 @@ class BookingCard extends StatelessWidget {
     );
   }
 }
+
+
+
+
+  // String formatTripDate(String? dateStr) {
+  //   if (dateStr == null || dateStr.isEmpty) {
+  //     return "0:00 AM, 00/00/00";
+  //   }
+
+  //   try {
+  //     DateTime parsedDate = DateTime.parse(dateStr);
+  //     String formattedDate = DateFormat(
+  //       "h:mm a, dd/MM/yy",
+  //     ).format(parsedDate.toLocal());
+  //     return formattedDate;
+  //   } catch (e) {
+  //     return "0:00 AM, 00/00/00";
+  //   }
+  // }

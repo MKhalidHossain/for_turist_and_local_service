@@ -1,14 +1,14 @@
 class UpdateOfferResponseModel {
-  final int statusCode;
-  final bool success;
-  final String message;
-  final OfferData data;
+   int? statusCode;
+   bool? success;
+   String? message;
+   OfferData? data;
 
   UpdateOfferResponseModel({
-    required this.statusCode,
-    required this.success,
-    required this.message,
-    required this.data,
+     this.statusCode,
+     this.success,
+     this.message,
+     this.data,
   });
 
   factory UpdateOfferResponseModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class UpdateOfferResponseModel {
       'statusCode': statusCode,
       'success': success,
       'message': message,
-      'data': data.toJson(),
+      'data': data?.toJson(),
     };
   }
 }
