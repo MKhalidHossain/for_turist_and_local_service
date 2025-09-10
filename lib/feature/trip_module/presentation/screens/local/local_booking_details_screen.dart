@@ -8,19 +8,18 @@ import '../../../../../core/extensions/text_extensions.dart';
 import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
 import '../../../../home/controllers/local_home_controller.dart';
 
-class LocalBookingDetailsScreen extends StatefulWidget {
+class LocalTripDetailsScreen extends StatefulWidget {
   final String? tripId;
   final String? bookingId;
 
-  const LocalBookingDetailsScreen({super.key, this.tripId, this.bookingId});
+  const LocalTripDetailsScreen({super.key, this.tripId, this.bookingId});
 
   @override
-  State<LocalBookingDetailsScreen> createState() =>
-      _LocalBookingDetailsScreenState();
+  State<LocalTripDetailsScreen> createState() => _LocalTripDetailsScreenState();
 }
 
 // tripId: trip.id,
-class _LocalBookingDetailsScreenState extends State<LocalBookingDetailsScreen> {
+class _LocalTripDetailsScreenState extends State<LocalTripDetailsScreen> {
   late LocalHomeTripController localHomeController;
 
   final instructions = [
@@ -67,7 +66,7 @@ class _LocalBookingDetailsScreenState extends State<LocalBookingDetailsScreen> {
           return AppScaffold(
             appBar: AppBar(
               leading: const BackButton(),
-              title: 'Booking Details'.text24Black(),
+              title: 'Trip Details'.text24Black(),
               centerTitle: false,
               elevation: 0,
             ),

@@ -234,7 +234,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                         child: GestureDetector(
                                           onTap:
                                               () => Get.to(
-                                                () => LocalBookingDetailsScreen(
+                                                () => LocalTripDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
                                                   bookingId: trip.booking?.id,
@@ -334,7 +334,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                         child: GestureDetector(
                                           onTap:
                                               () => Get.to(
-                                                () => LocalBookingDetailsScreen(
+                                                () => LocalTripDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
                                                   bookingId: trip.booking?.id,

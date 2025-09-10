@@ -70,9 +70,9 @@ class Urls {
 
   static const String searchOffer = '/tourist/search';
 
-  static const String getOfferDetails = '/tourist/offer/:localId/:offerId';
+  static const String getOfferDetails = '/tourist/offer/:';
 
-  static const String getLocalProfile = '/tourist//:localId';
+  static const String getLocalProfile = '/tourist/';
 
   static const String postAddFavouriteOrRemoveFavourite = '/tourist/favorite';
 
@@ -82,13 +82,25 @@ class Urls {
 
   static const String cencelTripForTuourist = '/local/trip/:tripId/cancel';
 
+  // ................................Booking  Module...............................
+
+  static const String createBooking = '/booking/';
+
+  static const String confirmBooking = '/booking/confirm-booking';
+
+  static const String updateBooking = '/booking/';
+
+  static const String getBookingDetails = '/booking/';
+
+  static const String getBookingsByStatus = '/booking/cancel/';
+
   // ................................Local  Module...............................
 
   static const String updateOffer = '/local/update';
 
   static const String getHome = '/local/';
 
-  static const String getBookingDetails = '/local/trip/';
+  static const String getTripsDetails = '/local/trip/';
 
   // static const String getBookingsUpcoming = '/local/trips?status=upcoming';
 
