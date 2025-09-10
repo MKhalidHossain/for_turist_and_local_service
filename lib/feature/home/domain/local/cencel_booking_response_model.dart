@@ -1,14 +1,14 @@
 class CancelBookingResponseModel {
-  final int statusCode;
-  final bool success;
-  final String message;
-  final CancelBookingData data;
+   int? statusCode;
+   bool? success;
+   String? message;
+   CancelBookingData? data;
 
   CancelBookingResponseModel({
-    required this.statusCode,
-    required this.success,
-    required this.message,
-    required this.data,
+     this.statusCode,
+     this.success,
+     this.message,
+     this.data,
   });
 
   factory CancelBookingResponseModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class CancelBookingResponseModel {
       'statusCode': statusCode,
       'success': success,
       'message': message,
-      'data': data.toJson(),
+      'data': data?.toJson(),
     };
   }
 }

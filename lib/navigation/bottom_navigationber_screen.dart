@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kobeur/feature/trip_module/presentation/screens/trip_screen.dart';
 import '../core/themes/app_color.dart';
 import '../feature/home/presentation/screens/local/local_home_screen.dart';
 import '../feature/home/presentation/screens/local/local_trip_screen.dart';

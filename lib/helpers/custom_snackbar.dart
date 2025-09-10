@@ -20,6 +20,7 @@ void showCustomSnackBar(
       dismissDirection: DismissDirection.horizontal,
       margin: const EdgeInsets.all(10).copyWith(right: 10),
       duration: Duration(seconds: seconds),
+      snackPosition: SnackPosition.TOP,
       backgroundColor: Colors.white,
       borderRadius: 10,
       messageText: Row(

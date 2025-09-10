@@ -45,12 +45,17 @@ class LocalHomeRepository implements LocalHomeRepositoryInterface {
 
   @override
   Future<Response> getBookingDetails(String tripId) async {
-    return await apiClient.getData(Urls.getBookingDetails+tripId);
+    return await apiClient.getData(Urls.getBookingDetails + tripId);
+  }
+
+  @override
+  Future<Response> getBookingsAll() async {
+    return await apiClient.getData(Urls.getBookingsAll);
   }
 
   @override
   Future<Response> getBookings(String status) async {
-    return await apiClient.getData(Urls.getBookings + status);
+    return await apiClient.getData(Urls.getBookingsCategories + status);
   }
 
   @override
