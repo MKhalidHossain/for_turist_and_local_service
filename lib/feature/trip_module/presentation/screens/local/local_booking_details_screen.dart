@@ -113,16 +113,51 @@ class _LocalBookingDetailsScreenState extends State<LocalBookingDetailsScreen> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // CircleAvatar(
+                    //   radius: 20,
+                    //   backgroundImage:
+                    //       bookingDetails.trip?.touristId?.profileImage != null
+                    //           ? NetworkImage(
+                    //             bookingDetails.trip?.touristId?.profileImage ??
+                    //                 '',
+                    //           )
+                    //           : const AssetImage('assets/images/user.png')
+                    //               as ImageProvider,
+                    // ),
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage:
-                          bookingDetails.trip?.touristId?.profileImage != null
-                              ? NetworkImage(
-                                bookingDetails.trip?.touristId?.profileImage ??
-                                    '',
-                              )
-                              : const AssetImage('assets/images/user.png')
-                                  as ImageProvider,
+                      backgroundColor: Colors.grey[200],
+                      child: ClipOval(
+                        child:
+                            (bookingDetails.trip?.touristId?.profileImage !=
+                                        null &&
+                                    (bookingDetails
+                                            .trip
+                                            ?.touristId
+                                            ?.profileImage
+                                            ?.isNotEmpty ??
+                                        false))
+                                ? Image.network(
+                                  bookingDetails.trip!.touristId!.profileImage!,
+                                  fit: BoxFit.cover,
+                                  width: 70,
+                                  height: 70,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/profileBlankImage.png',
+                                      fit: BoxFit.cover,
+                                      width: 70,
+                                      height: 70,
+                                    );
+                                  },
+                                )
+                                : Image.asset(
+                                  'assets/images/profileBlankImage.png',
+                                  fit: BoxFit.cover,
+                                  width: 70,
+                                  height: 70,
+                                ),
+                      ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(

@@ -66,7 +66,7 @@ Future<void> initDI() async {
       LocalHomeRepository(Get.find(), prefs);
   Get.lazyPut(() => localHomeRepositoryInterface);
   LocalHomeServiceInterface localHomeServiceInterface = LocalHomeService(
-    Get.find(),
+    Get.find()
   );
   Get.lazyPut(() => localHomeServiceInterface);
   Get.lazyPut(() => LocalHomeTripController(localHomeServiceInterface));
