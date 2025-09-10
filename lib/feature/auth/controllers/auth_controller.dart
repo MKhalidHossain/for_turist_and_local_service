@@ -348,13 +348,13 @@ class AuthController extends GetxController implements GetxService {
       final String refreshToken = logInResponseModel!.data!.refreshToken!;
       final String token = logInResponseModel!.data!.accessToken!;
 
-      // print(
-      //   'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
-      // );
-      // print('refreshToken $refreshToken NOW Iwalker');
-      // print(
-      //   'User Token $token  ================================== from comtroller ',
-      // );
+      print(
+        'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
+      );
+      print('refreshToken $refreshToken NOW Iwalker');
+      print(
+        'User Token $token  ================================== from comtroller ',
+      );
       await setUserToken(token, refreshToken);
       update();
 
@@ -364,8 +364,6 @@ class AuthController extends GetxController implements GetxService {
       debugPrint("✅ Access Token: $token\n");
       debugPrint("✅ Refresh Token: $refreshToken\n");
       debugPrint("✅ User Role: $userRole\n");
-
-      authServiceInterface.chooseRole(userRole!, token);
 
       debugPrint(
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
@@ -451,17 +449,13 @@ class AuthController extends GetxController implements GetxService {
   bool logging = false;
 
   Future<void> logOut() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
     logging = true;
     update();
     Response? response = await authServiceInterface.logout();
 
-    if (isLoggedIn() == true) {
+    if (isLoggedIn() == false) {
       if (response!.statusCode == 200) {
-        // await preferences.setString(AppConstants.token, '');
-        await preferences.remove(AppConstants.token);
-        //await preferences.setString(AppConstants.refreshToken, '');
-        await preferences.remove(AppConstants.refreshToken);
+        // await preferences.setString(AppConstants.token, ''
 
         showCustomSnackBar('You have logout Successfully');
         Get.offAll(() => UserLoginScreen());
