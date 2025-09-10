@@ -63,7 +63,7 @@ Future<void> initDI() async {
   ///
 
   LocalHomeRepositoryInterface localHomeRepositoryInterface =
-      LocalHomeRepository(apiClient, prefs);
+      LocalHomeRepository(Get.find(), prefs);
   Get.lazyPut(() => localHomeRepositoryInterface);
   LocalHomeServiceInterface localHomeServiceInterface = LocalHomeService(
     Get.find(),
