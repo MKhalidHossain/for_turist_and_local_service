@@ -31,14 +31,14 @@ Future<void> initDI() async {
   Get.lazyPut(
     () => ApiClient(appBaseUrl: 'appBaseUrl', sharedPreferences: prefs),
   );
-  Get.lazyPut(
-    () => AuthRepository(apiClient: Get.find(), sharedPreferences: prefs),
-  );
+  // Get.lazyPut(
+  //   () => AuthRepository(apiClient: Get.find(), sharedPreferences: prefs),
+  // );
   AuthRepositoryInterface authRepositoryInterface = AuthRepository(
     apiClient: Get.find(),
     sharedPreferences: prefs,
   );
-  Get.lazyPut(() => authRepositoryInterface);
+  Get.lazyPut<AuthRepositoryInterface>(() => authRepositoryInterface);
   AuthServiceInterface authServiceInterface = AuthService(Get.find());
   Get.lazyPut(() => authServiceInterface);
   Get.lazyPut(() => AuthController(authServiceInterface: Get.find()));
@@ -49,7 +49,7 @@ Future<void> initDI() async {
   ///
 
   ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
-    apiClient,
+    Get.find(),
     prefs,
   );
   Get.lazyPut(() => profileRepositoryInterface);

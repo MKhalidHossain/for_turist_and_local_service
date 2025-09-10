@@ -237,6 +237,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                                 () => LocalBookingDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
+                                                  bookingId: trip.booking?.id,
                                                 ),
                                               ),
                                           child: BookingCard(
@@ -336,6 +337,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                                 () => LocalBookingDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
+                                                  bookingId: trip.booking?.id,
                                                 ),
                                               ),
                                           child: BookingCard(

@@ -93,7 +93,9 @@ class Urls {
   // static const String getBookingsUpcoming = '/local/trips?status=upcoming';
 
   // static const String getBookingsConfirmed = '/local/trips?status=confirmed';
-  static const String getBookings = '/local/trips?status=';
+  static const String getBookingsAll = '/local/trips';
+
+  static const String getBookingsCategories = '/local/trips?status=';
 
   static const String cencelBooking = '/local/trip/cancel/';
 

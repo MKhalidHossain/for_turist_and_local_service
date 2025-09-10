@@ -42,6 +42,8 @@ class ApiClient extends GetxService {
       'User Token ${token.toString()} ================================== from api Client ',
     );
     _mainHeaders = header;
+
+    print('New header: $_mainHeaders');
   }
 
   Future<Response> getData(

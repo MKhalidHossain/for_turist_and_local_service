@@ -7,18 +7,19 @@ import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/extensions/text_extensions.dart';
 import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
 import '../../../../home/controllers/local_home_controller.dart';
-import '../../../../home/domain/local/get_booking_details_response_model.dart';
 
 class LocalBookingDetailsScreen extends StatefulWidget {
   final String? tripId;
+  final String? bookingId;
 
-  const LocalBookingDetailsScreen({super.key, this.tripId});
+  const LocalBookingDetailsScreen({super.key, this.tripId, this.bookingId});
 
   @override
   State<LocalBookingDetailsScreen> createState() =>
       _LocalBookingDetailsScreenState();
 }
 
+// tripId: trip.id,
 class _LocalBookingDetailsScreenState extends State<LocalBookingDetailsScreen> {
   late LocalHomeTripController localHomeController;
 
@@ -330,8 +331,10 @@ class _LocalBookingDetailsScreenState extends State<LocalBookingDetailsScreen> {
                   width: double.infinity,
                   text: 'Cancel Booking',
                   onPressed: () {
-                    // Implement cancel booking logic
-                    Get.snackbar('Info', 'Cancel Booking not implemented');
+                    localHomeController.cencelBooking(
+                      widget.bookingId.toString(),
+                    );
+                    // Get.snackbar('Info', 'Cancel Booking not implemented');
                   },
                 ),
               ],

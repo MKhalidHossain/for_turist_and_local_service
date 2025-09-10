@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +6,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/change_password_
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
+import 'package:kobeur/feature/home/controllers/local_home_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
@@ -24,6 +24,8 @@ import '../sevices/tourist/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {
   ProfileController get profileController => Get.find<ProfileController>();
+  LocalHomeTripController get localHomeTripController =>
+      Get.find<LocalHomeTripController>();
 
   // Avoid calling Get.find in constructor or onInit
   void someMethod() {
@@ -55,6 +57,7 @@ class AuthController extends GetxController implements GetxService {
   bool? isFirstTime;
   String? userRole;
   bool isLoggedInforProfile = false;
+  bool haveOffer = false;
 
   void setCountryCode(String code) {
     countryDialCode = code;
@@ -81,6 +84,11 @@ class AuthController extends GetxController implements GetxService {
 
   LogInResponseModel? logInResponseModel;
   RegistrationResponseModel? registrationResponseModel;
+
+  onInit() {
+    super.onInit();
+  }
+
   // VerifyCodeResponseModel? verifyCodeResponseModel;
   // ChangePasswordResponseModel? changePasswordResponseModel;
   // ForgetPasswordResponseModel? forgetPasswordResponseModel;
@@ -106,6 +114,19 @@ class AuthController extends GetxController implements GetxService {
 
   //   isLoadingforProfile = false;
   // }
+
+  Future<void> _checkIsFirstOffer() async {
+    await localHomeTripController.getBookingsAll();
+    haveOffer =
+        localHomeTripController.getTripResponseApiBookingsModel.data?.length ==
+                0
+            ? false
+            : true;
+    debugPrint(
+      'Loaded Local Offer Count is : ${localHomeTripController.getTripResponseApiBookingsModel.data?.length}',
+    );
+    update();
+  }
 
   Future<void> _loadUserRole() async {
     await profileController.getUserProfile();
@@ -316,47 +337,38 @@ class AuthController extends GetxController implements GetxService {
     _isLoading = true;
     update();
 
-    // Response? response = Response();
-
     Response? response = await authServiceInterface.login(email, password);
 
     if (response == null) {
       print("No response found");
     }
     if (response!.statusCode == 200) {
-      // _loadUserRole();
-
-      //  final String refreshToken = '';
-
-      // print(token.toString());
-
       logInResponseModel = LogInResponseModel.fromJson(response.body);
 
       final String refreshToken = logInResponseModel!.data!.refreshToken!;
       final String token = logInResponseModel!.data!.accessToken!;
 
-      // print(
-      //   'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
-      // );
-      // print('refreshToken $refreshToken NOW Iwalker');
-      // print(
-      //   'User Token $token  ================================== from comtroller ',
-      // );
+      print(
+        'accessToken ${logInResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
+      );
+      print('refreshToken $refreshToken NOW Iwalker');
+      print(
+        'User Token $token  ================================== from comtroller ',
+      );
       await setUserToken(token, refreshToken);
+      update();
 
       debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
 
       await _loadUserRole();
-
       debugPrint("✅ Access Token: $token\n");
       debugPrint("✅ Refresh Token: $refreshToken\n");
       debugPrint("✅ User Role: $userRole\n");
 
-      authServiceInterface.chooseRole(userRole!, token);
-
       debugPrint(
         'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
       );
+
       // for Nevigation to Tourist or Local
       if (userRole != null && userRole!.isNotEmpty) {
         if (userRole.toString().toLowerCase() == 'tourist') {
@@ -365,7 +377,11 @@ class AuthController extends GetxController implements GetxService {
           );
           Get.offAll(() => BottomNavbar(userRole: userRole));
         } else if (userRole.toString().toLowerCase() == 'local') {
-          Get.offAll(() => CreateFirstServiceScreen());
+          _checkIsFirstOffer().then((_) {
+            haveOffer
+                ? Get.offAll(() => BottomNavbar(userRole: userRole))
+                : Get.offAll(() => CreateFirstServiceScreen());
+          });
         } else {
           showCustomSnackBar(
             'You have not selected your role yet, please select your role',
@@ -433,23 +449,22 @@ class AuthController extends GetxController implements GetxService {
   bool logging = false;
 
   Future<void> logOut() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
     logging = true;
     update();
     Response? response = await authServiceInterface.logout();
 
-    if (isLoggedIn() == true) {
+    if (isLoggedIn() == false) {
       if (response!.statusCode == 200) {
-        // await preferences.setString(AppConstants.token, '');
-        await preferences.remove(AppConstants.token);
-        //await preferences.setString(AppConstants.refreshToken, '');
-        await preferences.remove(AppConstants.refreshToken);
+        // await preferences.setString(AppConstants.token, ''
 
         showCustomSnackBar('You have logout Successfully');
         Get.offAll(() => UserLoginScreen());
       } else {
         logging = false;
         ApiChecker.checkApi(response);
+        print(response.body['message'] + ' for logout from controller');
+        Get.snackbar('Error', response.body['message']);
+        Get.offAll(() => UserLoginScreen());
       }
     } else {
       print(response.toString() + ' from controller');

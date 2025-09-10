@@ -17,5 +17,6 @@ abstract class LocalHomeServiceInterface {
   Future<Response> getHome();
   Future<Response> getBookingDetails(String tripId);
   Future<Response> getBookings(String status);
+   Future<Response> getBookingsAll();
   Future<Response> cencelBookings(String id);
 }

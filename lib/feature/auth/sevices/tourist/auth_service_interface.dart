@@ -1,3 +1,5 @@
+import 'package:get/get.dart';
+
 abstract class AuthServiceInterface {
 
   Future<dynamic> register(
