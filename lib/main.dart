@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/constants/splash_screen.dart';
+import 'package:kobeur/core/constants/splash_screen_without_loading.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/helpers/dependency_injection.dart';
@@ -14,7 +15,6 @@ void main() async {
   // final authController = Get.find<AuthController>();
   runApp(MyApp());
 }
-
 
 // http://localhost:5001/api/v1
 class MyApp extends StatelessWidget {
@@ -79,13 +79,14 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const SplashScreen();
+      return const SplashScreenWithoutLoading();
     }
     return GetBuilder<AuthController>(
       builder: (authController) {
-        if (isFirstTime!) {
-          return SplashScreen();
-        } else if (authController.isLoggedIn()) {
+        // if (isFirstTime!) {
+        //   return SplashScreen();
+        // } else 
+        if (authController.isLoggedIn()) {
           return BottomNavbar(userRole: authController.userRole ?? 'local');
         }
         return UserLoginScreen();

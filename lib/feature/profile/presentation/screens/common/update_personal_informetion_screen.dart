@@ -19,9 +19,9 @@ class UpdatePersonalInformetionScreen extends StatefulWidget {
 }
 
 class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
-  late TextEditingController _firstNameController;
-  late TextEditingController _lastNameController;
-  late TextEditingController _ageController;
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _ageController = TextEditingController();
   final FocusNode _firstNameFocus = FocusNode();
   final FocusNode _lastNameNameFocus = FocusNode();
   final FocusNode _ageFocus = FocusNode();

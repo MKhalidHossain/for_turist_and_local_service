@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kobeur/feature/home/presentation/screens/tourist/tourist_booking_screen.dart';
 import '../core/themes/app_color.dart';
 import '../feature/home/presentation/screens/local/local_home_screen.dart';
 import '../feature/home/presentation/screens/local/local_trip_screen.dart';
@@ -23,8 +24,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
   void initState() {
     super.initState();
     _screens = [
-      widget.userRole == 'tourist' ? TouristHomeScreen() : LocalHomeScreen(),
-      widget.userRole == 'tourist' ? BookingsScreen() : LocalTripScreen(),
+      (widget.userRole?.toLowerCase() == 'tourist'
+          ? TouristHomeScreen()
+          : LocalHomeScreen()),
+      (widget.userRole?.toLowerCase() == 'tourist'
+          ? TouristBookingScreen()
+          : LocalTripScreen()),
       MessagesScreen(),
       ProfileScreen(),
     ];

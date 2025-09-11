@@ -114,10 +114,11 @@ class ProfileController extends GetxController implements GetxService {
         );
 
         name.value =
-            "${getProfileResponseModel?.data?.firstName} ${getProfileResponseModel?.data?.lastName}" ??
-            '';
+            ("${getProfileResponseModel?.data?.firstName} ${getProfileResponseModel?.data?.lastName}") ??
+            'No Name';
         image.value = getProfileResponseModel?.data?.profileImage ?? '';
-        nationality.value = getProfileResponseModel?.data?.nationality ?? '';
+        nationality.value =
+            getProfileResponseModel?.data?.nationality ?? 'Country';
 
         name.refresh();
         image.refresh();
