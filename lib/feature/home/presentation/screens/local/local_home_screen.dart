@@ -118,7 +118,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  " ${profileController.name.value ?? 'No Name'}"
+                                  " ${profileController.name.value}"
                                       .text22Black700(),
                                   "${profileController.getProfileResponseModel?.data?.email ?? '@username'}"
                                       .text14Grey(),

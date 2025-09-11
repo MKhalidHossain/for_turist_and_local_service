@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-
 import '../../../core/constants/app_colors.dart';
 import '../../../core/validation/validators.dart';
 import '../../../core/widgets/app_scaffold.dart';
-import '../../../core/widgets/choose_country/data/countries.dart';
 import '../../auth/domain/common/singleton/user_profile_service.dart';
-import '../../auth/presentation/screens/common/upload_profile_picture.dart';
 import 'screens/photo_upload_screen.dart';
+import 'package:kobeur/feature/offer/domain/model/service_data.dart';
 
 class DetailsOfferLocal extends StatefulWidget {
   const DetailsOfferLocal({super.key});
@@ -30,15 +28,13 @@ class _DetailsOfferLocalState extends State<DetailsOfferLocal> {
   bool isEditing = true;
 
   final _formKey = GlobalKey<FormState>();
-
-  // final uniqueCountryNames = countries.map((c) => c.country).toSet().toList();
+  ServiceData serviceData = ServiceData();
 
   @override
   void initState() {
     _titleController = TextEditingController()..addListener(_onFieldChanged);
     _descriptionController =
         TextEditingController()..addListener(_onFieldChanged);
-
     super.initState();
   }
 
@@ -46,7 +42,8 @@ class _DetailsOfferLocalState extends State<DetailsOfferLocal> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
-
+    _titleFocus.dispose();
+    _descriptionFocus.dispose();
     super.dispose();
   }
 
@@ -259,6 +256,10 @@ class _DetailsOfferLocalState extends State<DetailsOfferLocal> {
                       '${UserProfileService.instance.profile.description}',
                 );
                 await Future.delayed(Duration(seconds: 1));
+                serviceData.userGivenOfferTitle = _titleController.text;
+                serviceData.userGivenOfferDescription =
+                    _descriptionController.text;
+                serviceData.printData();
                 Get.to(PhotoUploadScreen());
                 //Get.to(UploadProfilePicture());
               }

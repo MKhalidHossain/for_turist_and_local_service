@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-
 import '../../../domain/model/offers_item.dart';
-import 'experience_offers_screen.dart';
+import '../../../domain/model/service_data.dart';
+import '../offer_pricing_screen.dart';
 
 class SportOffersScreen extends StatefulWidget {
+  SportOffersScreen({super.key});
   @override
   _SportOffersScreenState createState() => _SportOffersScreenState();
 }
 
 class _SportOffersScreenState extends State<SportOffersScreen> {
   String? selectedOffer;
+  String? selectedSportOfferNameforStore;
+  ServiceData serviceData = ServiceData();
 
   final List<OfferItem> offers = [
     OfferItem(
       'Coach',
       'Coach tourists for the time they need, on your schedule',
-
       'assets/icons/coach.png',
       'Coach',
     ),
@@ -34,32 +37,18 @@ class _SportOffersScreenState extends State<SportOffersScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-     
       body: SafeArea(
         child: Column(
           children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  BackButton(color: Colors.black),
-                  'Sport'.text22Black700(),
-                  SizedBox(width: 50),
-                ],
-              ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'What is your Offer?',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                BackButton(color: Colors.black),
+                'What is your Offer?'.text22Black700(),
+                SizedBox(width: 50),
+              ],
             ),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -67,13 +56,14 @@ class _SportOffersScreenState extends State<SportOffersScreen> {
                 itemBuilder: (context, index) {
                   final offer = offers[index];
                   final isSelected = selectedOffer == offer.value;
-        
+
                   return Container(
                     margin: EdgeInsets.only(bottom: 12),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
+                          selectedSportOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -123,7 +113,9 @@ class _SportOffersScreenState extends State<SportOffersScreen> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       color:
-                                          isSelected ? Colors.red : Colors.black,
+                                          isSelected
+                                              ? Colors.red
+                                              : Colors.black,
                                     ),
                                   ),
                                   SizedBox(height: 4),
@@ -167,8 +159,15 @@ class _SportOffersScreenState extends State<SportOffersScreen> {
                 child: ElevatedButton(
                   onPressed:
                       selectedOffer != null
-                          ? () =>
-                              Navigator.pushNamed(context, '/time-setting-sport')
+                          ? () {
+                            serviceData.selectedOfferType =
+                                selectedSportOfferNameforStore;
+                            serviceData.printData();
+                            Get.to(OfferPricingScreen(
+                              offer:  offers.firstWhere((offer) => offer.value == selectedOffer!,
+                              )
+                            ));
+                          }
                           : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,

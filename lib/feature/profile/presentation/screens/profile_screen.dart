@@ -148,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   " ${profileController.name.value ?? 'No Name'}"
                                       .text20Grey700(),
-                                  "${profileController.nationality.value ?? 'Nationality'}"
+                                  "${profileController.nationality.value}"
                                       .text16Grey(),
                                 ],
                               ),
