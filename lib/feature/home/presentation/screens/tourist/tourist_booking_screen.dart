@@ -5,17 +5,18 @@ import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_sc
 import 'package:kobeur/feature/home/controllers/local_home_controller.dart';
 import '../../../../../core/common/button/button_widget.dart';
 import '../../../../trip_module/presentation/screens/local/local_booking_details_screen.dart';
+import '../../../../trip_module/presentation/screens/tourist/tourist_booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/bookingtabber_widget.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 
-class LocalTripScreen extends StatefulWidget {
-  const LocalTripScreen({super.key});
+class TouristBookingScreen extends StatefulWidget {
+  const TouristBookingScreen({super.key});
 
   @override
-  State<LocalTripScreen> createState() => _LocalTripScreenState();
+  State<TouristBookingScreen> createState() => _TouristBookingScreenState();
 }
 
-class _LocalTripScreenState extends State<LocalTripScreen> {
+class _TouristBookingScreenState extends State<TouristBookingScreen> {
   int selectedTab = 0;
   late LocalHomeTripController localTripController;
   String? liveTripId;
@@ -111,7 +112,7 @@ class _LocalTripScreenState extends State<LocalTripScreen> {
         return GestureDetector(
           onTap:
               () => Get.to(
-                () => LocalTripDetailsScreen(
+                () => TouristBookingDetailsScreen(
                   tripId: trip.id,
                   bookingId: trip.booking?.id, // Pass whole Trip object
                 ),

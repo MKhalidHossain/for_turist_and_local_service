@@ -118,7 +118,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  " ${profileController.name.value ?? 'No Name'}"
+                                  " ${profileController.name.value}"
                                       .text22Black700(),
                                   "${profileController.getProfileResponseModel?.data?.email ?? '@username'}"
                                       .text14Grey(),
@@ -234,7 +234,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                         child: GestureDetector(
                                           onTap:
                                               () => Get.to(
-                                                () => LocalBookingDetailsScreen(
+                                                () => LocalTripDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
                                                   bookingId: trip.booking?.id,
@@ -334,7 +334,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
                                         child: GestureDetector(
                                           onTap:
                                               () => Get.to(
-                                                () => LocalBookingDetailsScreen(
+                                                () => LocalTripDetailsScreen(
                                                   tripId:
                                                       trip.id, // Pass whole Trip object
                                                   bookingId: trip.booking?.id,
