@@ -3,13 +3,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/urls.dart';
 import '../../../../helpers/remote/data/api_client.dart';
-import 'local_home_repository_interface.dart';
+import 'home_repository_interface.dart';
 
-class LocalHomeRepository implements LocalHomeRepositoryInterface {
+class HomeRepository implements HomeRepositoryInterface {
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
 
-  LocalHomeRepository(this.apiClient, this.sharedPreferences);
+  HomeRepository(this.apiClient, this.sharedPreferences);
 
   @override
   Future<Response> updateOffer({
@@ -61,6 +61,79 @@ class LocalHomeRepository implements LocalHomeRepositoryInterface {
   @override
   Future<Response> cencelBookings(String id) async {
     return await apiClient.patchData(Urls.cencelBooking + id, {});
+  }
+
+  //
+  // ************ tourist ************ //
+  //
+  @override
+  Future<Response> getSuperHatch() async {
+    return await apiClient.getData(Urls.getSuperHatch);
+  }
+
+  @override
+  Future<Response> addFavOrRemove(String localId) async {
+    return await apiClient.postData(
+      Urls.addFavouriteOrRemoveFavourite + localId,
+      {},
+    );
+  }
+
+  @override
+  Future<Response> cancelTrip(String localId) async {
+    return await apiClient.patchData(Urls.cancelTripForTuourist + localId, {});
+  }
+
+  @override
+  Future<Response> getFav() async {
+    return await apiClient.getData(Urls.getFavorites);
+  }
+
+  @override
+  Future<Response> getFavoriteHatch() async {
+    return await apiClient.getData(Urls.getFavouriteHatch);
+  }
+
+  @override
+  Future<Response> getLocalDetails(String localId) async {
+    return await apiClient.getData(Urls.getOfferDetails);
+  }
+
+  @override
+  Future<Response> getOfferDetails(String localId, String offerId) async {
+    return await apiClient.getData(
+      Urls.getOfferDetails + localId + "/" + offerId,
+    );
+  }
+
+  @override
+  Future<Response> searchOffer(
+    String country,
+    String date,
+    String participants,
+    String languages,
+    String offerType,
+  ) async {
+    return await apiClient.patchData(Urls.searchOffer, {
+      "country": country,
+      "date": date,
+      "participants": participants,
+      "languages": languages,
+      "offerType": offerType,
+    });
+  }
+
+  @override
+  Future<Response> rateALocal(
+    String localId,
+    String comment,
+    String rating,
+  ) async {
+    return await apiClient.postData(Urls.rateALocal, {
+      "localId": localId,
+      "comment": comment,
+      "rating": rating,
+    });
   }
 
   // @override

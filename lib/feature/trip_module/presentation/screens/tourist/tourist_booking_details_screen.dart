@@ -6,7 +6,7 @@ import 'package:kobeur/core/widgets/formatTripDateText.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/extensions/text_extensions.dart';
 import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
-import '../../../../home/controllers/local_home_controller.dart';
+import '../../../../home/controllers/home_controller.dart';
 
 class TouristBookingDetailsScreen extends StatefulWidget {
   final String? tripId;
@@ -20,8 +20,9 @@ class TouristBookingDetailsScreen extends StatefulWidget {
 }
 
 // tripId: trip.id,
-class _TouristBookingDetailsScreenState extends State<TouristBookingDetailsScreen> {
-  late LocalHomeTripController localHomeController;
+class _TouristBookingDetailsScreenState
+    extends State<TouristBookingDetailsScreen> {
+  late HomeController localHomeController;
 
   final instructions = [
     'Bring comfortable walking shoes and weather appropriate clothing.',
@@ -44,7 +45,7 @@ class _TouristBookingDetailsScreenState extends State<TouristBookingDetailsScree
   @override
   void initState() {
     super.initState();
-    localHomeController = Get.find<LocalHomeTripController>();
+    localHomeController = Get.find<HomeController>();
 
     // Defer the asynchronous call to avoid calling during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -58,7 +59,7 @@ class _TouristBookingDetailsScreenState extends State<TouristBookingDetailsScree
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LocalHomeTripController>(
+    return GetBuilder<HomeController>(
       builder: (controller) {
         final bookingDetails = controller.getBookingDetailsResponseModel.data;
 
@@ -362,19 +363,19 @@ class _TouristBookingDetailsScreenState extends State<TouristBookingDetailsScree
                           .toList(),
                 ),
                 const Spacer(),
-            context.primaryButton(
-              width: double.infinity,
+                context.primaryButton(
+                  width: double.infinity,
 
-              text: 'Edit Booking',
-              onPressed: () {},
-            ),
-            const SizedBox(height: 12),
-            SecondaryButton(
-              width: double.infinity,
+                  text: 'Edit Booking',
+                  onPressed: () {},
+                ),
+                const SizedBox(height: 12),
+                SecondaryButton(
+                  width: double.infinity,
 
-              text: 'Cancel Booking',
-              onPressed: () {},
-            ),
+                  text: 'Cancel Booking',
+                  onPressed: () {},
+                ),
               ],
             ),
           ),

@@ -1,111 +1,182 @@
 class GetOfferDetailsResponseModel {
-  bool? success;
-  String? message;
-  List<ErrorSource>? errorSources;
-  Err? err;
-  int? stack;
+  final int? statusCode;
+  final bool? success;
+  final String? message;
+  final OfferDetailsData? data;
 
   GetOfferDetailsResponseModel({
+    this.statusCode,
     this.success,
     this.message,
-    this.errorSources,
-    this.err,
-    this.stack,
+    this.data,
   });
 
   factory GetOfferDetailsResponseModel.fromJson(Map<String, dynamic> json) {
     return GetOfferDetailsResponseModel(
+      statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      errorSources: json['errorSources'] != null
-          ? List<ErrorSource>.from(
-              json['errorSources'].map((x) => ErrorSource.fromJson(x)))
-          : [],
-      err: json['err'] != null ? Err.fromJson(json['err']) : null,
-      stack: json['stack'],
+      data:
+          json['data'] != null ? OfferDetailsData.fromJson(json['data']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['success'] = success;
-    result['message'] = message;
-    if (errorSources != null) {
-      result['errorSources'] = errorSources!.map((v) => v.toJson()).toList();
-    }
-    if (err != null) {
-      result['err'] = err!.toJson();
-    }
-    result['stack'] = stack;
-    return result;
-  }
+  Map<String, dynamic> toJson() => {
+    "statusCode": statusCode,
+    "success": success,
+    "message": message,
+    "data": data?.toJson(),
+  };
 }
 
-class ErrorSource {
-  String? path;
-  String? message;
+class OfferDetailsData {
+  final Local? local;
+  final Offer? offer;
 
-  ErrorSource({this.path, this.message});
+  OfferDetailsData({this.local, this.offer});
 
-  factory ErrorSource.fromJson(Map<String, dynamic> json) {
-    return ErrorSource(
-      path: json['path'],
-      message: json['message'],
+  factory OfferDetailsData.fromJson(Map<String, dynamic> json) {
+    return OfferDetailsData(
+      local: json['local'] != null ? Local.fromJson(json['local']) : null,
+      offer: json['offer'] != null ? Offer.fromJson(json['offer']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['path'] = path;
-    result['message'] = message;
-    return result;
-  }
+  Map<String, dynamic> toJson() => {
+    "local": local?.toJson(),
+    "offer": offer?.toJson(),
+  };
 }
 
-class Err {
-  String? stringValue;
-  String? valueType;
-  String? kind;
-  String? value;
-  String? path;
-  Map<String, dynamic>? reason;
-  String? name;
-  String? message;
+class Local {
+  final String? id;
+  final List<String>? languages;
+  final int? age;
+  final String? firstName;
+  final String? gender;
+  final String? lastName;
 
-  Err({
-    this.stringValue,
-    this.valueType,
-    this.kind,
-    this.value,
-    this.path,
-    this.reason,
-    this.name,
-    this.message,
+  Local({
+    this.id,
+    this.languages,
+    this.age,
+    this.firstName,
+    this.gender,
+    this.lastName,
   });
 
-  factory Err.fromJson(Map<String, dynamic> json) {
-    return Err(
-      stringValue: json['stringValue'],
-      valueType: json['valueType'],
-      kind: json['kind'],
-      value: json['value'],
-      path: json['path'],
-      reason: json['reason'],
-      name: json['name'],
-      message: json['message'],
+  factory Local.fromJson(Map<String, dynamic> json) {
+    return Local(
+      id: json['_id'],
+      languages:
+          json['languages'] != null ? List<String>.from(json['languages']) : [],
+      age: json['age'],
+      firstName: json['firstName'],
+      gender: json['gender'],
+      lastName: json['lastName'],
     );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['stringValue'] = stringValue;
-    result['valueType'] = valueType;
-    result['kind'] = kind;
-    result['value'] = value;
-    result['path'] = path;
-    result['reason'] = reason;
-    result['name'] = name;
-    result['message'] = message;
-    return result;
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "languages": languages,
+    "age": age,
+    "firstName": firstName,
+    "gender": gender,
+    "lastName": lastName,
+  };
+}
+
+class Offer {
+  final String? id;
+  final String? userId;
+  final String? category;
+  final String? offerType;
+  final double? pricePerPerson;
+  final int? maxParticipants;
+  final String? description;
+  final String? title;
+  final List<String>? languages;
+  final List<String>? photos;
+  final List<Availability>? availability;
+  final int? v;
+
+  Offer({
+    this.id,
+    this.userId,
+    this.category,
+    this.offerType,
+    this.pricePerPerson,
+    this.maxParticipants,
+    this.description,
+    this.title,
+    this.languages,
+    this.photos,
+    this.availability,
+    this.v,
+  });
+
+  factory Offer.fromJson(Map<String, dynamic> json) {
+    return Offer(
+      id: json['_id'],
+      userId: json['userId'],
+      category: json['category'],
+      offerType: json['offerType'],
+      pricePerPerson:
+          (json['pricePerPerson'] is int)
+              ? (json['pricePerPerson'] as int).toDouble()
+              : json['pricePerPerson']?.toDouble(),
+      maxParticipants: json['maxParticipants'],
+      description: json['description'],
+      title: json['title'],
+      languages:
+          json['languages'] != null ? List<String>.from(json['languages']) : [],
+      photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
+      availability:
+          json['availability'] != null
+              ? List<Availability>.from(
+                json['availability'].map((x) => Availability.fromJson(x)),
+              )
+              : [],
+      v: json['__v'],
+    );
   }
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "userId": userId,
+    "category": category,
+    "offerType": offerType,
+    "pricePerPerson": pricePerPerson,
+    "maxParticipants": maxParticipants,
+    "description": description,
+    "title": title,
+    "languages": languages,
+    "photos": photos,
+    "availability": availability?.map((x) => x.toJson()).toList(),
+    "__v": v,
+  };
+}
+
+class Availability {
+  final String? date;
+  final List<String>? timeSlots;
+  final String? id;
+
+  Availability({this.date, this.timeSlots, this.id});
+
+  factory Availability.fromJson(Map<String, dynamic> json) {
+    return Availability(
+      date: json['date'],
+      timeSlots:
+          json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : [],
+      id: json['_id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "date": date,
+    "timeSlots": timeSlots,
+    "_id": id,
+  };
 }

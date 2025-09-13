@@ -64,7 +64,6 @@ class _HomeState extends State<Home> {
 
     if (isFirstTime!) {
       await prefs.setBool('first_time', false);
-      //Get.lazyPut(() => ProfileStorageService());
     }
 
     final authController = Get.find<AuthController>();
@@ -83,11 +82,16 @@ class _HomeState extends State<Home> {
     }
     return GetBuilder<AuthController>(
       builder: (authController) {
-        // if (isFirstTime!) {
-        //   return SplashScreen();
-        // } else 
         if (authController.isLoggedIn()) {
-          return BottomNavbar(userRole: authController.userRole ?? 'local');
+          final role = authController.getUserRole();
+          print('Retrieved userRole: $role');
+          if (role == null || role.isEmpty) {
+            return UserLoginScreen();
+          }
+          print(
+            'User is logged in, navigating to userRole: ${authController.userRole} \n\n\n\n ',
+          );
+          return BottomNavbar(userRole: role);
         }
         return UserLoginScreen();
       },

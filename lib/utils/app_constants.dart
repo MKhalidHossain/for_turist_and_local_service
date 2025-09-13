@@ -5,6 +5,8 @@ class AppConstants {
   static const String token = 'token';
   static const String refreshToken = 'refreshToken';
 
+  static const String userRole = 'role';
+
   static const String appName = 'Kobeur';
 
   static const String baseUrl = 'https://kobeur.onrender.com/api/v1';

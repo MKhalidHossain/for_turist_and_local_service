@@ -1,13 +1,12 @@
 import 'package:get/get.dart';
 
 abstract class AuthServiceInterface {
-
   Future<dynamic> register(
     String email,
     String password,
     String confirmPassword,
   );
-  Future<dynamic> login(String email,  String password);
+  Future<dynamic> login(String email, String password);
   Future<dynamic> accessAndRefreshToken(String refreshToken);
   Future<dynamic> changePassword(
     String currentPassword,
@@ -18,11 +17,15 @@ abstract class AuthServiceInterface {
   Future<dynamic> verifyCode(String email, String otp);
   Future<dynamic> resendOtp(String email);
   Future<dynamic> sendOtp({required String phone});
-  Future<dynamic> resetPassword(String email ,String newPassword, String repeatNewPassword);
+  Future<dynamic> resetPassword(
+    String email,
+    String newPassword,
+    String repeatNewPassword,
+  );
   Future<dynamic> logout();
 
   bool isLoggedIn();
-  Future<dynamic> saveLogin(String token) ;
+  Future<dynamic> saveLogin(String token);
   Future<bool> clearUserCredentials();
   bool clearSharedAddress();
   String getUserToken();
@@ -33,5 +36,7 @@ abstract class AuthServiceInterface {
 
   bool isFirstTimeInstall();
   void setFirstTimeInstall();
-  Future<dynamic> chooseRole(String role , String token);
+  Future<dynamic> chooseRole(String role, String token);
+  Future<bool?> saveUserRole(String userRole);
+  String getUserRole();
 }

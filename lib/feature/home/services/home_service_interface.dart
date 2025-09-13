@@ -1,7 +1,7 @@
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
 
-abstract class LocalHomeRepositoryInterface {
+abstract class HomeServiceInterface {
   Future<Response> updateOffer({
     required String offerId,
     required String category,
@@ -19,4 +19,22 @@ abstract class LocalHomeRepositoryInterface {
   Future<Response> getBookings(String status);
   Future<Response> getBookingsAll();
   Future<Response> cencelBookings(String id);
+  //
+  // ************ tourist ************ //
+  //
+  Future<Response> getSuperHatch();
+  Future<Response> getFavoriteHatch();
+  Future<Response> searchOffer(
+    String country,
+    String date,
+    String participants,
+    String languages,
+    String offerType,
+  );
+  Future<Response> getOfferDetails(String localId, String offerId);
+  Future<Response> getLocalDetails(String localId);
+  Future<Response> addFavOrRemove(String localId);
+  Future<Response> getFav();
+  Future<Response> rateALocal(String localId, String comment, String rating);
+  Future<Response> cancelTrip(String localId);
 }

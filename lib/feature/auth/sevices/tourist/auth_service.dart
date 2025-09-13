@@ -82,6 +82,16 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
+  Future<bool?> saveUserRole(String userRole) async {
+    return await authRepositoryInterface.saveUserRole(userRole);
+  }
+
+  @override
+  String getUserRole() {
+    return authRepositoryInterface.getUserRole();
+  }
+
+  @override
   bool isFirstTimeInstall() {
     return authRepositoryInterface.isFirstTimeInstall();
   }
@@ -105,7 +115,7 @@ class AuthService implements AuthServiceInterface {
 
   @override
   String getUserToken() {
-   return authRepositoryInterface.getUserToken();
+    return authRepositoryInterface.getUserToken();
   }
 
   @override
@@ -121,7 +131,7 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future updateAccessAndRefreshToken() async{
+  Future updateAccessAndRefreshToken() async {
     return await authRepositoryInterface.updateAccessAndRefreshToken();
   }
 
@@ -132,7 +142,7 @@ class AuthService implements AuthServiceInterface {
   }
 
   @override
-  Future chooseRole(String role, String token ) async {
-    return await authRepositoryInterface.chooseRole(role , token);
+  Future chooseRole(String role, String token) async {
+    return await authRepositoryInterface.chooseRole(role, token);
   }
 }
