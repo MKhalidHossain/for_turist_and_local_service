@@ -95,8 +95,8 @@ class HomeRepository implements HomeRepositoryInterface {
   }
 
   @override
-  Future<Response> getLocalDetails(String localId) async {
-    return await apiClient.getData(Urls.getOfferDetails);
+  Future<Response> getLocalprofile(String localId) async {
+    return await apiClient.getData(Urls.getLocalProfile + localId);
   }
 
   @override

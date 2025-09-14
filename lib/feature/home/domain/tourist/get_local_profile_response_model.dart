@@ -2,194 +2,283 @@ class GetLocalProfileResponseModel {
   int? statusCode;
   bool? success;
   String? message;
-  LocalProfileData? data;
-  List<ErrorSource>? errorSources;
-  LocalProfileErr? err;
-  int? stack;
+  Data? data;
 
   GetLocalProfileResponseModel({
     this.statusCode,
     this.success,
     this.message,
     this.data,
-    this.errorSources,
-    this.err,
-    this.stack,
   });
 
-  factory GetLocalProfileResponseModel.fromJson(Map<String, dynamic> json) {
-    return GetLocalProfileResponseModel(
-      statusCode: json['statusCode'],
-      success: json['success'],
-      message: json['message'],
-      data: json['data'] != null ? LocalProfileData.fromJson(json['data']) : null,
-      errorSources: json['errorSources'] != null
-          ? List<ErrorSource>.from(
-              json['errorSources'].map((x) => ErrorSource.fromJson(x)))
-          : [],
-      err: json['err'] != null ? LocalProfileErr.fromJson(json['err']) : null,
-      stack: json['stack'],
-    );
+  GetLocalProfileResponseModel.fromJson(Map<String, dynamic> json) {
+    statusCode =
+        json['statusCode'] is int
+            ? json['statusCode']
+            : (json['statusCode'] as num?)?.toInt();
+    success = json['success'];
+    message = json['message'];
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['statusCode'] = statusCode;
-    result['success'] = success;
-    result['message'] = message;
-    if (data != null) result['data'] = data!.toJson();
-    if (errorSources != null) {
-      result['errorSources'] = errorSources!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['statusCode'] = statusCode;
+    data['success'] = success;
+    data['message'] = message;
+    if (this.data != null) {
+      data['data'] = this.data!.toJson();
     }
-    if (err != null) result['err'] = err!.toJson();
-    result['stack'] = stack;
-    return result;
+    return data;
   }
 }
 
-/// Success Data
-class LocalProfileData {
+class Data {
+  String? id;
   String? name;
+  String? country;
   List<String>? languages;
   String? about;
+  String? profileImage;
   List<Offer>? offers;
-  double? rating;
-  List<Review>? reviews;
+  Rating? rating;
 
-  LocalProfileData({
+  Data({
+    this.id,
     this.name,
+    this.country,
     this.languages,
     this.about,
+    this.profileImage,
     this.offers,
     this.rating,
-    this.reviews,
   });
 
-  factory LocalProfileData.fromJson(Map<String, dynamic> json) {
-    return LocalProfileData(
-      name: json['name'],
-      languages: json['languages'] != null
-          ? List<String>.from(json['languages'])
-          : [],
-      about: json['about'],
-      offers: json['offers'] != null
-          ? List<Offer>.from(json['offers'].map((x) => Offer.fromJson(x)))
-          : [],
-      rating: (json['rating'] != null)
-          ? (json['rating'] as num).toDouble()
-          : 0.0,
-      reviews: json['reviews'] != null
-          ? List<Review>.from(json['reviews'].map((x) => Review.fromJson(x)))
-          : [],
-    );
+  Data.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    country = json['country'];
+    languages = (json['languages'] as List?)?.map((e) => e.toString()).toList();
+    about = json['about'];
+    profileImage = json['profileImage'];
+    if (json['offers'] != null) {
+      offers = [];
+      json['offers'].forEach((v) {
+        offers!.add(Offer.fromJson(v));
+      });
+    }
+    rating = json['rating'] != null ? Rating.fromJson(json['rating']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['name'] = name;
-    result['languages'] = languages;
-    result['about'] = about;
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['country'] = country;
+    data['languages'] = languages;
+    data['about'] = about;
+    data['profileImage'] = profileImage;
     if (offers != null) {
-      result['offers'] = offers!.map((v) => v.toJson()).toList();
+      data['offers'] = offers!.map((v) => v.toJson()).toList();
     }
-    result['rating'] = rating;
-    if (reviews != null) {
-      result['reviews'] = reviews!.map((v) => v.toJson()).toList();
+    if (rating != null) {
+      data['rating'] = rating!.toJson();
     }
-    return result;
+    return data;
   }
 }
 
-/// Example Offer (currently empty in JSON)
 class Offer {
-  int? id;
-  String? title;
+  String? sId;
+  String? userId;
+  String? category;
+  String? offerType;
+  int? pricePerPerson;
+  int? maxParticipants;
   String? description;
+  String? title;
+  List<String>? languages;
+  List<String>? photos;
+  List<Availability>? availability;
+  int? iV;
 
-  Offer({this.id, this.title, this.description});
+  Offer({
+    this.sId,
+    this.userId,
+    this.category,
+    this.offerType,
+    this.pricePerPerson,
+    this.maxParticipants,
+    this.description,
+    this.title,
+    this.languages,
+    this.photos,
+    this.availability,
+    this.iV,
+  });
 
-  factory Offer.fromJson(Map<String, dynamic> json) {
-    return Offer(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-    );
+  Offer.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    userId = json['userId'];
+    category = json['category'];
+    offerType = json['offerType'];
+    pricePerPerson =
+        json['pricePerPerson'] != null
+            ? (json['pricePerPerson'] is int
+                ? json['pricePerPerson']
+                : (json['pricePerPerson'] as num).toInt())
+            : null;
+    maxParticipants =
+        json['maxParticipants'] != null
+            ? (json['maxParticipants'] is int
+                ? json['maxParticipants']
+                : (json['maxParticipants'] as num).toInt())
+            : null;
+    description = json['description'];
+    title = json['title'];
+    languages = (json['languages'] as List?)?.map((e) => e.toString()).toList();
+    photos = (json['photos'] as List?)?.map((e) => e.toString()).toList();
+    if (json['availability'] != null) {
+      availability = [];
+      json['availability'].forEach((v) {
+        availability!.add(Availability.fromJson(v));
+      });
+    }
+    iV =
+        json['__v'] != null
+            ? (json['__v'] is int ? json['__v'] : (json['__v'] as num).toInt())
+            : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['id'] = id;
-    result['title'] = title;
-    result['description'] = description;
-    return result;
+    final Map<String, dynamic> data = {};
+    data['_id'] = sId;
+    data['userId'] = userId;
+    data['category'] = category;
+    data['offerType'] = offerType;
+    data['pricePerPerson'] = pricePerPerson;
+    data['maxParticipants'] = maxParticipants;
+    data['description'] = description;
+    data['title'] = title;
+    data['languages'] = languages;
+    data['photos'] = photos;
+    if (availability != null) {
+      data['availability'] = availability!.map((v) => v.toJson()).toList();
+    }
+    data['__v'] = iV;
+    return data;
   }
 }
 
-/// Example Review (currently empty in JSON)
+class Availability {
+  String? date;
+  List<String>? timeSlots;
+  String? sId;
+
+  Availability({this.date, this.timeSlots, this.sId});
+
+  Availability.fromJson(Map<String, dynamic> json) {
+    date = json['date'];
+    timeSlots = (json['timeSlots'] as List?)?.map((e) => e.toString()).toList();
+    sId = json['_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['date'] = date;
+    data['timeSlots'] = timeSlots;
+    data['_id'] = sId;
+    return data;
+  }
+}
+
+class Rating {
+  int? average;
+  int? count;
+  List<Review>? reviews;
+
+  Rating({this.average, this.count, this.reviews});
+
+  Rating.fromJson(Map<String, dynamic> json) {
+    average =
+        json['average'] != null
+            ? (json['average'] is int
+                ? json['average']
+                : (json['average'] as num).toInt())
+            : null;
+    count =
+        json['count'] != null
+            ? (json['count'] is int
+                ? json['count']
+                : (json['count'] as num).toInt())
+            : null;
+    if (json['reviews'] != null) {
+      reviews = [];
+      json['reviews'].forEach((v) {
+        reviews!.add(Review.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['average'] = average;
+    data['count'] = count;
+    if (reviews != null) {
+      data['reviews'] = reviews!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
 class Review {
-  int? id;
-  String? reviewer;
+  int? rating;
   String? comment;
-  double? rating;
+  Reviewer? reviewer;
+  String? createdAt;
 
-  Review({this.id, this.reviewer, this.comment, this.rating});
+  Review({this.rating, this.comment, this.reviewer, this.createdAt});
 
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
-      id: json['id'],
-      reviewer: json['reviewer'],
-      comment: json['comment'],
-      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : 0.0,
-    );
+  Review.fromJson(Map<String, dynamic> json) {
+    rating =
+        json['rating'] != null
+            ? (json['rating'] is int
+                ? json['rating']
+                : (json['rating'] as num).toInt())
+            : null;
+    comment = json['comment'];
+    reviewer =
+        json['reviewer'] != null ? Reviewer.fromJson(json['reviewer']) : null;
+    createdAt = json['createdAt'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['id'] = id;
-    result['reviewer'] = reviewer;
-    result['comment'] = comment;
-    result['rating'] = rating;
-    return result;
+    final Map<String, dynamic> data = {};
+    data['rating'] = rating;
+    data['comment'] = comment;
+    if (reviewer != null) {
+      data['reviewer'] = reviewer!.toJson();
+    }
+    data['createdAt'] = createdAt;
+    return data;
   }
 }
 
-/// Error Sources
-class ErrorSource {
-  String? path;
-  String? message;
+class Reviewer {
+  String? name;
+  String? profileImage;
 
-  ErrorSource({this.path, this.message});
+  Reviewer({this.name, this.profileImage});
 
-  factory ErrorSource.fromJson(Map<String, dynamic> json) {
-    return ErrorSource(
-      path: json['path'],
-      message: json['message'],
-    );
+  Reviewer.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    profileImage = json['profileImage'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['path'] = path;
-    result['message'] = message;
-    return result;
-  }
-}
-
-/// Error Object
-class LocalProfileErr {
-  int? statusCode;
-
-  LocalProfileErr({this.statusCode});
-
-  factory LocalProfileErr.fromJson(Map<String, dynamic> json) {
-    return LocalProfileErr(
-      statusCode: json['statusCode'],
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> result = {};
-    result['statusCode'] = statusCode;
-    return result;
+    final Map<String, dynamic> data = {};
+    data['name'] = name;
+    data['profileImage'] = profileImage;
+    return data;
   }
 }

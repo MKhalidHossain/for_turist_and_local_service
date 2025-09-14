@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
-import 'package:kobeur/feature/profile/presentation/screens/local/locals_profile.dart';
+import 'package:kobeur/feature/profile/presentation/screens/local/locals_profile_for_tourist_show.dart';
 import '../../widgets/favorite_button.dart';
 import 'search_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TouristHomeScreen extends StatefulWidget {
   @override
@@ -12,25 +13,23 @@ class TouristHomeScreen extends StatefulWidget {
 }
 
 class _TouristHomeScreenState extends State<TouristHomeScreen> {
-  TextEditingController searchController = TextEditingController(text: 'Paris');
+  TextEditingController searchController = TextEditingController();
 
   late HomeController homeController;
 
   @override
   void initState() {
+    super.initState();
     homeController = Get.find<HomeController>();
     homeController.getSuperHatch();
   }
 
-  // Categories for horizontal scroll
-  // final List<Map<String, dynamic>> categories = [
-  //   {'icon': '🍽️', 'label': 'Food', 'color': Colors.orange[100]},
-  //   {'icon': '🎭', 'label': 'Experience', 'color': Colors.purple[100]},
-  //   {'icon': '🚗', 'label': 'Transport', 'color': Colors.blue[100]},
-  //   {'icon': '📷', 'label': 'Photography', 'color': Colors.green[100]},
-  //   {'icon': '🗽', 'label': 'Culture', 'color': Colors.teal[100]},
-  //   {'icon': '🏆', 'label': 'Sport', 'color': Colors.yellow[100]},
-  // ];
+  @override
+  void dispose() {
+    super.dispose();
+    homeController.dispose();
+  }
+
   final List<Map<String, dynamic>> categories = [
     {
       'imagePath': 'assets/icons/food.png',
@@ -70,48 +69,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     {'id': 2, 'name': 'London', 'flag': '🇬🇧', 'country': 'UK'},
     {'id': 3, 'name': 'Tokyo', 'flag': '🇯🇵', 'country': 'Japan'},
     {'id': 4, 'name': 'New York', 'flag': '🇺🇸', 'country': 'USA'},
-    // {'id': 5, 'name': 'Dubai', 'flag': '🇦🇪', 'country': 'UAE'},
-    // {'id': 6, 'name': 'Sydney', 'flag': '🇦🇺', 'country': 'Australia'},
   ];
-
-  // final List<Map<String, dynamic>> hotels = [
-  //   {
-  //     'id': 1,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👩‍💼',
-  //     'reviews': 'Very Good',
-  //   },
-  //   {
-  //     'id': 2,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👨‍💼',
-  //     'reviews': 'Very Good',
-  //   },
-  //   {
-  //     'id': 3,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👩‍🎨',
-  //     'reviews': 'Very Good',
-  //   },
-  //   {
-  //     'id': 4,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👨‍🎨',
-  //     'reviews': 'Very Good',
-  //   },
-  // ];
 
   final List<Map<String, dynamic>> superHatch = [
     {
@@ -273,6 +231,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<HomeController>(
       builder: (homeController) {
+        final superHatchData = homeController.getSuperHatchResponseModel?.data;
         return homeController.isLoading
             ? Center(child: CircularProgressIndicator())
             : Scaffold(
@@ -299,7 +258,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
                                 SizedBox(width: 12),
                                 Text(
                                   searchController.text.isEmpty
-                                      ? 'Paris'
+                                      ? 'Explore like a local'
                                       : searchController.text,
                                   style: TextStyle(
                                     color:
@@ -466,485 +425,222 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
                                 ),
                               ],
                             ),
+                            //                             final superHatchData = homeController.getSuperHatchResponseModel?.data;
 
-                            // Cards
-                            Column(
-                              children: List.generate(
-                                homeController
-                                    .getSuperHatchResponseModel
-                                    .data!
-                                    .length,
-                                (index) {
-                                  final result =
-                                      homeController
-                                          .getSuperHatchResponseModel
-                                          .data![index];
-                                  return Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 16.0,
-                                    ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Get.to(LocalsProfileScreen());
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.withOpacity(
-                                                0.1,
-                                              ),
-                                              blurRadius: 4,
-                                              offset: Offset(0, 2),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            // Image
-                                            Container(
-                                              height: 120,
-                                              width: 120,
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[100],
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                              ),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(4),
-                                                child:
-                                                    result.offers?.photos !=
-                                                                null &&
-                                                            result
-                                                                .offers!
-                                                                .photos!
-                                                                .isNotEmpty
-                                                        ? Image.network(
-                                                          result
-                                                              .offers!
-                                                              .photos!
-                                                              .first,
-                                                          fit: BoxFit.cover,
-                                                        )
-                                                        : (result.profileImage !=
-                                                                null
-                                                            ? Image.network(
-                                                              result
-                                                                  .profileImage!,
-                                                              fit: BoxFit.cover,
-                                                            )
-                                                            : Icon(
-                                                              Icons.person,
-                                                              size: 50,
-                                                              color:
-                                                                  Colors.grey,
-                                                            )),
-                                              ),
-                                            ),
+                            // if (superHatchData == null || superHatchData.isEmpty) {
+                            //   return Center(
+                            //     child: Text("No data available"),
+                            //   );
+                            // }       /// 👇 CHANGE START: shimmer / empty / real data
 
-                                            SizedBox(width: 12),
-
-                                            // Details
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  // Name & Favorite
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Text(
-                                                          "${result.firstName} ${result.lastName}",
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 16,
-                                                            color: Colors.black,
-                                                          ),
-                                                          overflow:
-                                                              TextOverflow
-                                                                  .ellipsis,
-                                                        ),
-                                                      ),
-                                                      const FavoriteButton(
-                                                        size: 20,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 4),
-
-                                                  // Image Label + Description
-                                                  Row(
-                                                    children: [
-                                                      Column(
-                                                        children: [
-                                                          Image.asset(
-                                                            'assets/images/takeaway.png',
-                                                            height: 40,
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                          Text(
-                                                            "Takeaway",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 10,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              "${result.offers?.title} "?? '' ,
-                                                              style: TextStyle(
-                                                                color:
-                                                                    Colors.red,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                            Text(
-                                                              "${result.offers?.description}  "?? '',
-                                                              maxLines: 5,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style: TextStyle(
-                                                                color:
-                                                                    Colors
-                                                                        .grey[600],
-                                                                fontSize: 10,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 8),
-
-                                                  // Rating and Price
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.star,
-                                                            color: Colors.amber,
-                                                            size: 12,
-                                                          ),
-                                                          SizedBox(width: 4),
-                                                          Text(
-                                                            "${result.averageRating} "?? '' ,
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            'from ',
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 12,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            "${result.offers?.pricePerPerson} "?? '',
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 18,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            ' / person',
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color:
-                                                                  Colors
-                                                                      .black87,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
+                            /// 👇 CHANGE START: shimmer / empty / real data
+                            if (superHatchData == null)
+                              _buildShimmerLoader() // show shimmer while loading
+                            else if (superHatchData.isEmpty)
+                              Center(child: Text("No data available"))
+                            else
+                              Column(
+                                children: List.generate(superHatchData.length, (
+                                  index,
+                                ) {
+                                  final result = superHatchData[index];
+                                  return _buildSuperHatchCard(result);
+                                }),
                               ),
-                            ),
+
+                            /// 👆 CHANGE END
                           ],
                         ),
                       ),
-
-                      // Super Hatch
-                      // Expanded(
-                      //   child: Padding(
-                      //     padding: EdgeInsets.symmetric(horizontal: 16),
-                      //     child: Column(
-                      //       children: [
-                      //         Row(
-                      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //           children: [
-                      //             Text(
-                      //               'Super Hatch',
-                      //               style: TextStyle(
-                      //                 fontSize: 18,
-                      //                 fontWeight: FontWeight.w600,
-                      //               ),
-                      //             ),
-                      //             TextButton(
-                      //               onPressed: () {
-                      //                 Navigator.push(
-                      //                   context,
-                      //                   MaterialPageRoute(
-                      //                     builder: (context) => SearchScreen(),
-                      //                   ),
-                      //                 );
-                      //               },
-                      //               child: Text(
-                      //                 'See more',
-                      //                 style: TextStyle(color: Colors.red),
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //         SizedBox(height: 12),
-                      //         Expanded(
-                      //           child: ListView.separated(
-                      //             separatorBuilder: (_, __) => SizedBox(height: 16),
-                      //             padding: EdgeInsets.symmetric(horizontal: 16),
-                      //             itemCount: superHatch.length,
-                      //             itemBuilder: (context, index) {
-                      //               final result = superHatch[index];
-                      //               return Container(
-                      //                 // margin: EdgeInsets.only(bottom: 16),
-                      //                 // padding: EdgeInsets.all(16),
-                      //                 decoration: BoxDecoration(
-                      //                   color: Colors.white,
-                      //                   borderRadius: BorderRadius.circular(8),
-                      //                   boxShadow: [
-                      //                     BoxShadow(
-                      //                       color: Colors.grey.withOpacity(0.1),
-                      //                       blurRadius: 4,
-                      //                       offset: Offset(0, 2),
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //                 child: Row(
-                      //                   children: [
-                      //                     Container(
-                      //                       // width: 120,
-                      //                       height: 120,
-                      //                       decoration: BoxDecoration(
-                      //                         color: Colors.grey[100],
-                      //                         // shape: BoxShape.circle,
-                      //                         borderRadius: BorderRadius.circular(4),
-                      //                       ),
-                      //                       child: ClipRRect(
-                      //                         borderRadius: BorderRadius.circular(4),
-                      //                         child: Image.asset(
-                      //                           result['image'],
-
-                      //                           //'assets/images/local1.png',
-                      //                           fit: BoxFit.cover,
-                      //                         ),
-                      //                       ),
-                      //                     ),
-                      //                     SizedBox(width: 12),
-                      //                     Expanded(
-                      //                       child: Column(
-                      //                         crossAxisAlignment:
-                      //                             CrossAxisAlignment.start,
-                      //                         children: [
-                      //                           Row(
-                      //                             mainAxisAlignment:
-                      //                                 MainAxisAlignment.spaceBetween,
-                      //                             children: [
-                      //                               Text(
-                      //                                 result['name'],
-                      //                                 style: TextStyle(
-                      //                                   fontWeight: FontWeight.w500,
-                      //                                   fontSize: 16,
-                      //                                   color: Colors.black,
-                      //                                 ),
-                      //                               ),
-                      //                               const FavoriteButton(size: 20),
-                      //                             ],
-                      //                           ),
-
-                      //                           Row(
-                      //                             children: [
-                      //                               Column(
-                      //                                 mainAxisAlignment:
-                      //                                     MainAxisAlignment.center,
-                      //                                 children: [
-                      //                                   Image.asset(
-                      //                                     'assets/images/takeaway.png',
-                      //                                     height: 40,
-                      //                                     fit: BoxFit.contain,
-                      //                                   ),
-                      //                                   Text(
-                      //                                     "Takeaway",
-                      //                                     style: TextStyle(
-                      //                                       color: Colors.black,
-                      //                                       fontSize: 10,
-                      //                                       fontWeight: FontWeight.w400,
-                      //                                     ),
-                      //                                   ),
-                      //                                 ],
-                      //                               ),
-                      //                               const SizedBox(width: 8),
-                      //                               Expanded(
-                      //                                 child: Column(
-                      //                                   crossAxisAlignment:
-                      //                                       CrossAxisAlignment.start,
-                      //                                   children: [
-                      //                                     Text(
-                      //                                       result['location'],
-                      //                                       style: TextStyle(
-                      //                                         color: Colors.red,
-                      //                                         fontWeight: FontWeight.w600,
-                      //                                         fontSize: 14,
-                      //                                       ),
-                      //                                     ),
-                      //                                     Text(
-                      //                                       result['description'],
-                      //                                       maxLines: 5,
-                      //                                       //overflow: TextOverflow.ellipsis,
-                      //                                       style: TextStyle(
-                      //                                         color: Colors.grey[600],
-                      //                                         fontSize: 10,
-                      //                                         fontWeight: FontWeight.w400,
-                      //                                       ),
-                      //                                     ),
-                      //                                   ],
-                      //                                 ),
-                      //                               ),
-                      //                             ],
-                      //                           ),
-
-                      //                           Row(
-                      //                             mainAxisAlignment:
-                      //                                 MainAxisAlignment.spaceBetween,
-                      //                             children: [
-                      //                               Row(
-                      //                                 children: [
-                      //                                   Icon(
-                      //                                     Icons.star,
-                      //                                     color: Colors.amber,
-                      //                                     size: 12,
-                      //                                   ),
-                      //                                   SizedBox(width: 4),
-                      //                                   Text(
-                      //                                     '${result['rating']}',
-                      //                                     style: TextStyle(fontSize: 12),
-                      //                                   ),
-                      //                                 ],
-                      //                               ),
-
-                      //                               Row(
-                      //                                 children: [
-                      //                                   Text(
-                      //                                     'from ',
-                      //                                     style: TextStyle(
-                      //                                       color: Colors.red,
-                      //                                       fontWeight: FontWeight.w600,
-                      //                                       fontSize: 12,
-                      //                                     ),
-                      //                                   ),
-                      //                                   Text(
-                      //                                     '${result['price']}\€',
-                      //                                     style: TextStyle(
-                      //                                       color: Colors.red,
-                      //                                       fontWeight: FontWeight.w600,
-                      //                                       fontSize: 18,
-                      //                                     ),
-                      //                                   ),
-                      //                                   Text(
-                      //                                     '/ ',
-                      //                                     style: TextStyle(
-                      //                                       color: Colors.black87,
-                      //                                       fontSize: 18,
-                      //                                     ),
-                      //                                   ),
-                      //                                   Text(
-                      //                                     'person',
-                      //                                     style: TextStyle(
-                      //                                       color: Colors.black87,
-                      //                                       fontSize: 12,
-                      //                                     ),
-                      //                                   ),
-                      //                                 ],
-                      //                               ),
-
-                      //                               // Text(
-                      //                               //   '(${result['reviews']})',
-                      //                               //   style: TextStyle(
-                      //                               //     color: Colors.grey,
-                      //                               //     fontSize: 12,
-                      //                               //   ),
-                      //                               // ),
-                      //                             ],
-                      //                           ),
-                      //                         ],
-                      //                       ),
-                      //                     ),
-                      //                     Column(
-                      //                       crossAxisAlignment: CrossAxisAlignment.end,
-                      //                       children: [],
-                      //                     ),
-                      //                   ],
-                      //                 ),
-                      //               );
-                      //             },
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
                     ],
                   ),
                 ),
               ),
             );
       },
+    );
+  }
+
+  // 👇 Shimmer loader method
+  Widget _buildShimmerLoader() {
+    return Column(
+      children: List.generate(3, (index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Row(
+              children: [
+                Container(
+                  height: 120,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: 16, width: 150, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(height: 14, width: 100, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 12,
+                        width: double.infinity,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 8),
+                      Container(height: 12, width: 80, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+
+  // 👇 Reusable card for real data
+  Widget _buildSuperHatchCard(dynamic result) {
+    print("Result ID: ${result.id}");
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: GestureDetector(
+        onTap: () => Get.to(LocalsProfileForTouristScreen(localId: result.id)),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // Image
+              Container(
+                height: 120,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child:
+                      result.offers?.photos != null &&
+                              result.offers!.photos!.isNotEmpty
+                          ? Image.network(
+                            result.offers!.photos!.first,
+                            fit: BoxFit.cover,
+                          )
+                          : (result.profileImage != null
+                              ? Image.network(
+                                result.profileImage!,
+                                fit: BoxFit.cover,
+                              )
+                              : Icon(
+                                Icons.person,
+                                size: 50,
+                                color: Colors.grey,
+                              )),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Name + Favorite
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "${result.firstName} ${result.lastName}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const FavoriteButton(size: 20),
+                      ],
+                    ),
+                    SizedBox(height: 4),
+
+                    /// Offer
+                    Text(
+                      result.offers?.title ?? 'No title available',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      result.offers?.description ?? 'No description available',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                    ),
+                    SizedBox(height: 8),
+
+                    /// Rating + Price
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber, size: 12),
+                            SizedBox(width: 4),
+                            Text(
+                              "${result.averageRating ?? '0.0'}",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'from ',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                            Text(
+                              "${result.offers?.pricePerPerson ?? '0.0'}",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(' / person', style: TextStyle(fontSize: 12)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +10,7 @@ import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dar
 import 'package:kobeur/feature/home/domain/tourist/add_fav_or_remove_fav_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_fab_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_favorite_hatch_response_model.dart';
+import 'package:kobeur/feature/home/domain/tourist/get_local_profile_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_offer_details_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_super_hatch_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/rate_a_local_response_model.dart';
@@ -20,9 +23,9 @@ import '../domain/local/get_trip_response_api_bookings_model.dart';
 class HomeController extends GetxController implements GetxService {
   // final localHomeController = Get.find<LocalHomeController>();
 
-  final HomeServiceInterface localHomeServiceInterface;
+  final HomeServiceInterface homeServiceInterface;
 
-  HomeController(this.localHomeServiceInterface);
+  HomeController(this.homeServiceInterface);
 
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
@@ -41,6 +44,8 @@ class HomeController extends GetxController implements GetxService {
       SearchOfferResponseModel();
   GetOfferDetailsResponseModel getOfferDetailsResponseModel =
       GetOfferDetailsResponseModel();
+  GetLocalProfileResponseModel getLocalProfileResponseModel =
+      GetLocalProfileResponseModel();
   AddFavOrRemoveFavResponseModel addFavOrRemoveFavResponseModel =
       AddFavOrRemoveFavResponseModel();
   GetFavResponseModel getFavResponseModel = GetFavResponseModel();
@@ -77,7 +82,7 @@ class HomeController extends GetxController implements GetxService {
             "availabilityTimeSlots: $availabilityTimeSlots",
       );
 
-      final response = await localHomeServiceInterface.updateOffer(
+      final response = await homeServiceInterface.updateOffer(
         offerId: offerId,
         category: category,
         offerType: offerType,
@@ -120,7 +125,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getHome();
+      final response = await homeServiceInterface.getHome();
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -145,9 +150,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getBookingDetails(
-        tripId,
-      );
+      final response = await homeServiceInterface.getBookingDetails(tripId);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -174,7 +177,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getBookingsAll();
+      final response = await homeServiceInterface.getBookingsAll();
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -203,7 +206,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getBookings(status);
+      final response = await homeServiceInterface.getBookings(status);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -232,9 +235,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.cencelBookings(
-        bookingId,
-      );
+      final response = await homeServiceInterface.cencelBookings(bookingId);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -283,7 +284,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getSuperHatch();
+      final response = await homeServiceInterface.getSuperHatch();
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -314,7 +315,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getFavoriteHatch();
+      final response = await homeServiceInterface.getFavoriteHatch();
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -351,7 +352,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.searchOffer(
+      final response = await homeServiceInterface.searchOffer(
         country,
         date,
         participants,
@@ -388,7 +389,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getOfferDetails(
+      final response = await homeServiceInterface.getOfferDetails(
         localId,
         offerId,
       );
@@ -417,31 +418,31 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getLocalDetails(String localId) async {
+  Future<void> getLocalProfile(String localId) async {
     try {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getLocalDetails(localId);
+      final response = await homeServiceInterface.getLocalProfile(localId);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        print("✅ getFavoriteHatch : for Tourist fetched successfully\n");
-        getFavoriteHatchResponseModel = GetFavoriteHatchResponseModel.fromJson(
-          response.body,
+        print("✅ getLocalProfile : for Tourist fetched successfully\n");
+        getLocalProfileResponseModel = GetLocalProfileResponseModel.fromJson(
+          response.body, // <-- decode JSON string to Map
         );
 
         isLoading = false;
         update();
       } else {
-        getFavoriteHatchResponseModel = GetFavoriteHatchResponseModel.fromJson(
-          response.body,
+        getLocalProfileResponseModel = GetLocalProfileResponseModel.fromJson(
+          jsonDecode(response.body), // <-- decode JSON string to Map
         );
       }
     } catch (e) {
-      print("⚠️ Error fetching profile : getFavoriteHatch : $e\n");
+      print("⚠️ Error fetching profile : getLocalProfile : $e\n");
     } finally {
       isLoading = false;
       update();
@@ -453,7 +454,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.addFavOrRemove(localId);
+      final response = await homeServiceInterface.addFavOrRemove(localId);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -482,7 +483,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.getFav();
+      final response = await homeServiceInterface.getFav();
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -509,7 +510,7 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await localHomeServiceInterface.rateALocal(
+      final response = await homeServiceInterface.rateALocal(
         localId,
         comment,
         rating,

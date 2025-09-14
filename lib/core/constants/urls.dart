@@ -70,7 +70,7 @@ class Urls {
 
   static const String searchOffer = '/tourist/search';
 
-  static const String getOfferDetails = '/tourist/offer/:';
+  static const String getOfferDetails = '/tourist/offer/';
 
   static const String getLocalProfile = '/tourist/';
 

@@ -32,7 +32,7 @@ abstract class HomeServiceInterface {
     String offerType,
   );
   Future<Response> getOfferDetails(String localId, String offerId);
-  Future<Response> getLocalDetails(String localId);
+  Future<Response> getLocalProfile(String localId);
   Future<Response> addFavOrRemove(String localId);
   Future<Response> getFav();
   Future<Response> rateALocal(String localId, String comment, String rating);

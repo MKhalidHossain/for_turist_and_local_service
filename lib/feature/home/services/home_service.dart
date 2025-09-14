@@ -4,9 +4,9 @@ import '../repositories/local/home_repository_interface.dart';
 import 'home_service_interface.dart';
 
 class HomeService implements HomeServiceInterface {
-  final HomeRepositoryInterface localHomeRepositoryInterface;
+  final HomeRepositoryInterface homeRepositoryInterface;
 
-  HomeService(this.localHomeRepositoryInterface);
+  HomeService(this.homeRepositoryInterface);
 
   @override
   Future<Response> updateOffer({
@@ -21,7 +21,7 @@ class HomeService implements HomeServiceInterface {
     required XFile photos,
     required String availabilityTimeSlots,
   }) async {
-    return await localHomeRepositoryInterface.updateOffer(
+    return await homeRepositoryInterface.updateOffer(
       offerId: offerId,
       category: category,
       offerType: offerType,
@@ -37,76 +37,94 @@ class HomeService implements HomeServiceInterface {
 
   @override
   Future<Response> getHome() async {
-    return await localHomeRepositoryInterface.getHome();
+    return await homeRepositoryInterface.getHome();
   }
 
   @override
   Future<Response> getBookingDetails(String tripId) async {
-    return await localHomeRepositoryInterface.getBookingDetails(tripId);
+    return await homeRepositoryInterface.getBookingDetails(tripId);
   }
 
   @override
   Future<Response> getBookingsAll() async {
-    return await localHomeRepositoryInterface.getBookingsAll();
+    return await homeRepositoryInterface.getBookingsAll();
   }
 
   @override
   Future<Response> getBookings(String status) async {
-    return await localHomeRepositoryInterface.getBookings(status);
+    return await homeRepositoryInterface.getBookings(status);
   }
 
   @override
   Future<Response> cencelBookings(String id) async {
-    return await localHomeRepositoryInterface.cencelBookings(id);
+    return await homeRepositoryInterface.cencelBookings(id);
   }
-  
 
-
-   //
+  //
   // ************ tourist ************ //
   //
-    @override
-  Future<Response> getSuperHatch() async{
-    return await localHomeRepositoryInterface.getSuperHatch();
-  }
-  
   @override
-  Future<Response> addFavOrRemove(String localId) async{
-    return await localHomeRepositoryInterface.addFavOrRemove(localId);
+  Future<Response> getSuperHatch() async {
+    return await homeRepositoryInterface.getSuperHatch();
   }
-  
+
   @override
-  Future<Response> cancelTrip(String localId) async{
-    return await localHomeRepositoryInterface.cancelTrip(localId);
+  Future<Response> addFavOrRemove(String localId) async {
+    return await homeRepositoryInterface.addFavOrRemove(localId);
   }
-  
+
   @override
-  Future<Response> getFav() async{
-    return await localHomeRepositoryInterface.getFav();
+  Future<Response> cancelTrip(String localId) async {
+    return await homeRepositoryInterface.cancelTrip(localId);
   }
-  
+
   @override
-  Future<Response> getFavoriteHatch()async {
-    return await localHomeRepositoryInterface.getFavoriteHatch();
+  Future<Response> getFav() async {
+    return await homeRepositoryInterface.getFav();
   }
-  
+
   @override
-  Future<Response> getLocalDetails(String localId)async {
-    return await localHomeRepositoryInterface.getLocalDetails(localId);
+  Future<Response> getFavoriteHatch() async {
+    return await homeRepositoryInterface.getFavoriteHatch();
   }
-  
+
   @override
-  Future<Response> getOfferDetails(String localId, String offerId) async{
-    return await localHomeRepositoryInterface.getOfferDetails(localId, offerId);
+  Future<Response> getLocalProfile(String localId) async {
+    return await homeRepositoryInterface.getLocalprofile(localId);
   }
-  
+
   @override
-  Future<Response> searchOffer(String country, String date, String participants, String languages, String offerType) async{
-    return await localHomeRepositoryInterface.searchOffer(country, date, participants, languages, offerType);
+  Future<Response> getOfferDetails(String localId, String offerId) async {
+    return await homeRepositoryInterface.getOfferDetails(localId, offerId);
   }
-  
+
   @override
-  Future<Response> rateALocal(String localId, String comment, String rating) async{
-    return await localHomeRepositoryInterface.rateALocal(localId, comment, rating);
+  Future<Response> searchOffer(
+    String country,
+    String date,
+    String participants,
+    String languages,
+    String offerType,
+  ) async {
+    return await homeRepositoryInterface.searchOffer(
+      country,
+      date,
+      participants,
+      languages,
+      offerType,
+    );
+  }
+
+  @override
+  Future<Response> rateALocal(
+    String localId,
+    String comment,
+    String rating,
+  ) async {
+    return await homeRepositoryInterface.rateALocal(
+      localId,
+      comment,
+      rating,
+    );
   }
 }
