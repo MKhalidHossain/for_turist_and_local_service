@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/constants/urls.dart';
+import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -92,13 +93,60 @@ class ApiClient extends GetxService {
     }
   }
 
+  Future<Response> postMultipartFormData(
+    String uri, {
+    required Map<String, dynamic> fields,
+    required List<XFile> photos,
+    Map<String, String>? headers,
+  }) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(appBaseUrln + uri));
+
+      // ✅ Remove Content-Type (multipart will set it automatically)
+      var requestHeaders = Map<String, String>.from(headers ?? _mainHeaders);
+      requestHeaders.remove('Content-Type');
+      request.headers.addAll(requestHeaders);
+
+      // ✅ Add fields (stringify JSON lists/maps)
+      fields.forEach((key, value) {
+        if (value != null) {
+          if (value is List || value is Map) {
+            request.fields[key] = jsonEncode(value);
+          } else {
+            request.fields[key] = value.toString();
+          }
+        }
+      });
+
+      // ✅ Add photos
+      for (var file in photos) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'photos', // must match backend field
+            file.path,
+            filename: file.name,
+          ),
+        );
+      }
+
+      // ✅ Send request
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      return handleResponse(response, uri);
+    } catch (e) {
+      print("Error in postMultipartFormData: $e");
+      return Response(statusCode: 1, statusText: noInternetMessage);
+    }
+  }
+
   //
   // patch Data
   //
   Future<Response> patchData(
     String uri,
     dynamic body, {
-   
+
     Map<String, String>? headers,
     XFile? file,
     String fileFieldName = 'profileImage',
@@ -141,7 +189,7 @@ class ApiClient extends GetxService {
 
         var streamedResponse = await request.send();
         var response = await http.Response.fromStream(streamedResponse);
-        return handleResponse(response, uri );
+        return handleResponse(response, uri);
       }
       // Otherwise use regular PATCH with JSON
       else {
@@ -202,11 +250,16 @@ class ApiClient extends GetxService {
   }
 
   Future<Response> postMultipartData(
-    String uri,
-    Map<String, String> body,
-    MultipartBody? profileImage, {
+    String uri, {
+    required Map<String, dynamic> body,
+    required List<XFile> photos,
     Map<String, String>? headers,
   }) async {
+    debugPrint("photos >>>> ${photos.length}");
+    debugPrint("availability >>>> ${body['availability']}");
+    for (final photo in photos) {
+      debugPrint("photo >>>> ${photo.path}");
+    }
     try {
       String apiUrl = Urls.baseUrl + uri;
 
@@ -216,29 +269,60 @@ class ApiClient extends GetxService {
         );
       }
 
-      var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+      var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
 
       // Add headers
-      request.headers.addAll(headers ?? _mainHeaders);
+      var requestHeaders = Map<String, String>.from(headers ?? _mainHeaders);
+      requestHeaders.remove('Content-Type');
+      request.headers.addAll(requestHeaders);
 
       // Remove 'avatar' key from body before sending
-      Map<String, String> filteredBody = Map.from(body);
-      filteredBody.remove('avatar');
+      // Map<String, String> filteredBody = body.map(
+      //   (key, value) => MapEntry(key, value.toString()),
+      // );
+
+      // Map<String, String> filteredBody = body.map((key, value) {
+      //   if (value is List || value is Map) {
+      //     debugPrint("availability in api -> ${jsonEncode(value)}");
+      //     return MapEntry(key, jsonEncode(value));
+      //   } else {
+      //     return MapEntry(key, value.toString());
+      //   }
+      // });
+
+      Map<String, String> filteredBody = {};
+      body.forEach((key, value) {
+        if (value is List && key != 'photos') {
+          // encode only nested lists/maps, not the top-level array
+          filteredBody[key] = jsonEncode(value);
+        } else if (value is Map) {
+          filteredBody[key] = jsonEncode(value);
+        } else {
+          filteredBody[key] = value.toString();
+        }
+      });
+      filteredBody.remove('photos');
       request.fields.addAll(filteredBody);
 
       // Handle profile image upload
-      if (profileImage != null && profileImage.file != null) {
-        var file = profileImage.file!;
-        request.files.add(
-          http.MultipartFile(
-            'avatar', // This must match the backend field name
-            file.readAsBytes().asStream(),
-            await file.length(),
-            filename: file.path.split('/').last, // Extract filename from path
-          ),
-        );
+      if (photos.isNotEmpty) {
+        for (var file in photos) {
+          request.files.add(
+            await http.MultipartFile.fromPath(
+              'photos', // or 'photos' depending on backend
+              file.path,
+              filename: file.name,
+            ),
+          );
+        }
       }
 
+      debugPrint("request >>>> ${request.files.length}");
+      if (kDebugMode) {
+        log(
+          'API Call: $apiUrl\nHeaders: ${headers ?? _mainHeaders}\nBody: $body',
+        );
+      }
       // Send request
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
@@ -252,10 +336,10 @@ class ApiClient extends GetxService {
 
       return handleResponse(response, apiUrl);
     } catch (e) {
-      print('Error: $e');
+      print('Error in Multipart Request:: $e');
       return Response(
         statusCode: 3000,
-        statusText: "Failed to update profile. Server error.",
+        statusText: "Failed to update profile. Server error.{}",
       );
     }
   }

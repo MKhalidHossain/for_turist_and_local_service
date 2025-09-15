@@ -31,12 +31,6 @@ class _LocalsProfileForTouristScreenState
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    homeController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return GetBuilder<HomeController>(

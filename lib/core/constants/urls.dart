@@ -96,6 +96,8 @@ class Urls {
 
   // ................................Local  Module...............................
 
+  static const String createOffer = '/local/';
+  
   static const String updateOffer = '/local/update';
 
   static const String getHome = '/local/';

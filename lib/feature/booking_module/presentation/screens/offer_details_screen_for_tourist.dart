@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/normal_custom_button.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_offer_summery.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 
+// ignore: must_be_immutable
 class OfferDetailsScreenForTouristScreen extends StatefulWidget {
   String localID;
   String offerId;

@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/feature/home/domain/local/cencel_booking_response_model.dart';
+import 'package:kobeur/feature/home/domain/local/create_offer_response_model.dart';
 
 import 'package:kobeur/feature/home/domain/local/get_home_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
@@ -26,7 +28,8 @@ class HomeController extends GetxController implements GetxService {
   final HomeServiceInterface homeServiceInterface;
 
   HomeController(this.homeServiceInterface);
-
+  CreateOfferResponseModel createOfferResponseModel =
+      CreateOfferResponseModel();
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
   GetHomeResponseModel getHomeResponseModel = GetHomeResponseModel();
@@ -52,6 +55,72 @@ class HomeController extends GetxController implements GetxService {
   RateALocalResponseModel rateALocalResponseModel = RateALocalResponseModel();
 
   bool isLoading = false;
+
+  Future<void> createOffer({
+    required String category,
+    required String offerType,
+    required String pricePerPerson,
+    required String maxParticipants,
+    required String title,
+    required String description,
+    required List<Map<String, dynamic>> availability,
+    required List<XFile> photos,
+  }) async {
+    try {
+      isLoading = true;
+      update();
+
+      // print(
+      //       "category: $category" +
+      //       "offerType: $offerType" +
+      //       "pricePerPerson: $pricePerPerson" +
+      //       "maxParticipants: $maxParticipants" +
+      //       "title: $title" +
+      //       "description: $description" +
+      //       "availability: $availability" +
+      //       "photos: $photos" +
+
+      // );
+
+      
+
+      final response = await homeServiceInterface.createOffer(
+        category: category,
+        offerType: offerType,
+        pricePerPerson: pricePerPerson,
+        maxParticipants: maxParticipants,
+        title: title,
+        description: description,
+        availability: availability,
+        photos: photos,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ Offer updated successfully from local \n");
+        createOfferResponseModel = CreateOfferResponseModel.fromJson(
+          response.body,
+        );
+        isLoading = false;
+        update();
+      } else {
+        print(
+          "❌ Failed to : create Offer : from local: ${response.statusCode}\n",
+        );
+        Get.snackbar(
+          "Error",
+          "Failed to : creat Offer :: ${response.body['message']}",
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error : creat Offer : from local: $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
 
   Future<void> updateOffer({
     required String offerId,
@@ -109,7 +178,7 @@ class HomeController extends GetxController implements GetxService {
         print("❌ Failed to update offer from local: ${response.statusCode}\n");
         Get.snackbar(
           "Error",
-          "Failed to update offer: ${response.body['message']}",
+          "Failed to updateOffer: ${response.body['message']}",
         );
       }
     } catch (e) {

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
-import 'package:kobeur/feature/home/repositories/local/home_repository.dart';
-import 'package:kobeur/feature/home/repositories/local/home_repository_interface.dart';
+import 'package:kobeur/feature/home/repositories/home_repository.dart';
+import 'package:kobeur/feature/home/repositories/home_repository_interface.dart';
 import 'package:kobeur/feature/home/services/home_service.dart';
 import 'package:kobeur/feature/home/services/home_service_interface.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';

@@ -1,12 +1,39 @@
+import 'dart:io';
+
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
-import '../repositories/local/home_repository_interface.dart';
+import '../repositories/home_repository_interface.dart';
 import 'home_service_interface.dart';
 
 class HomeService implements HomeServiceInterface {
   final HomeRepositoryInterface homeRepositoryInterface;
 
   HomeService(this.homeRepositoryInterface);
+
+  @override
+  Future<Response> createOffer({
+    required String category,
+    required String offerType,
+    required String pricePerPerson,
+    required String maxParticipants,
+    required String title,
+    required String description,
+required List<Map<String, dynamic>> availability,
+    required List<XFile> photos,
+
+  }) async {
+    return await homeRepositoryInterface.createOffer(
+      category: category,
+      offerType: offerType,
+      pricePerPerson: pricePerPerson,
+      maxParticipants: maxParticipants,
+      title: title,
+      description: description,
+      availability: availability,
+      photos: photos,
+ 
+    );
+  }
 
   @override
   Future<Response> updateOffer({
@@ -121,10 +148,6 @@ class HomeService implements HomeServiceInterface {
     String comment,
     String rating,
   ) async {
-    return await homeRepositoryInterface.rateALocal(
-      localId,
-      comment,
-      rating,
-    );
+    return await homeRepositoryInterface.rateALocal(localId, comment, rating);
   }
 }

@@ -24,12 +24,6 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     homeController.getSuperHatch();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    homeController.dispose();
-  }
-
   final List<Map<String, dynamic>> categories = [
     {
       'imagePath': 'assets/icons/food.png',
