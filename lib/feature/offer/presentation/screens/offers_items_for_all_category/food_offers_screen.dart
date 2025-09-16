@@ -20,7 +20,7 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
 
   final List<OfferItem> offers = [
     OfferItem(
-      'At home',
+      'At Home',
       'Host a local meal at your home',
       'assets/icons/home.png',
       'home_food',

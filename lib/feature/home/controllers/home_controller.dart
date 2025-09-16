@@ -98,7 +98,7 @@ class HomeController extends GetxController implements GetxService {
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         print("✅ Offer updated successfully from local \n");
         createOfferResponseModel = CreateOfferResponseModel.fromJson(
           response.body,
