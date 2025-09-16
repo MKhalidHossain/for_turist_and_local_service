@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/core/widgets/normal_custom_button.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
 import '../../../auth/controllers/auth_controller.dart';
@@ -8,9 +9,11 @@ import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';
 import 'common/terms_condition_screen.dart';
+import 'local/my_service_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({super.key});
+  String userRole;
+  ProfileScreen({super.key, required this.userRole});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -42,6 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     print(
       "===============================user name : ${profileController.getProfileResponseModel?.data?.firstName}",
     );
@@ -56,27 +60,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      // const SizedBox(height: 24),
-                      // ListTile(
-                      //   leading: CircleAvatar(
-                      //     radius: 30,
-                      //     backgroundImage: NetworkImage(
-                      //       "https://randomuser.me/api/portraits/women/44.jpg",
-                      //     ),
-                      //   ),
-                      //   title: const Text(
-                      //     'Kristin Watson',
-                      //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      //   ),
-                      //   subtitle: const Text('Tourist'),
-                      // ),
                       Row(
                         children: [
                           Stack(
                             clipBehavior: Clip.none,
                             children: [
                               CircleAvatar(
-                                radius: 35,
+                                radius: 51,
                                 backgroundColor: Colors.grey[200],
                                 child: Obx(
                                   () => ClipOval(
@@ -92,8 +82,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             ? Image.network(
                                               profileController.image.value,
                                               fit: BoxFit.cover,
-                                              width: 70,
-                                              height: 70,
+                                              width: 100,
+                                              height: 100,
                                               errorBuilder: (
                                                 context,
                                                 error,
@@ -102,24 +92,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 return Image.asset(
                                                   'assets/images/profileBlankImage.png',
                                                   fit: BoxFit.cover,
-                                                  width: 70,
-                                                  height: 70,
+                                                  width: 100,
+                                                  height: 10,
                                                 );
                                               },
                                             )
                                             : Image.asset(
                                               'assets/images/profileBlankImage.png',
                                               fit: BoxFit.cover,
-                                              width: 70,
-                                              height: 70,
+                                              width: 100,
+                                              height: 100,
                                             ),
                                   ),
                                 ),
                               ),
 
                               Positioned(
-                                bottom: 0,
-                                right: -2,
+                                bottom: 5,
+                                right: 2,
                                 child: GestureDetector(
                                   onTap: () {
                                     // Handle image change
@@ -132,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     child: const Icon(
                                       Icons.camera_alt,
-                                      size: 14,
+                                      size: 16,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -148,8 +138,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 children: [
                                   " ${profileController.name.value ?? 'No Name'}"
                                       .text20Grey700(),
-                                  "${profileController.nationality.value}"
+                                  "${' ' + widget.userRole ?? 'No Role Found'}"
                                       .text16Grey(),
+                                  const SizedBox(height: 8),
+                                  NormalCustomButton(
+                                    weight: size.width * 0.4,
+                                    text: "Switch to Tourist",
+
+                                    showIcon: true,
+                                    sufixIcon: Icons.switch_access_shortcut,
+
+                                    onPressed: () {},
+                                  ),
                                 ],
                               ),
                             ),
@@ -169,6 +169,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         },
                       ),
+                      widget.userRole.toLowerCase() == 'local'
+                          ? _buildMenuItem(
+                            icon: Icons.wallet_giftcard_outlined,
+                            text: "My Offer",
+                            onTap: () {
+                              Get.to((MyServiceScreen()));
+                            },
+                          )
+                          : SizedBox(height: 0),
 
                       _buildMenuItem(
                         icon: Icons.info_outline,

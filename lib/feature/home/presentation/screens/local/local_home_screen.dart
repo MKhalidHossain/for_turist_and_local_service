@@ -8,7 +8,7 @@ import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
 import '../../../../offer/presentation/screens/category_selection_screen.dart';
 import '../../../../trip_module/presentation/screens/local/local_booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
-import '../../../controllers/local_home_controller.dart';
+import '../../../controllers/home_controller.dart';
 
 class LocalHomeScreen extends StatefulWidget {
   const LocalHomeScreen({super.key});
@@ -18,7 +18,7 @@ class LocalHomeScreen extends StatefulWidget {
 }
 
 class _LocalHomeScreenState extends State<LocalHomeScreen> {
-  late LocalHomeTripController localHomeController;
+  late HomeController localHomeController;
   late ProfileController profileController;
   String? liveTripId;
   // String? totalPrice;
@@ -26,7 +26,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
   @override
   void initState() {
     super.initState();
-    localHomeController = Get.find<LocalHomeTripController>();
+    localHomeController = Get.find<HomeController>();
     profileController = Get.find<ProfileController>();
     profileController.getUserProfile();
 
@@ -52,7 +52,7 @@ class _LocalHomeScreenState extends State<LocalHomeScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
       builder: (profileController) {
-        return GetBuilder<LocalHomeTripController>(
+        return GetBuilder<HomeController>(
           builder: (localHomeController) {
             final liveTrip =
                 localHomeController.getHomeResponseModel.data?.liveTrip ?? [];
