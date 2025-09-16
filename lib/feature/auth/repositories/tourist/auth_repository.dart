@@ -145,6 +145,25 @@ class AuthRepository implements AuthRepositoryInterface {
     // return await sharedPreferences.setString(AppConstants.token, token);
   }
 
+    @override
+  Future<bool?> saveUserRole(String userRole) async{
+    print(
+      'User Role ${userRole.toString()} ================================== from Repository to store in sharedPref ',
+    );
+    await sharedPreferences.setString(AppConstants.userRole, userRole);
+    return true;
+  }
+
+    @override
+  String getUserRole() {
+    final userRole = sharedPreferences.getString(AppConstants.userRole)??" ";
+    print(
+      'Retrieved User Role. fjorm  getUserROle: $userRole ================================== from Repository ',
+    );
+    return userRole;
+  }
+  
+
   @override
   bool isFirstTimeInstall() {
     if (sharedPreferences.getBool('firstTimeInstall') == true) {
@@ -214,4 +233,7 @@ class AuthRepository implements AuthRepositoryInterface {
     apiClient.updateHeader(token);
     return await apiClient.postData(Urls.chooseRole, {"role": role});
   }
+  
+
+
 }

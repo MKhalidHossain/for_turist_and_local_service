@@ -38,4 +38,8 @@ abstract class AuthRepositoryInterface {
   bool isFirstTimeInstall();
   void setFirstTimeInstall();
   Future<dynamic> chooseRole(String role , String token);
+  Future<bool?> saveUserRole(String userRole);
+  String getUserRole();
+
+
 }

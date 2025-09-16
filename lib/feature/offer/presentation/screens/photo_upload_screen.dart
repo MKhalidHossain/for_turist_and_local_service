@@ -189,7 +189,9 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                             Get.to(
                               () => PhotoPreviewScreen(
                                 images:
-                                    uploadedImages.whereType<File>().toList(),
+                                    uploadedImages.whereType<File>()
+                                    .map((file) => XFile(file.path))
+                                    .toList(),
                               ),
                             );
                           }

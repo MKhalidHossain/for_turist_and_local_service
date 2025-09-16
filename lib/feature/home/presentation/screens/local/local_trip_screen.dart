@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/chat/tourist/message/presentation/screens/chat_screen.dart';
-import 'package:kobeur/feature/home/controllers/local_home_controller.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import '../../../../../core/common/button/button_widget.dart';
 import '../../../../trip_module/presentation/screens/local/local_booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/bookingtabber_widget.dart';
@@ -17,13 +17,13 @@ class LocalTripScreen extends StatefulWidget {
 
 class _LocalTripScreenState extends State<LocalTripScreen> {
   int selectedTab = 0;
-  late LocalHomeTripController localTripController;
+  late HomeController localTripController;
   String? liveTripId;
 
   @override
   void initState() {
     super.initState();
-    localTripController = Get.find<LocalHomeTripController>();
+    localTripController = Get.find<HomeController>();
     // Load default tab (Upcoming)
     localTripController.getBookings("upcoming");
 
@@ -43,7 +43,7 @@ class _LocalTripScreenState extends State<LocalTripScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LocalHomeTripController>(
+    return GetBuilder<HomeController>(
       builder: (localTripController) {
         return localTripController.isLoading
             ? Scaffold(

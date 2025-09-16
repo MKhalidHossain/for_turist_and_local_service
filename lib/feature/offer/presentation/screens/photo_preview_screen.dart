@@ -6,7 +6,7 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'date_selection_screen.dart';
 
 class PhotoPreviewScreen extends StatefulWidget {
-  final List<File> images;
+  final List<XFile> images;
 
   const PhotoPreviewScreen({super.key, required this.images});
 
@@ -15,15 +15,15 @@ class PhotoPreviewScreen extends StatefulWidget {
 }
 
 class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
-  late List<File?> uploadedImages;
-  File? selectedImage;
+  late List<XFile?> uploadedImages;
+  XFile? selectedImage;
 
   final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    uploadedImages = List<File?>.from(widget.images);
+    uploadedImages = List<XFile?>.from(widget.images);
     while (uploadedImages.length < 4) uploadedImages.add(null);
     selectedImage = uploadedImages.firstWhere(
       (img) => img != null,
@@ -91,7 +91,7 @@ class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.file(
-                        selectedImage!,
+                        File(selectedImage!.path),
                         width: double.infinity,
                         height: double.infinity,
                         fit: BoxFit.cover,
@@ -138,7 +138,7 @@ class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
                 children: [
                   ...uploadedImages.asMap().entries.map((entry) {
                     int index = entry.key;
-                    File? img = entry.value;
+                    XFile? img = entry.value;
                     return Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: GestureDetector(
@@ -157,7 +157,10 @@ class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
                             color: Colors.grey[100],
                             child:
                                 img != null
-                                    ? Image.file(img, fit: BoxFit.cover)
+                                    ? Image.file(
+                                      File(img.path),
+                                      fit: BoxFit.cover,
+                                    )
                                     : GestureDetector(
                                       onTap: () => _pickImage(index),
                                       child: const Icon(
@@ -185,7 +188,12 @@ class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
                   onPressed:
                       uploadedImages.any((img) => img != null)
                           ? () {
-                            Get.to(DateSelectionScreen());
+                            Get.to(
+                              DateSelectionScreen(
+                                images:
+                                    uploadedImages.whereType<XFile>().toList(),
+                              ),
+                            );
                           }
                           : null,
                   style: ElevatedButton.styleFrom(
@@ -217,233 +225,10 @@ class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
 
     if (pickedFile != null) {
       setState(() {
-        uploadedImages[index] = File(pickedFile.path);
-        selectedImage = File(pickedFile.path);
+        uploadedImages[index] = pickedFile;
+        selectedImage = pickedFile;
       });
     }
   }
 }
-
-
-
-// import 'dart:io';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'date_selection_screen.dart';
-
-// class PhotoPreviewScreen extends StatefulWidget {
-//   final List<File> images;
-
-//   const PhotoPreviewScreen({super.key, required this.images});
-
-//   @override
-//   _PhotoPreviewScreenState createState() => _PhotoPreviewScreenState();
-// }
-
-// class _PhotoPreviewScreenState extends State<PhotoPreviewScreen> {
-//   late List<File?> uploadedImages;
-//   File? selectedImage;
-
-//   final ImagePicker _picker = ImagePicker();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Initialize with 4 slots
-//     uploadedImages = List<File?>.from(widget.images);
-//     while (uploadedImages.length < 4) uploadedImages.add(null);
-
-//     selectedImage = uploadedImages.firstWhere((img) => img != null, orElse: () => null);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//       body: SafeArea(
-//         child: Column(
-//           children: [
-//             // Header
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: const [
-//                 BackButton(color: Colors.black),
-//                 Text(
-//                   "Sport",
-//                   style: TextStyle(
-//                     fontSize: 22,
-//                     fontWeight: FontWeight.w700,
-//                     color: Colors.black,
-//                   ),
-//                 ),
-//                 SizedBox(width: 50),
-//               ],
-//             ),
-
-//             // Title
-//             const Padding(
-//               padding: EdgeInsets.all(20),
-//               child: Align(
-//                 alignment: Alignment.centerLeft,
-//                 child: Text(
-//                   'Provide photos of\nyour service',
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                     fontWeight: FontWeight.bold,
-//                     color: Colors.black,
-//                     height: 1.2,
-//                   ),
-//                 ),
-//               ),
-//             ),
-
-//             // Main Image Preview
-//             if (selectedImage != null)
-//               Container(
-//                 margin: const EdgeInsets.symmetric(horizontal: 20),
-//                 height: 300,
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(12),
-//                   boxShadow: [
-//                     BoxShadow(
-//                       color: Colors.black.withOpacity(0.1),
-//                       blurRadius: 10,
-//                       offset: const Offset(0, 5),
-//                     ),
-//                   ],
-//                 ),
-//                 child: Stack(
-//                   children: [
-//                     ClipRRect(
-//                       borderRadius: BorderRadius.circular(12),
-//                       child: Image.file(
-//                         selectedImage!,
-//                         width: double.infinity,
-//                         height: double.infinity,
-//                         fit: BoxFit.cover,
-//                       ),
-//                     ),
-//                     Positioned(
-//                       top: 12,
-//                       right: 12,
-//                       child: GestureDetector(
-//                         onTap: () {
-//                           setState(() {
-//                             int index = uploadedImages.indexOf(selectedImage);
-//                             uploadedImages[index] = null;
-
-//                             // Select next available image or null
-//                             selectedImage = uploadedImages.firstWhere((img) => img != null, orElse: () => null);
-//                           });
-//                         },
-//                         child: Container(
-//                           width: 30,
-//                           height: 30,
-//                           decoration: BoxDecoration(
-//                             color: Colors.red,
-//                             borderRadius: BorderRadius.circular(15),
-//                           ),
-//                           child: const Icon(Icons.close, color: Colors.white, size: 18),
-//                         ),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-
-//             const SizedBox(height: 20),
-
-//             // Thumbnail Images
-//             Container(
-//               height: 80,
-//               padding: const EdgeInsets.symmetric(horizontal: 20),
-//               child: Row(
-//                 children: [
-//                   ...uploadedImages.asMap().entries.map((entry) {
-//                     int index = entry.key;
-//                     File? img = entry.value;
-
-//                     return Padding(
-//                       padding: const EdgeInsets.only(right: 12),
-//                       child: GestureDetector(
-//                         onTap: () {
-//                           if (img != null) {
-//                             setState(() {
-//                               selectedImage = img;
-//                             });
-//                           }
-//                         },
-//                         child: ClipRRect(
-//                           borderRadius: BorderRadius.circular(8),
-//                           child: Container(
-//                             width: 60,
-//                             height: 60,
-//                             color: Colors.grey[100],
-//                             child: img != null
-//                                 ? Image.file(img, fit: BoxFit.cover)
-//                                 : GestureDetector(
-//                                     onTap: () => _pickImage(index),
-//                                     child: const Icon(Icons.add, color: Colors.red, size: 24),
-//                                   ),
-//                           ),
-//                         ),
-//                       ),
-//                     );
-//                   }).toList(),
-//                 ],
-//               ),
-//             ),
-
-//             const Spacer(),
-
-//             // Next Button
-//             Container(
-//               padding: const EdgeInsets.all(20),
-//               child: SizedBox(
-//                 width: double.infinity,
-//                 height: 50,
-//                 child: ElevatedButton(
-//                   onPressed: uploadedImages.any((img) => img != null)
-//                       ? () {
-//                           Get.to(DateSelectionScreen());
-//                         }
-//                       : null,
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.red,
-//                     disabledBackgroundColor: Colors.grey[300],
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(8),
-//                     ),
-//                   ),
-//                   child: const Text(
-//                     'Next',
-//                     style: TextStyle(
-//                       color: Colors.white,
-//                       fontSize: 16,
-//                       fontWeight: FontWeight.w600,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Future<void> _pickImage(int index) async {
-//     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-//     if (pickedFile != null) {
-//       setState(() {
-//         uploadedImages[index] = File(pickedFile.path);
-//         selectedImage = File(pickedFile.path);
-//       });
-//     }
-//   }
-// }
-
-
 

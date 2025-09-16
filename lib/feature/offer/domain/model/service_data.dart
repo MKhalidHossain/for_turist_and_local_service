@@ -11,9 +11,15 @@ class ServiceData {
   String? userGivenOfferTitle;
   String? userGivenOfferDescription;
   List<String> uploadedPhotos = [];
+  
+  // Track selected dates
   List<DateTime> selectedDates = [];
-  List<String> selectedTimeSlots = [];
-  String? selectedTime;
+
+  // Map each date to multiple selected time slots
+  Map<DateTime, List<String>> selectedDateSlots = {};
+
+  String? selectedTime; // optional, can be removed if using selectedDateSlots
+
   // Clear all data
   void clear() {
     selectedCategory = null;
@@ -25,7 +31,7 @@ class ServiceData {
     selectedTime = null;
     uploadedPhotos.clear();
     selectedDates.clear();
-    selectedTimeSlots.clear();
+    selectedDateSlots.clear();
   }
 
   // Print current data (for debugging)
@@ -40,6 +46,9 @@ class ServiceData {
     print('Time: $selectedTime');
     print('Photos: ${uploadedPhotos.length}');
     print('Dates: ${selectedDates.length}');
-    print('Time Slots: ${selectedTimeSlots.length}');
+    print('Time Slots per Date:');
+    selectedDateSlots.forEach((date, slots) {
+      print('  ${date.toIso8601String()}: $slots');
+    });
   }
 }

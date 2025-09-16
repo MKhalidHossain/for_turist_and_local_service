@@ -37,8 +37,8 @@ class Urls {
 
   // ................................Auth...............................with render
 
-  // static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
-  static const String baseUrl = 'https://api.hatchr.app/api/v1';
+  static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
+  // static const String baseUrl = 'https://api.hatchr.app/api/v1';
 
   // Auth Module
 
@@ -70,17 +70,17 @@ class Urls {
 
   static const String searchOffer = '/tourist/search';
 
-  static const String getOfferDetails = '/tourist/offer/:';
+  static const String getOfferDetails = '/tourist/offer/';
 
   static const String getLocalProfile = '/tourist/';
 
-  static const String postAddFavouriteOrRemoveFavourite = '/tourist/favorite';
+  static const String addFavouriteOrRemoveFavourite = '/tourist/favorite';
 
   static const String getFavorites = '/tourist/favorites';
 
   static const String rateALocal = '/tourist/rate-local';
 
-  static const String cencelTripForTuourist = '/local/trip/:tripId/cancel';
+  static const String cancelTripForTuourist = '/local/trip/cancel/';
 
   // ................................Booking  Module...............................
 
@@ -96,6 +96,8 @@ class Urls {
 
   // ................................Local  Module...............................
 
+  static const String createOffer = '/local/';
+  
   static const String updateOffer = '/local/update';
 
   static const String getHome = '/local/';

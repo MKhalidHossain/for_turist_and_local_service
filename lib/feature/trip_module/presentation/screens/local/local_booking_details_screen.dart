@@ -6,7 +6,7 @@ import 'package:kobeur/core/widgets/formatTripDateText.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
 import '../../../../../core/extensions/text_extensions.dart';
 import '../../../../chat/tourist/message/presentation/screens/chat_screen.dart';
-import '../../../../home/controllers/local_home_controller.dart';
+import '../../../../home/controllers/home_controller.dart';
 
 class LocalTripDetailsScreen extends StatefulWidget {
   final String? tripId;
@@ -20,7 +20,7 @@ class LocalTripDetailsScreen extends StatefulWidget {
 
 // tripId: trip.id,
 class _LocalTripDetailsScreenState extends State<LocalTripDetailsScreen> {
-  late LocalHomeTripController localHomeController;
+  late HomeController localHomeController;
 
   final instructions = [
     'Bring comfortable walking shoes and weather appropriate clothing.',
@@ -43,7 +43,7 @@ class _LocalTripDetailsScreenState extends State<LocalTripDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    localHomeController = Get.find<LocalHomeTripController>();
+    localHomeController = Get.find<HomeController>();
 
     // Defer the asynchronous call to avoid calling during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -57,7 +57,7 @@ class _LocalTripDetailsScreenState extends State<LocalTripDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<LocalHomeTripController>(
+    return GetBuilder<HomeController>(
       builder: (controller) {
         final bookingDetails = controller.getBookingDetailsResponseModel.data;
 

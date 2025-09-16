@@ -6,14 +6,13 @@ import 'package:kobeur/feature/auth/presentation/screens/common/change_password_
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_signup_screen.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_screen.dart';
-import 'package:kobeur/feature/home/controllers/local_home_controller.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
 import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
-import '../../../utils/app_constants.dart';
 import '../../offer/presentation/screens/create_first_service_screen.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../domain/common/model/login_response_model.dart';
@@ -24,8 +23,7 @@ import '../sevices/tourist/auth_service_interface.dart';
 
 class AuthController extends GetxController implements GetxService {
   ProfileController get profileController => Get.find<ProfileController>();
-  LocalHomeTripController get localHomeTripController =>
-      Get.find<LocalHomeTripController>();
+  HomeController get localHomeTripController => Get.find<HomeController>();
 
   // Avoid calling Get.find in constructor or onInit
   void someMethod() {
@@ -87,6 +85,7 @@ class AuthController extends GetxController implements GetxService {
 
   onInit() {
     super.onInit();
+    //_loadUserRole()
   }
 
   // VerifyCodeResponseModel? verifyCodeResponseModel;
@@ -131,6 +130,9 @@ class AuthController extends GetxController implements GetxService {
   Future<void> _loadUserRole() async {
     await profileController.getUserProfile();
     userRole = profileController.getProfileResponseModel?.data?.role;
+    if (userRole == null || userRole!.isEmpty) {
+      userRole = await authServiceInterface.getUserRole();
+    }
     debugPrint('Loaded User Role: $userRole');
     update();
   }
@@ -371,6 +373,9 @@ class AuthController extends GetxController implements GetxService {
 
       // for Nevigation to Tourist or Local
       if (userRole != null && userRole!.isNotEmpty) {
+        final role = userRole!;
+        print('User Role after login for store: $role');
+        await saveUserRole(role);
         if (userRole.toString().toLowerCase() == 'tourist') {
           debugPrint(
             'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
@@ -538,29 +543,6 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
-  // Future<void> resetPassword(String email, String newPassword) async {
-  //   _isLoading = true;
-
-  //   update();
-
-  //   Response? response = await authServiceInterface.resetPassword(
-  //     email,
-  //     newPassword,
-  //   );
-  //   if (response!.statusCode == 200) {
-  //     // SnackBarWidget('password_change_successfully'.tr, isError: false);
-  //     showCustomSnackBar('Password Change Successfully');
-  //     Get.offAll(() => const SignInScreen());
-  //   } else {
-  //     showCustomSnackBar('Password Change was  Unsuccessfully');
-  //     ApiChecker.checkApi(response);
-  //   }
-
-  //   _isLoading = false;
-
-  //   update();
-  // }
-
   Future<void> resetPassword(
     String email,
     String newPassword,
@@ -702,8 +684,17 @@ class AuthController extends GetxController implements GetxService {
     return authServiceInterface.getUserToken();
   }
 
+  String getUserRole() {
+    return authServiceInterface.getUserRole();
+  }
+
   Future<void> setUserToken(String token, String refreshToken) async {
     await authServiceInterface.saveUserToken(token, refreshToken);
+  }
+
+  Future<void> saveUserRole(String userRole) async {
+    debugPrint('Saving User Role: $userRole');
+    await authServiceInterface.saveUserRole(userRole);
   }
 
   Future<bool> getFirsTimeInstall() async {

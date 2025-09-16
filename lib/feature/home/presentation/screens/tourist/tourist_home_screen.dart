@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kobeur/feature/profile/presentation/screens/local/locals_profile.dart';
+import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
+import 'package:kobeur/feature/profile/presentation/screens/local/locals_profile_for_tourist_show.dart';
 import '../../widgets/favorite_button.dart';
 import 'search_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TouristHomeScreen extends StatefulWidget {
   @override
@@ -10,16 +13,48 @@ class TouristHomeScreen extends StatefulWidget {
 }
 
 class _TouristHomeScreenState extends State<TouristHomeScreen> {
-  TextEditingController searchController = TextEditingController(text: 'Paris');
+  TextEditingController searchController = TextEditingController();
 
-  // Categories for horizontal scroll
+  late HomeController homeController;
+
+  @override
+  void initState() {
+    super.initState();
+    homeController = Get.find<HomeController>();
+    homeController.getSuperHatch();
+  }
+
   final List<Map<String, dynamic>> categories = [
-    {'icon': '🍽️', 'label': 'Food', 'color': Colors.orange[100]},
-    {'icon': '🎭', 'label': 'Experience', 'color': Colors.purple[100]},
-    {'icon': '🚗', 'label': 'Transport', 'color': Colors.blue[100]},
-    {'icon': '📷', 'label': 'Photography', 'color': Colors.green[100]},
-    {'icon': '🗽', 'label': 'Culture', 'color': Colors.teal[100]},
-    {'icon': '🏆', 'label': 'Sport', 'color': Colors.yellow[100]},
+    {
+      'imagePath': 'assets/icons/food.png',
+      'label': 'Food',
+      'color': Colors.white,
+    },
+    {
+      'imagePath': 'assets/icons/experience.png',
+      'label': 'Experience',
+      'color': Colors.white,
+    },
+    {
+      'imagePath': 'assets/icons/transport.png',
+      'label': 'Transport',
+      'color': Colors.white,
+    },
+    {
+      'imagePath': 'assets/icons/photo.png',
+      'label': 'Photography',
+      'color': Colors.white,
+    },
+    {
+      'imagePath': 'assets/icons/culture.png',
+      'label': 'Culture',
+      'color': Colors.white,
+    },
+    {
+      'imagePath': 'assets/icons/sport.png',
+      'label': 'Sport',
+      'color': Colors.white,
+    },
   ];
 
   // Top destinations with flags
@@ -28,48 +63,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     {'id': 2, 'name': 'London', 'flag': '🇬🇧', 'country': 'UK'},
     {'id': 3, 'name': 'Tokyo', 'flag': '🇯🇵', 'country': 'Japan'},
     {'id': 4, 'name': 'New York', 'flag': '🇺🇸', 'country': 'USA'},
-    {'id': 5, 'name': 'Dubai', 'flag': '🇦🇪', 'country': 'UAE'},
-    {'id': 6, 'name': 'Sydney', 'flag': '🇦🇺', 'country': 'Australia'},
   ];
-
-  // final List<Map<String, dynamic>> hotels = [
-  //   {
-  //     'id': 1,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👩‍💼',
-  //     'reviews': 'Very Good',
-  //   },
-  //   {
-  //     'id': 2,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👨‍💼',
-  //     'reviews': 'Very Good',
-  //   },
-  //   {
-  //     'id': 3,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👩‍🎨',
-  //     'reviews': 'Very Good',
-  //   },
-  //   {
-  //     'id': 4,
-  //     'name': 'Jasmine Bell',
-  //     'location': 'Thailand',
-  //     'rating': 4.8,
-  //     'price': 120,
-  //     'image': '👨‍🎨',
-  //     'reviews': 'Very Good',
-  //   },
-  // ];
 
   final List<Map<String, dynamic>> superHatch = [
     {
@@ -228,619 +222,415 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.all(16),
-                child: GestureDetector(
-                  onTap: _openSearchScreen,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[300]!),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search, color: Colors.grey),
-                        SizedBox(width: 12),
-                        Text(
-                          searchController.text.isEmpty
-                              ? 'Paris'
-                              : searchController.text,
-                          style: TextStyle(
-                            color:
-                                searchController.text.isEmpty
-                                    ? Colors.grey
-                                    : Colors.black,
-                            fontSize: 16,
+    Size size = MediaQuery.of(context).size;
+    return GetBuilder<HomeController>(
+      builder: (homeController) {
+        final superHatchData = homeController.getSuperHatchResponseModel?.data;
+        return homeController.isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Scaffold(
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(16),
+                        child: GestureDetector(
+                          onTap: _openSearchScreen,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.search, color: Colors.grey),
+                                SizedBox(width: 12),
+                                Text(
+                                  searchController.text.isEmpty
+                                      ? 'Explore like a local'
+                                      : searchController.text,
+                                  style: TextStyle(
+                                    color:
+                                        searchController.text.isEmpty
+                                            ? Colors.grey
+                                            : Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+                      ),
 
-              // Categories Horizontal Scroll
-              Container(
-                height: 100,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    final category = categories[index];
-                    return GestureDetector(
-                      onTap: () => _onCategoryTapped(category),
-                      child: Container(
-                        width: 80,
-                        margin: EdgeInsets.only(right: 16),
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 60,
-                              height: 60,
-                              decoration: BoxDecoration(
-                                color: category['color'],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  category['icon'],
-                                  style: TextStyle(fontSize: 28),
+                      // Categories Horizontal Scroll
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 100,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            final category = categories[index];
+                            return GestureDetector(
+                              onTap: () => _onCategoryTapped(category),
+                              child: Container(
+                                width: size.width * 0.157,
+                                margin: EdgeInsets.only(
+                                  right: size.width * 0.01,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: size.width * 0.155,
+                                      height: size.width * 0.15,
+                                      decoration: BoxDecoration(
+                                        color: category['color'],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Center(
+                                        child: Image.asset(
+                                          category['imagePath'],
+                                          width: size.width * 0.15,
+                                          height: size.width * 0.15,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        // Text(
+                                        //   category['icon'],
+                                        //   style: TextStyle(fontSize: 28),
+                                        // ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      category['label'],
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "poppins",
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
                                 ),
                               ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      SizedBox(height: 24),
+
+                      // Top Destination
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                "Top destination".text20Black700(),
+
+                                const SizedBox(width: 8),
+                              ],
                             ),
-                            SizedBox(height: 8),
-                            Text(
-                              category['label'],
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
+                            SizedBox(height: 12),
+                            SizedBox(
+                              height: 30,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: destinations.length,
+                                itemBuilder: (context, index) {
+                                  final dest = destinations[index];
+                                  return GestureDetector(
+                                    onTap: () => _onDestinationTapped(dest),
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 12),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                          color: Colors.grey[200]!,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            dest['flag'],
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            dest['name'],
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                              textAlign: TextAlign.center,
                             ),
                           ],
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
 
-              SizedBox(height: 24),
+                      SizedBox(height: 24),
 
-              // Top Destination
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Top destination',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SearchScreen(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'See more',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ),
-                      ],
-                    ),
-                    //SizedBox(height: 12),
-                    SizedBox(
-                      height: 30,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: destinations.length,
-                        itemBuilder: (context, index) {
-                          final dest = destinations[index];
-                          return GestureDetector(
-                            onTap: () => _onDestinationTapped(dest),
-                            child: Container(
-                              margin: EdgeInsets.only(right: 12),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(4),
-                                border: Border.all(color: Colors.grey[200]!),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    dest['flag'],
-                                    style: TextStyle(fontSize: 20),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title Row
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                "Super Hatch".text20Black700(),
+
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SearchScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    'See more',
+                                    style: TextStyle(color: Colors.red),
                                   ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    dest['name'],
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
+                            //                             final superHatchData = homeController.getSuperHatchResponseModel?.data;
+
+                            // if (superHatchData == null || superHatchData.isEmpty) {
+                            //   return Center(
+                            //     child: Text("No data available"),
+                            //   );
+                            // }       /// 👇 CHANGE START: shimmer / empty / real data
+
+                            /// 👇 CHANGE START: shimmer / empty / real data
+                            if (superHatchData == null)
+                              _buildShimmerLoader() // show shimmer while loading
+                            else if (superHatchData.isEmpty)
+                              Center(child: Text("No data available"))
+                            else
+                              Column(
+                                children: List.generate(superHatchData.length, (
+                                  index,
+                                ) {
+                                  final result = superHatchData[index];
+                                  return _buildSuperHatchCard(result);
+                                }),
+                              ),
+
+                            /// 👆 CHANGE END
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
+            );
+      },
+    );
+  }
 
-              SizedBox(height: 24),
+  // 👇 Shimmer loader method
+  Widget _buildShimmerLoader() {
+    return Column(
+      children: List.generate(3, (index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Row(
+              children: [
+                Container(
+                  height: 120,
+                  width: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: 16, width: 150, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(height: 14, width: 100, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(
+                        height: 12,
+                        width: double.infinity,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(height: 8),
+                      Container(height: 12, width: 80, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
 
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+  // 👇 Reusable card for real data
+  Widget _buildSuperHatchCard(dynamic result) {
+    print("Result ID: ${result.id}");
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: GestureDetector(
+        onTap: () => Get.to(LocalsProfileForTouristScreen(localId: result.id)),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // Image
+              Container(
+                height: 120,
+                width: 120,
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child:
+                      result.offers?.photos != null &&
+                              result.offers!.photos!.isNotEmpty
+                          ? Image.network(
+                            result.offers!.photos!.first,
+                            fit: BoxFit.cover,
+                          )
+                          : (result.profileImage != null
+                              ? Image.network(
+                                result.profileImage!,
+                                fit: BoxFit.cover,
+                              )
+                              : Icon(
+                                Icons.person,
+                                size: 50,
+                                color: Colors.grey,
+                              )),
+                ),
+              ),
+              const SizedBox(width: 12),
+
+              // Details
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Title Row
+                    /// Name + Favorite
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Super Hatch',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SearchScreen(),
-                              ),
-                            );
-                          },
+                        Expanded(
                           child: Text(
-                            'See more',
-                            style: TextStyle(color: Colors.red),
+                            "${result.firstName} ${result.lastName}",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const FavoriteButton(size: 20),
                       ],
                     ),
-                    SizedBox(height: 12),
+                    SizedBox(height: 4),
 
-                    // Cards
-                    Column(
-                      children: List.generate(superHatch.length, (index) {
-                        final result = superHatch[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.to(LocalsProfileScreen());
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  // Image
-                                  Container(
-                                    height: 120,
-                                    width: 120,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[100],
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Image.asset(
-                                        result['image'],
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12),
+                    /// Offer
+                    Text(
+                      result.offers?.title ?? 'No title available',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                    Text(
+                      result.offers?.description ?? 'No description available',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 10, color: Colors.grey[600]),
+                    ),
+                    SizedBox(height: 8),
 
-                                  // Details
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Name & Favorite
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                result['name'],
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 16,
-                                                  color: Colors.black,
-                                                ),
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ),
-                                            const FavoriteButton(size: 20),
-                                          ],
-                                        ),
-                                        SizedBox(height: 4),
-
-                                        // Image Label + Description
-                                        Row(
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/takeaway.png',
-                                                  height: 40,
-                                                  fit: BoxFit.contain,
-                                                ),
-                                                Text(
-                                                  "Takeaway",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 10,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(width: 8),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    result['location'],
-                                                    style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    result['description'],
-                                                    maxLines: 5,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      color: Colors.grey[600],
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 8),
-
-                                        // Rating and Price
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.star,
-                                                  color: Colors.amber,
-                                                  size: 12,
-                                                ),
-                                                SizedBox(width: 4),
-                                                Text(
-                                                  '${result['rating']}',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  'from ',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${result['price']}€',
-                                                  style: TextStyle(
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  ' / person',
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.black87,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                    /// Rating + Price
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber, size: 12),
+                            SizedBox(width: 4),
+                            Text(
+                              "${result.averageRating ?? '0.0'}",
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'from ',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            ),
+                            Text(
+                              "${result.offers?.pricePerPerson ?? '0.0'}",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ),
-                        );
-                      }),
+                            Text(' / person', style: TextStyle(fontSize: 12)),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-
-              // Super Hatch
-              // Expanded(
-              //   child: Padding(
-              //     padding: EdgeInsets.symmetric(horizontal: 16),
-              //     child: Column(
-              //       children: [
-              //         Row(
-              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //           children: [
-              //             Text(
-              //               'Super Hatch',
-              //               style: TextStyle(
-              //                 fontSize: 18,
-              //                 fontWeight: FontWeight.w600,
-              //               ),
-              //             ),
-              //             TextButton(
-              //               onPressed: () {
-              //                 Navigator.push(
-              //                   context,
-              //                   MaterialPageRoute(
-              //                     builder: (context) => SearchScreen(),
-              //                   ),
-              //                 );
-              //               },
-              //               child: Text(
-              //                 'See more',
-              //                 style: TextStyle(color: Colors.red),
-              //               ),
-              //             ),
-              //           ],
-              //         ),
-              //         SizedBox(height: 12),
-              //         Expanded(
-              //           child: ListView.separated(
-              //             separatorBuilder: (_, __) => SizedBox(height: 16),
-              //             padding: EdgeInsets.symmetric(horizontal: 16),
-              //             itemCount: superHatch.length,
-              //             itemBuilder: (context, index) {
-              //               final result = superHatch[index];
-              //               return Container(
-              //                 // margin: EdgeInsets.only(bottom: 16),
-              //                 // padding: EdgeInsets.all(16),
-              //                 decoration: BoxDecoration(
-              //                   color: Colors.white,
-              //                   borderRadius: BorderRadius.circular(8),
-              //                   boxShadow: [
-              //                     BoxShadow(
-              //                       color: Colors.grey.withOpacity(0.1),
-              //                       blurRadius: 4,
-              //                       offset: Offset(0, 2),
-              //                     ),
-              //                   ],
-              //                 ),
-              //                 child: Row(
-              //                   children: [
-              //                     Container(
-              //                       // width: 120,
-              //                       height: 120,
-              //                       decoration: BoxDecoration(
-              //                         color: Colors.grey[100],
-              //                         // shape: BoxShape.circle,
-              //                         borderRadius: BorderRadius.circular(4),
-              //                       ),
-              //                       child: ClipRRect(
-              //                         borderRadius: BorderRadius.circular(4),
-              //                         child: Image.asset(
-              //                           result['image'],
-
-              //                           //'assets/images/local1.png',
-              //                           fit: BoxFit.cover,
-              //                         ),
-              //                       ),
-              //                     ),
-              //                     SizedBox(width: 12),
-              //                     Expanded(
-              //                       child: Column(
-              //                         crossAxisAlignment:
-              //                             CrossAxisAlignment.start,
-              //                         children: [
-              //                           Row(
-              //                             mainAxisAlignment:
-              //                                 MainAxisAlignment.spaceBetween,
-              //                             children: [
-              //                               Text(
-              //                                 result['name'],
-              //                                 style: TextStyle(
-              //                                   fontWeight: FontWeight.w500,
-              //                                   fontSize: 16,
-              //                                   color: Colors.black,
-              //                                 ),
-              //                               ),
-              //                               const FavoriteButton(size: 20),
-              //                             ],
-              //                           ),
-
-              //                           Row(
-              //                             children: [
-              //                               Column(
-              //                                 mainAxisAlignment:
-              //                                     MainAxisAlignment.center,
-              //                                 children: [
-              //                                   Image.asset(
-              //                                     'assets/images/takeaway.png',
-              //                                     height: 40,
-              //                                     fit: BoxFit.contain,
-              //                                   ),
-              //                                   Text(
-              //                                     "Takeaway",
-              //                                     style: TextStyle(
-              //                                       color: Colors.black,
-              //                                       fontSize: 10,
-              //                                       fontWeight: FontWeight.w400,
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-              //                               const SizedBox(width: 8),
-              //                               Expanded(
-              //                                 child: Column(
-              //                                   crossAxisAlignment:
-              //                                       CrossAxisAlignment.start,
-              //                                   children: [
-              //                                     Text(
-              //                                       result['location'],
-              //                                       style: TextStyle(
-              //                                         color: Colors.red,
-              //                                         fontWeight: FontWeight.w600,
-              //                                         fontSize: 14,
-              //                                       ),
-              //                                     ),
-              //                                     Text(
-              //                                       result['description'],
-              //                                       maxLines: 5,
-              //                                       //overflow: TextOverflow.ellipsis,
-              //                                       style: TextStyle(
-              //                                         color: Colors.grey[600],
-              //                                         fontSize: 10,
-              //                                         fontWeight: FontWeight.w400,
-              //                                       ),
-              //                                     ),
-              //                                   ],
-              //                                 ),
-              //                               ),
-              //                             ],
-              //                           ),
-
-              //                           Row(
-              //                             mainAxisAlignment:
-              //                                 MainAxisAlignment.spaceBetween,
-              //                             children: [
-              //                               Row(
-              //                                 children: [
-              //                                   Icon(
-              //                                     Icons.star,
-              //                                     color: Colors.amber,
-              //                                     size: 12,
-              //                                   ),
-              //                                   SizedBox(width: 4),
-              //                                   Text(
-              //                                     '${result['rating']}',
-              //                                     style: TextStyle(fontSize: 12),
-              //                                   ),
-              //                                 ],
-              //                               ),
-
-              //                               Row(
-              //                                 children: [
-              //                                   Text(
-              //                                     'from ',
-              //                                     style: TextStyle(
-              //                                       color: Colors.red,
-              //                                       fontWeight: FontWeight.w600,
-              //                                       fontSize: 12,
-              //                                     ),
-              //                                   ),
-              //                                   Text(
-              //                                     '${result['price']}\€',
-              //                                     style: TextStyle(
-              //                                       color: Colors.red,
-              //                                       fontWeight: FontWeight.w600,
-              //                                       fontSize: 18,
-              //                                     ),
-              //                                   ),
-              //                                   Text(
-              //                                     '/ ',
-              //                                     style: TextStyle(
-              //                                       color: Colors.black87,
-              //                                       fontSize: 18,
-              //                                     ),
-              //                                   ),
-              //                                   Text(
-              //                                     'person',
-              //                                     style: TextStyle(
-              //                                       color: Colors.black87,
-              //                                       fontSize: 12,
-              //                                     ),
-              //                                   ),
-              //                                 ],
-              //                               ),
-
-              //                               // Text(
-              //                               //   '(${result['reviews']})',
-              //                               //   style: TextStyle(
-              //                               //     color: Colors.grey,
-              //                               //     fontSize: 12,
-              //                               //   ),
-              //                               // ),
-              //                             ],
-              //                           ),
-              //                         ],
-              //                       ),
-              //                     ),
-              //                     Column(
-              //                       crossAxisAlignment: CrossAxisAlignment.end,
-              //                       children: [],
-              //                     ),
-              //                   ],
-              //                 ),
-              //               );
-              //             },
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
             ],
           ),
         ),

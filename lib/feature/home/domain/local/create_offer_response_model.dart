@@ -1,14 +1,14 @@
 class CreateOfferResponseModel {
-  final int statusCode;
-  final bool success;
-  final String message;
-  final OfferData data;
+  final int? statusCode;
+  final bool? success;
+  final String? message;
+  final OfferData? data;
 
   CreateOfferResponseModel({
-    required this.statusCode,
-    required this.success,
-    required this.message,
-    required this.data,
+    this.statusCode,
+    this.success,
+    this.message,
+    this.data,
   });
 
   factory CreateOfferResponseModel.fromJson(Map<String, dynamic> json) {
@@ -16,47 +16,47 @@ class CreateOfferResponseModel {
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: OfferData.fromJson(json['data']),
+      data: json['data'] != null ? OfferData.fromJson(json['data']) : null,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'statusCode': statusCode,
-      'success': success,
-      'message': message,
-      'data': data.toJson(),
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'statusCode': statusCode,
+  //     'success': success,
+  //     'message': message,
+  //     'data': data?.toJson(),
+  //   };
+  // }
 }
 
 class OfferData {
-  final String userId;
-  final String category;
-  final String offerType;
-  final int pricePerPerson;
-  final int maxParticipants;
-  final String description;
-  final String title;
-  final List<String> languages;
-  final List<String> photos;
-  final List<Availability> availability;
-  final String id;
-  final int v;
+  final String? userId;
+  final String? category;
+  final String? offerType;
+  final int? pricePerPerson;
+  final int? maxParticipants;
+  final String? description;
+  final String? title;
+  final List<String>? languages;
+  final List<String>? photos;
+  final List<AvailabilityModel>? availability;
+  final String? id;
+  final int? v;
 
   OfferData({
-    required this.userId,
-    required this.category,
-    required this.offerType,
-    required this.pricePerPerson,
-    required this.maxParticipants,
-    required this.description,
-    required this.title,
-    required this.languages,
-    required this.photos,
-    required this.availability,
-    required this.id,
-    required this.v,
+    this.userId,
+    this.category,
+    this.offerType,
+    this.pricePerPerson,
+    this.maxParticipants,
+    this.description,
+    this.title,
+    this.languages,
+    this.photos,
+    this.availability,
+    this.id,
+    this.v,
   });
 
   factory OfferData.fromJson(Map<String, dynamic> json) {
@@ -71,45 +71,44 @@ class OfferData {
       languages: List<String>.from(json['languages'] ?? []),
       photos: List<String>.from(json['photos'] ?? []),
       availability: (json['availability'] as List<dynamic>?)
-              ?.map((e) => Availability.fromJson(e))
-              .toList() ??
-          [],
+          ?.map((e) => AvailabilityModel.fromJson(e))
+          .toList(),
       id: json['_id'],
       v: json['__v'],
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'userId': userId,
-      'category': category,
-      'offerType': offerType,
-      'pricePerPerson': pricePerPerson,
-      'maxParticipants': maxParticipants,
-      'description': description,
-      'title': title,
-      'languages': languages,
-      'photos': photos,
-      'availability': availability.map((e) => e.toJson()).toList(),
-      '_id': id,
-      '__v': v,
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'userId': userId,
+  //     'category': category,
+  //     'offerType': offerType,
+  //     'pricePerPerson': pricePerPerson,
+  //     'maxParticipants': maxParticipants,
+  //     'description': description,
+  //     'title': title,
+  //     'languages': languages,
+  //     'photos': photos,
+  //     'availability': availability?.map((e) => e.toJson()).toList(),
+  //     '_id': id,
+  //     '__v': v,
+  //   };
+  // }
 }
 
-class Availability {
-  final String date;
-  final List<String> timeSlots;
-  final String id;
+class AvailabilityModel {
+  final String? date;
+  final List<String>? timeSlots;
+  final String? id;
 
-  Availability({
-    required this.date,
-    required this.timeSlots,
-    required this.id,
+  AvailabilityModel({
+    this.date,
+    this.timeSlots,
+    this.id,
   });
 
-  factory Availability.fromJson(Map<String, dynamic> json) {
-    return Availability(
+  factory AvailabilityModel.fromJson(Map<String, dynamic> json) {
+    return AvailabilityModel(
       date: json['date'],
       timeSlots: List<String>.from(json['timeSlots'] ?? []),
       id: json['_id'],
