@@ -238,13 +238,15 @@ class _LocalsProfileForTouristScreenState
                                                   : "assets/icons/spa.png", // fallback asset
                                               () {
                                                 Get.to(
-                                                  OfferDetailsScreenForTouristScreen(
-                                                    localID:
-                                                        localProfileDetails
-                                                            .id ??
-                                                        "",
-                                                    offerId: offer.sId ?? "",
-                                                  ),
+                                                  () =>
+                                                      OfferDetailsScreenForTouristScreen(
+                                                        localID:
+                                                            localProfileDetails
+                                                                .id ??
+                                                            "",
+                                                        offerId:
+                                                            offer.sId ?? "",
+                                                      ),
                                                 ); // tap action
                                               },
                                             ),
@@ -437,7 +439,17 @@ class _LocalsProfileForTouristScreenState
                       ? Image.network(
                         image,
                         fit: BoxFit.cover,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          // Show shimmer while loading
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(color: Colors.white),
+                          );
+                        },
                         errorBuilder: (context, error, stackTrace) {
+                          // Show placeholder if loading fails
                           return Image.asset(
                             'assets/images/profileBlankImage.png',
                             fit: BoxFit.cover,

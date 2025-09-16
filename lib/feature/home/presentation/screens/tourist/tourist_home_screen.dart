@@ -227,7 +227,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
       builder: (homeController) {
         final superHatchData = homeController.getSuperHatchResponseModel?.data;
         return homeController.isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? _buildFullScreenShimmer(size)
             : Scaffold(
               body: SafeArea(
                 child: SingleChildScrollView(
@@ -455,6 +455,133 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     );
   }
 
+  Widget _buildFullScreenShimmer(Size size) {
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey[300]!,
+              highlightColor: Colors.grey[100]!,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 🔎 Search Bar
+                  Container(
+                    height: 48,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // 📂 Categories
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 6,
+                      itemBuilder:
+                          (_, __) => Container(
+                            width: size.width * 0.18,
+                            margin: EdgeInsets.only(right: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // 🌍 Top Destination placeholders
+                  Row(
+                    children: [
+                      Container(height: 20, width: 120, color: Colors.white),
+                    ],
+                  ),
+                  SizedBox(height: 12),
+                  SizedBox(
+                    height: 30,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      itemBuilder:
+                          (_, __) => Container(
+                            width: 80,
+                            margin: EdgeInsets.only(right: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+
+                  // 🏠 Super Hatch cards (3 skeletons)
+                  Column(
+                    children: List.generate(3, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 120,
+                              width: 120,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 16,
+                                    width: 150,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    height: 14,
+                                    width: 100,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    height: 12,
+                                    width: double.infinity,
+                                    color: Colors.white,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    height: 12,
+                                    width: 80,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   // 👇 Shimmer loader method
   Widget _buildShimmerLoader() {
     return Column(
@@ -507,7 +634,10 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: GestureDetector(
-        onTap: () => Get.to(LocalsProfileForTouristScreen(localId: result.id)),
+        // Get.to(() => Page())
+        onTap:
+            () =>
+                Get.to(() => LocalsProfileForTouristScreen(localId: result.id)),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,

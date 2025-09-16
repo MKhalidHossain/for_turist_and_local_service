@@ -82,8 +82,6 @@ class HomeController extends GetxController implements GetxService {
 
       // );
 
-      
-
       final response = await homeServiceInterface.createOffer(
         category: category,
         offerType: offerType,
@@ -472,8 +470,8 @@ class HomeController extends GetxController implements GetxService {
           response.body,
         );
 
-        isLoading = false;
-        update();
+        // isLoading = false;
+        // update();
       } else {
         getOfferDetailsResponseModel = GetOfferDetailsResponseModel.fromJson(
           response.body,
