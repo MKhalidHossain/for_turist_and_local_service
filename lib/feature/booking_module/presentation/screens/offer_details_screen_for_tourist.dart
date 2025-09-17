@@ -87,7 +87,7 @@ class _OfferDetailsScreenForTouristScreenState
                                     offer?.photos != null &&
                                             offer!.photos!.isNotEmpty &&
                                             selectedImageIndex <
-                                                offer.photos!.length &&
+                                                offer.photos!.length  &&
                                             offer
                                                 .photos![selectedImageIndex]
                                                 .isNotEmpty
@@ -170,7 +170,7 @@ class _OfferDetailsScreenForTouristScreenState
                                     ),
                                   ),
                                   SizedBox(width: 8),
-                                  '(${avgRatting!.toStringAsFixed(1)})'
+                                  '(${avgRatting?.toStringAsFixed(1)})'
                                       .text14Grey(),
                                 ],
                               ),
@@ -333,7 +333,12 @@ class _OfferDetailsScreenForTouristScreenState
                       sufixIcon: Icons.calendar_today_outlined,
                       text: 'Book Now',
                       onPressed: () {
-                        Get.to(BookingOfferSummaryScreen());
+                        Get.to(
+                          BookingOfferSummaryScreen(
+                            offer: offer!,
+                            local: local!,
+                          ),
+                        );
                       },
                     ),
                   ],

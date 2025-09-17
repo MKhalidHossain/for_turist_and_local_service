@@ -148,6 +148,7 @@ extension TextStylingExtension on String {
   );
 
   Text text16Black500() => Text(
+    maxLines: 15,
     this,
     style: const TextStyle(
       fontSize: 16,

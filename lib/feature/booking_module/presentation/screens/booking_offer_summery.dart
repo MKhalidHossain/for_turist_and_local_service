@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_confarm.dart';
+import 'package:shimmer/shimmer.dart';
+
+import '../../../home/domain/tourist/get_offer_details_response_model.dart';
 
 class BookingOfferSummaryScreen extends StatefulWidget {
+  final Offer offer;
+  final Local local;
+
+  const BookingOfferSummaryScreen({
+    Key? key,
+    required this.offer,
+    required this.local,
+  }) : super(key: key);
   @override
   _BookingOfferSummaryScreenState createState() =>
       _BookingOfferSummaryScreenState();
@@ -11,11 +23,28 @@ class BookingOfferSummaryScreen extends StatefulWidget {
 
 class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
   String selectedPaymentMethod = 'card';
-  final TextEditingController _promoController = TextEditingController();
+  // final TextEditingController _promoController = TextEditingController();
+  String formattedDate = '';
+
+  String formatDateTime(List<Availability>? availability) {
+    if (availability == null || availability.isEmpty) return "";
+
+    final item = availability.first;
+    final rawDate = DateTime.parse(item.date!); // item.date is String
+    final times = (item.timeSlots ?? []).map((t) => t.toString()).join(", ");
+    final formattedDate = DateFormat("MM/dd/yy").format(rawDate);
+
+    return "$times, $formattedDate";
+  }
+
+  // 👉 "10:00 AM, 11:00 AM, 09/17/25"
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final String totalPrice =
+        "${(widget.offer.pricePerPerson ?? 0) * (widget.offer.maxParticipants ?? 1)}";
+    final fomatedDateForShow = formatDateTime(widget.offer.availability);
     return Scaffold(
       //backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -40,14 +69,14 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    'Jerome Bell'.text18Black(),
+                    "${widget.local.firstName} ${widget.local.lastName}"
+                        .text18Black(),
 
-                    'China'.text12DarkGrey(),
+                    "${widget.local.location} ".text12DarkGrey(),
                   ],
                 ),
               ],
             ),
-            SizedBox(height: 24),
 
             // Offer Section
             const SizedBox(height: 20),
@@ -72,17 +101,34 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                     ),
                     child: Row(
                       children: [
-                        Container(
-                          width: 110,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: const DecorationImage(
-                              image: AssetImage(
-                                'assets/images/nanchanTemple.png',
-                              ),
-                              fit: BoxFit.cover,
-                            ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            widget.offer.photos?.first ?? "",
+                            width: 110,
+                            height: 80,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+
+                              return Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  width: 110,
+                                  height: 80,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                "assets/images/nanchanTemple.png", // fallback image
+                                width: 110,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -90,8 +136,8 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              'Nanchan Temple'.text14Black600(),
-                              'City Tour'.text14Grey(),
+                              '${widget.offer.title}'.text14Black600(),
+                              '${widget.offer.offerType}'.text14Grey(),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -104,14 +150,16 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                                         color: Color(0xffEAB308),
                                         size: 16,
                                       ),
-                                      '5(4.8)'.text12Black(),
+                                      '${widget.local.averageRating?.toStringAsFixed(1)}'
+                                          .text12Black(),
                                     ],
                                   ),
                                   Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      '\$30'.text16LightRed(),
-                                      '/hour'.text12Black(),
+                                      '\$${widget.offer.pricePerPerson?.toStringAsFixed(2)}'
+                                          .text16LightRed(),
+                                      '/person'.text12Black(),
                                       const SizedBox(width: 8),
                                     ],
                                   ),
@@ -141,55 +189,62 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
               ),
               child: Column(
                 children: [
-                  _buildSummaryRow('Service', 'Restaurant'),
-                  _buildSummaryRow('Schedule', '9:00 AM, 11/08/25'),
-                  _buildSummaryRow('Participants', '04 People'),
-                  _buildSummaryRow('Price per person', '\$30.00'),
+                  _buildSummaryRow('Service', '${widget.offer.category}'),
+                  _buildSummaryRow('Schedule', '${fomatedDateForShow}'),
+                  _buildSummaryRow(
+                    'Participants',
+                    '${widget.offer.maxParticipants}',
+                  ),
+                  _buildSummaryRow(
+                    'Price per person',
+                    '\$${widget.offer.pricePerPerson}',
+                  ),
                   Divider(height: 16),
-                  _buildSummaryRow('Total', '\$120.00', isTotal: true),
+                  _buildSummaryRow('Total', '\$ ${totalPrice}', isTotal: true),
                   SizedBox(height: 18),
                 ],
               ),
             ),
 
-            SizedBox(height: 8),
+            // ************************************************ In Future If Need Uncomment Code and Connect to api  ************************************************
+
+            // SizedBox(height: 8),
 
             // Promotion Code Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Promotion Code',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                  SizedBox(height: 12),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: TextField(
-                      controller: _promoController,
-                      decoration: InputDecoration(
-                        hintText: 'Write promotion code here...',
-                        hintStyle: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 14,
-                        ),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
+            // Container(
+            //   width: double.infinity,
+            //   color: Colors.white,
+            //   padding: EdgeInsets.all(20),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       Text(
+            //         'Promotion Code',
+            //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            //       ),
+            //       SizedBox(height: 12),
+            //       Container(
+            //         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            //         decoration: BoxDecoration(
+            //           color: Colors.grey[100],
+            //           borderRadius: BorderRadius.circular(8),
+            //         ),
+            //         child: TextField(
+            //           controller: _promoController,
+            //           decoration: InputDecoration(
+            //             hintText: 'Write promotion code here...',
+            //             hintStyle: TextStyle(
+            //               color: Colors.grey[500],
+            //               fontSize: 14,
+            //             ),
+            //             border: InputBorder.none,
+            //             contentPadding: EdgeInsets.zero,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             SizedBox(height: 8),
 
             // Payment Methods Section
@@ -258,31 +313,10 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
     bool isService = false,
   }) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.normal,
-              color: Colors.grey[700],
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.w600,
-              color:
-                  isTotal
-                      ? Colors.red
-                      : (isService ? Colors.blue : Colors.black),
-              decoration: isService ? TextDecoration.underline : null,
-            ),
-          ),
-        ],
+        children: [label.text16Grey500(), value.text16Black500()],
       ),
     );
   }
