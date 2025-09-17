@@ -4,6 +4,7 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/normal_custom_button.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_offer_summery.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
+import 'package:shimmer/shimmer.dart';
 
 // ignore: must_be_immutable
 class OfferDetailsScreenForTouristScreen extends StatefulWidget {
@@ -30,24 +31,24 @@ class _OfferDetailsScreenForTouristScreenState
   void initState() {
     super.initState();
     homeController = Get.find<HomeController>();
-    homeController.getOfferDetails(widget.localID, widget.offerId);
-  }
 
-  final List<String> images = [
-    'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop',
-  ];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeController.getOfferDetails(widget.localID, widget.offerId);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+    final local = homeController.getOfferDetailsResponseModel.data?.local;
+    final offer = homeController.getOfferDetailsResponseModel.data?.offer;
+    final avgRatting = local?.averageRating;
+
     return GetBuilder<HomeController>(
       builder: (homeController) {
         return homeController.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? buildShimmer(context)
             : Scaffold(
               backgroundColor: Colors.white,
               body: Stack(
@@ -57,26 +58,73 @@ class _OfferDetailsScreenForTouristScreenState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "data.   : ${homeController.getOfferDetailsResponseModel.data?.local?.firstName}",
-                        ),
-                        // Profile Header with back button
                         Stack(
                           children: [
                             Container(
                               width: double.infinity,
                               height: size.height * 0.35,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(16),
                                   bottomRight: Radius.circular(16),
                                 ),
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    images[selectedImageIndex],
-                                  ),
-                                  fit: BoxFit.cover,
+                                color:
+                                    Colors.grey[300], // fallback shimmer base
+                              ),
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
                                 ),
+                                child:
+                                    offer?.photos != null &&
+                                            offer!.photos!.isNotEmpty &&
+                                            selectedImageIndex <
+                                                offer.photos!.length  &&
+                                            offer
+                                                .photos![selectedImageIndex]
+                                                .isNotEmpty
+                                        ? Image.network(
+                                          offer.photos![selectedImageIndex],
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: size.height * 0.35,
+                                          loadingBuilder: (
+                                            context,
+                                            child,
+                                            loadingProgress,
+                                          ) {
+                                            if (loadingProgress == null)
+                                              return child;
+                                            return Shimmer.fromColors(
+                                              baseColor: Colors.grey[300]!,
+                                              highlightColor: Colors.grey[100]!,
+                                              child: Container(
+                                                color: Colors.white,
+                                                width: double.infinity,
+                                                height: size.height * 0.35,
+                                              ),
+                                            );
+                                          },
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
+                                            return Image.asset(
+                                              'assets/images/bannerPlaceholder.jpg',
+                                              fit: BoxFit.cover,
+                                              width: double.infinity,
+                                              height: size.height * 0.35,
+                                            );
+                                          },
+                                        )
+                                        : Image.asset(
+                                          'assets/images/bannerPlaceholder.jpg',
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: size.height * 0.35,
+                                        ),
                               ),
                             ),
                             Positioned(
@@ -106,7 +154,7 @@ class _OfferDetailsScreenForTouristScreenState
                                 children: [
                                   Row(
                                     children: List.generate(
-                                      5,
+                                      avgRatting?.toInt() ?? 0,
                                       (index) => Icon(
                                         Icons.star,
                                         color: Colors.amber,
@@ -115,12 +163,13 @@ class _OfferDetailsScreenForTouristScreenState
                                     ),
                                   ),
                                   SizedBox(width: 8),
-                                  '(5.0)'.text14Grey(),
+                                  '(${avgRatting?.toStringAsFixed(1)})'
+                                      .text14Grey(),
                                 ],
                               ),
                               SizedBox(height: 8),
                               Text(
-                                'Nanchan Temple',
+                                offer?.title ?? '',
                                 style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
@@ -129,13 +178,13 @@ class _OfferDetailsScreenForTouristScreenState
                               SizedBox(height: 16),
 
                               // Image Gallery - Clickable thumbnails
-                              Container(
+                              SizedBox(
                                 height: 70,
-
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: images.length,
+                                  itemCount: offer?.photos?.length ?? 0,
                                   itemBuilder: (context, index) {
+                                    final photo = offer!.photos![index];
                                     return GestureDetector(
                                       onTap: () {
                                         setState(() {
@@ -144,8 +193,8 @@ class _OfferDetailsScreenForTouristScreenState
                                       },
                                       child: Container(
                                         width: size.width * 0.2,
-                                        height: 80,
-                                        margin: EdgeInsets.only(right: 8),
+                                        height: 70,
+                                        margin: const EdgeInsets.only(right: 8),
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(
                                             8,
@@ -157,21 +206,62 @@ class _OfferDetailsScreenForTouristScreenState
                                                     : Colors.transparent,
                                             width: 2,
                                           ),
-                                          image: DecorationImage(
-                                            image: NetworkImage(images[index]),
-                                            fit: BoxFit.cover,
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            8,
                                           ),
+                                          child:
+                                              (photo.isNotEmpty)
+                                                  ? Image.network(
+                                                    photo,
+                                                    fit: BoxFit.cover,
+                                                    loadingBuilder: (
+                                                      context,
+                                                      child,
+                                                      loadingProgress,
+                                                    ) {
+                                                      if (loadingProgress ==
+                                                          null)
+                                                        return child;
+                                                      return Shimmer.fromColors(
+                                                        baseColor:
+                                                            Colors.grey[300]!,
+                                                        highlightColor:
+                                                            Colors.grey[100]!,
+                                                        child: Container(
+                                                          color: Colors.white,
+                                                        ),
+                                                      );
+                                                    },
+                                                    errorBuilder: (
+                                                      context,
+                                                      error,
+                                                      stackTrace,
+                                                    ) {
+                                                      return Image.asset(
+                                                        'assets/images/bannerPlaceholder.jpg',
+                                                        fit: BoxFit.cover,
+                                                      );
+                                                    },
+                                                  )
+                                                  : Image.asset(
+                                                    'assets/images/bannerPlaceholder.jpg',
+                                                    fit: BoxFit.cover,
+                                                  ),
                                         ),
                                       ),
                                     );
                                   },
                                 ),
                               ),
+
                               SizedBox(height: 20),
 
                               // Description
                               Text(
-                                'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodo consequat? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?',
+                                offer?.description ??
+                                    'No Description Available',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey[700],
@@ -219,7 +309,7 @@ class _OfferDetailsScreenForTouristScreenState
                           ),
                         ),
                         Text(
-                          '\$30/hour',
+                          '\$${offer?.pricePerPerson}/hour',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -236,7 +326,12 @@ class _OfferDetailsScreenForTouristScreenState
                       sufixIcon: Icons.calendar_today_outlined,
                       text: 'Book Now',
                       onPressed: () {
-                        Get.to(BookingOfferSummaryScreen());
+                        Get.to(
+                          BookingOfferSummaryScreen(
+                            offer: offer!,
+                            local: local!,
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -248,193 +343,67 @@ class _OfferDetailsScreenForTouristScreenState
   }
 }
 
-// import 'package:flutter/material.dart';
-
-// class OfferScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       //backgroundColor: Colors.white,
-//       body: CustomScrollView(
-//         slivers: [
-//           SliverAppBar(
-//             expandedHeight: 300,
-//             pinned: true,
-//             backgroundColor: Colors.white,
-//             leading: IconButton(
-//               icon: Icon(Icons.arrow_back, color: Colors.white),
-//               onPressed: () => Navigator.pop(context),
-//             ),
-//             // title: Text(
-//             //   'Offer',
-//             //   style: TextStyle(
-//             //     color: Colors.white,
-//             //     fontSize: 18,
-//             //     fontWeight: FontWeight.w600,
-//             //   ),
-//             // ),
-//             flexibleSpace: FlexibleSpaceBar(
-//               background: Container(
-//                 decoration: BoxDecoration(
-//                   color: Colors.white,
-//                   // borderRadius: BorderRadius.only(
-//                   //   bottomLeft: Radius.circular(16),
-//                   //   bottomRight: Radius.circular(16),
-//                   // ),
-//                   image: DecorationImage(
-//                     image: NetworkImage(
-//                       'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&h=600&fit=crop',
-//                     ),
-//                     fit: BoxFit.cover,
-//                   ),
-//                 ),
-//                 child: Container(
-//                   decoration: BoxDecoration(
-//                     gradient: LinearGradient(
-//                       begin: Alignment.topCenter,
-//                       end: Alignment.bottomCenter,
-//                       colors: [
-//                         Colors.black.withOpacity(0.3),
-//                         Colors.transparent,
-//                         Colors.black.withOpacity(0.7),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           SliverToBoxAdapter(
-//             child: Padding(
-//               padding: EdgeInsets.all(20),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   // Rating and Title
-//                   Row(
-//                     children: [
-//                       Row(
-//                         children: List.generate(
-//                           5,
-//                           (index) =>
-//                               Icon(Icons.star, color: Colors.amber, size: 16),
-//                         ),
-//                       ),
-//                       SizedBox(width: 8),
-//                       Text(
-//                         '(5.0)',
-//                         style: TextStyle(color: Colors.grey[600], fontSize: 14),
-//                       ),
-//                     ],
-//                   ),
-//                   SizedBox(height: 8),
-//                   Text(
-//                     'Nanchan Temple',
-//                     style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-//                   ),
-//                   SizedBox(height: 16),
-
-//                   // Image Gallery
-//                   Container(
-//                     height: 80,
-//                     child: ListView.builder(
-//                       scrollDirection: Axis.horizontal,
-//                       itemCount: 4,
-//                       itemBuilder: (context, index) {
-//                         return Container(
-//                           width: 80,
-//                           height: 80,
-//                           margin: EdgeInsets.only(right: 8),
-//                           decoration: BoxDecoration(
-//                             borderRadius: BorderRadius.circular(8),
-//                             image: DecorationImage(
-//                               image: NetworkImage(
-//                                 'https://images.unsplash.com/photo-1548013146-72479768bada?w=200&h=200&fit=crop',
-//                               ),
-//                               fit: BoxFit.cover,
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                   SizedBox(height: 20),
-
-//                   // Description
-//                   Text(
-//                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?',
-//                     style: TextStyle(
-//                       fontSize: 14,
-//                       color: Colors.grey[700],
-//                       height: 1.5,
-//                     ),
-//                   ),
-//                   SizedBox(height: 100),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//       bottomNavigationBar: Container(
-//         padding: EdgeInsets.all(20),
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           boxShadow: [
-//             BoxShadow(
-//               color: Colors.black.withOpacity(0.1),
-//               blurRadius: 10,
-//               offset: Offset(0, -5),
-//             ),
-//           ],
-//         ),
-//         child: Row(
-//           children: [
-//             Column(
-//               mainAxisSize: MainAxisSize.min,
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//                 Text(
-//                   'Price',
-//                   style: TextStyle(color: Colors.grey[600], fontSize: 14),
-//                 ),
-//                 Text(
-//                   '\$30/hour',
-//                   style: TextStyle(
-//                     fontSize: 20,
-//                     fontWeight: FontWeight.bold,
-//                     color: Colors.red,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             SizedBox(width: 20),
-//             Expanded(
-//               child: SizedBox(
-//                 height: 50,
-//                 child: ElevatedButton(
-//                   onPressed:
-//                       () => Navigator.pushNamed(context, '/offer-summary'),
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.red,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(8),
-//                     ),
-//                   ),
-//                   child: Text(
-//                     'Book Now',
-//                     style: TextStyle(
-//                       color: Colors.white,
-//                       fontSize: 16,
-//                       fontWeight: FontWeight.w600,
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+Widget buildShimmer(BuildContext context) {
+  final size = MediaQuery.of(context).size;
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[300]!,
+    highlightColor: Colors.grey[100]!,
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 80),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header image
+          Container(
+            width: double.infinity,
+            height: size.height * 0.35,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title
+                Container(
+                  width: size.width * 0.6,
+                  height: 28,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                // Star rating
+                Container(width: 100, height: 20, color: Colors.white),
+                const SizedBox(height: 16),
+                // Image thumbnails
+                Row(
+                  children: List.generate(4, (index) {
+                    return Container(
+                      width: size.width * 0.2,
+                      height: 70,
+                      margin: const EdgeInsets.only(right: 8),
+                      color: Colors.white,
+                    );
+                  }),
+                ),
+                const SizedBox(height: 16),
+                // Description
+                Container(
+                  width: double.infinity,
+                  height: 80,
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  height: 80,
+                  color: Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
