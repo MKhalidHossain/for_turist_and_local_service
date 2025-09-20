@@ -179,9 +179,9 @@ class HomeRepository implements HomeRepositoryInterface {
   }
 
   @override
-  Future<Response> sendMessage(String userId, String message) async {
+  Future<Response> sendMessage(String receiverId, String message) async {
     return await apiClient.postData(Urls.sendMessage, {
-      "userId": userId,
+      "receiverId": receiverId,
       "message": message,
     });
   }

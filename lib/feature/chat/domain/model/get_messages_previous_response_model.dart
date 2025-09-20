@@ -1,14 +1,14 @@
 class GetMessagesPreviousResponseModel {
-  final int statusCode;
-  final bool success;
-  final String message;
-  final MessagesData data;
+  final int? statusCode;
+  final bool? success;
+  final String? message;
+  final MessagesData? data;
 
   GetMessagesPreviousResponseModel({
-    required this.statusCode,
-    required this.success,
-    required this.message,
-    required this.data,
+     this.statusCode,
+     this.success,
+     this.message,
+     this.data,
   });
 
   factory GetMessagesPreviousResponseModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class GetMessagesPreviousResponseModel {
       "statusCode": statusCode,
       "success": success,
       "message": message,
-      "data": data.toJson(),
+      "data": data?.toJson(),
     };
   }
 }

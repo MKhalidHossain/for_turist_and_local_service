@@ -16,6 +16,9 @@ import 'package:kobeur/feature/home/domain/tourist/rate_a_local_response_model.d
 import 'package:kobeur/feature/home/domain/tourist/search_offer_response_model.dart';
 import 'package:kobeur/feature/home/services/home_service_interface.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
+import '../../chat/domain/model/get_messages_previous_response_model.dart';
+import '../../chat/domain/model/get_user_associated_with_chat_response_model.dart';
+import '../../chat/domain/model/send_message_response_model.dart';
 import '../domain/local/get_booking_details_response_model.dart';
 import '../domain/local/get_trip_response_api_bookings_model.dart';
 
@@ -50,6 +53,13 @@ class HomeController extends GetxController implements GetxService {
       AddFavOrRemoveFavResponseModel();
   GetFavResponseModel getFavResponseModel = GetFavResponseModel();
   RateALocalResponseModel rateALocalResponseModel = RateALocalResponseModel();
+
+  SendMessageResponseModel sendMessageResponseModel =
+      SendMessageResponseModel();
+  GetMessagesPreviousResponseModel getMessagesPreviousResponseModel =
+      GetMessagesPreviousResponseModel();
+      GetUserAssociatedWithChatResponseModel getUserAssociatedWithChatResponseModel =
+      GetUserAssociatedWithChatResponseModel();
 
   bool isLoading = false;
 
@@ -605,41 +615,92 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
-
-    Future<void> sendMessage(String localId, String comment, String rating) async {
+  Future<void> sendMessage(String receiverId, String message) async {
     try {
       isLoading = true;
       update();
 
-      final response = await homeServiceInterface.rateALocal(
-        localId,
-        comment,
-        rating,
-      );
+      final response = await homeServiceInterface.sendMessage(receiverId, message);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
 
-      if (response.statusCode == 200) {
-        print("✅ rateALocal : for Tourist fetched successfully\n");
-        rateALocalResponseModel = RateALocalResponseModel.fromJson(
-          response.body,
-        );
+      if (response.statusCode == 201) {
+        print("✅ sendMessage : for Tourist fetched successfully\n");
+        sendMessageResponseModel =
+            SendMessageResponseModel.fromJson(response.body);
 
         isLoading = false;
         update();
       } else {
-        rateALocalResponseModel = RateALocalResponseModel.fromJson(
-          response.body,
-        );
+        sendMessageResponseModel =
+            SendMessageResponseModel.fromJson(response.body);
       }
     } catch (e) {
-      print("⚠️ Error fetching profile : rateALocal : $e\n");
+      print("⚠️ Error fetching profile : sendMessage : $e\n");
     } finally {
       isLoading = false;
       update();
     }
   }
+
+  Future<void> getMessage(String userId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getMessages(userId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getMessage : for Tourist fetched successfully\n");
+        getMessagesPreviousResponseModel =
+            GetMessagesPreviousResponseModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      } else {
+        getMessagesPreviousResponseModel =
+            GetMessagesPreviousResponseModel.fromJson(response.body);
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getMessage : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> getUserAssociatedWithChat() async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getUserAssociatedWithChat();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getUserAssociatedWithChat : for Tourist fetched successfully\n");
+        getUserAssociatedWithChatResponseModel =
+            GetUserAssociatedWithChatResponseModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      } else {
+       getUserAssociatedWithChatResponseModel =
+            GetUserAssociatedWithChatResponseModel.fromJson(response.body);
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getUserAssociatedWithChat : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
   // Future<void> cancelTrip(String localId, String comment, String rating) async {
   //   try {
   //     isLoading = true;

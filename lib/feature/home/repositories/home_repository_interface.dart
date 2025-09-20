@@ -49,7 +49,7 @@ abstract class HomeRepositoryInterface {
 
   Future<Response> cancelTrip(String localId);
 
-  Future<Response> sendMessage(String userId, String message);
+  Future<Response> sendMessage(String receiverId, String message);
   Future<Response> getMessages(String userId);
   Future<Response> getUserAssociatedWithChat();
 

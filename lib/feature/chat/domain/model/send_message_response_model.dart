@@ -1,14 +1,14 @@
 class SendMessageResponseModel {
-  final int statusCode;
-  final bool success;
-  final String message;
-  final MessageData data;
+  final int? statusCode;
+  final bool? success;
+  final String? message;
+  final MessageData? data;
 
   SendMessageResponseModel({
-    required this.statusCode,
-    required this.success,
-    required this.message,
-    required this.data,
+     this.statusCode,
+     this.success,
+     this.message,
+     this.data,
   });
 
   factory SendMessageResponseModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +25,7 @@ class SendMessageResponseModel {
       "statusCode": statusCode,
       "success": success,
       "message": message,
-      "data": data.toJson(),
+      "data": data?.toJson(),
     };
   }
 }

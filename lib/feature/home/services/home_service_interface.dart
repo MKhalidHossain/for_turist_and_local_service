@@ -47,7 +47,7 @@ abstract class HomeServiceInterface {
   Future<Response> getFav();
   Future<Response> rateALocal(String localId, String comment, String rating);
   Future<Response> cancelTrip(String localId);
-  Future<Response> sendMessage(String userId, String message);
+  Future<Response> sendMessage(String receiverId, String message);
   Future<Response> getMessages(String userId);
   Future<Response> getUserAssociatedWithChat();
 }
