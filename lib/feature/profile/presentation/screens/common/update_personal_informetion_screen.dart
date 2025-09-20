@@ -26,6 +26,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   final FocusNode _lastNameNameFocus = FocusNode();
   final FocusNode _ageFocus = FocusNode();
   late ProfileController profileController;
+  bool hasChanged = false;
 
   String? selectedGender;
   String? selectedNationality;
@@ -36,6 +37,20 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   final Map<String, dynamic> updatedFields = {};
 
   final uniqueCountryNames = countries.map((c) => c.country).toSet().toList();
+
+  String? _findMatchingCountry(String? nationality) {
+    if (nationality == null || nationality.isEmpty) return null;
+
+    // Case-insensitive partial match
+    final match = uniqueCountryNames.firstWhere(
+      (country) =>
+          country.toLowerCase().contains(nationality.toLowerCase()) ||
+          nationality.toLowerCase().contains(country.toLowerCase()),
+      orElse: () => '',
+    );
+
+    return match.isNotEmpty ? match : null;
+  }
 
   @override
   void initState() {
@@ -142,46 +157,81 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   //       selectedGender != profileData?.gender ||
   //       selectedNationality != profileData?.nationality;
   // }
-
   bool get isFormValid {
     final profileData = profileController.getProfileResponseModel?.data;
     if (profileData == null) return false;
 
-    // ✅ Step 1: check validity
-    final isFirstNameValid = Validators.name(_firstNameController.text) == null;
-    final isLastNameValid = Validators.name(_lastNameController.text) == null;
-    final isAgeValid = Validators.age(_ageController.text) == null;
-    final isGenderValid = selectedGender != null;
-    final isNationalityValid = selectedNationality != null;
+    // Detect changes
+    final firstNameChanged =
+        _firstNameController.text.trim() != (profileData.firstName ?? '');
+    final lastNameChanged =
+        _lastNameController.text.trim() != (profileData.lastName ?? '');
+    final ageChanged =
+        _ageController.text.trim() != (profileData.age?.toString() ?? '');
+    final genderChanged = selectedGender != profileData.gender;
+    final nationalityChanged = selectedNationality != profileData.nationality;
 
-    final allValid =
-        isFirstNameValid &&
-        isLastNameValid &&
-        isAgeValid &&
-        isGenderValid &&
-        isNationalityValid;
-
-    // ✅ Step 2: check if there are changes
     final hasChanges =
-        _firstNameController.text.trim() != (profileData.firstName ?? '') ||
-        _lastNameController.text.trim() != (profileData.lastName ?? '') ||
-        _ageController.text.trim() != (profileData.age?.toString() ?? '') ||
-        selectedGender != profileData.gender ||
-        selectedNationality != profileData.nationality;
+        firstNameChanged ||
+        lastNameChanged ||
+        ageChanged ||
+        genderChanged ||
+        nationalityChanged;
 
-    // ✅ Step 3: only enable if BOTH are true
-    return allValid && hasChanges;
+    if (!hasChanges) return false; // nothing changed → no save
+
+    // ✅ Validate only if field is changed
+    if (firstNameChanged &&
+        Validators.name(_firstNameController.text) != null) {
+      return false;
+    }
+    if (lastNameChanged && Validators.name(_lastNameController.text) != null) {
+      return false;
+    }
+    if (ageChanged && Validators.age(_ageController.text) != null) {
+      return false;
+    }
+    if (genderChanged && selectedGender == null) {
+      return false;
+    }
+    if (nationalityChanged && selectedNationality == null) {
+      return false;
+    }
+
+    return true; // at least one field changed, and all changed fields are valid
   }
+
+  // bool get isFormValid {
+  //   final profileData = profileController.getProfileResponseModel?.data;
+  //   if (profileData == null) return false;
+
+  //   // ✅ Step 1: check validity
+  //   final isFirstNameValid = Validators.name(_firstNameController.text) == null;
+  //   final isLastNameValid = Validators.name(_lastNameController.text) == null;
+  //   final isAgeValid = Validators.age(_ageController.text) == null;
+  //   final isGenderValid = selectedGender != null;
+  //   final isNationalityValid = selectedNationality != null;
+
+  //   final allValid = isFirstNameValid && isLastNameValid && isAgeValid;
+  //   isGenderValid &&
+  //   isNationalityValid;
+
+  //   // ✅ Step 2: check if there are changes
+  //   final hasChanges =
+  //       _firstNameController.text.trim() != (profileData.firstName ?? '') ||
+  //       _lastNameController.text.trim() != (profileData.lastName ?? '') ||
+  //       _ageController.text.trim() != (profileData.age?.toString() ?? '') ||
+  //       selectedGender != profileData.gender ||
+  //       selectedNationality != profileData.nationality;
+
+  //   // ✅ Step 3: only enable if BOTH are true
+  //   return allValid && hasChanges;
+  // }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final gender = profileController.getProfileResponseModel?.data?.gender;
-
-    // final normalizedGender =
-    //     (gender != null)
-    //         ? gender[0].toUpperCase() + gender.substring(1).toLowerCase()
-    //         : null;
 
     return GetBuilder<ProfileController>(
       builder: (profileController) {
@@ -255,37 +305,68 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                               items: ['male', 'female', 'other'],
                               onChanged:
                                   (val) => setState(() => selectedGender = val),
-                              validator:
-                                  (value) =>
-                                      value == null
-                                          ? 'Please select gender'
-                                          : null,
+                              validator: (value) {
+                                final profileGender =
+                                    profileController
+                                        .getProfileResponseModel
+                                        ?.data
+                                        ?.gender;
+
+                                hasChanged = value != profileGender;
+
+                                // ✅ Only validate if changed
+                                if (hasChanged && value == null) {
+                                  return 'Please select gender';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 12),
                             _buildDropdown(
                               label: 'Nationality',
-                              initialValue:
-                                  uniqueCountryNames.contains(
-                                        profileController
-                                            .getProfileResponseModel
-                                            ?.data
-                                            ?.nationality,
-                                      )
-                                      ? profileController
-                                          .getProfileResponseModel
-                                          ?.data
-                                          ?.nationality
-                                      : null,
-                              value: selectedNationality,
+                              // initialValue:
+                              //     uniqueCountryNames.contains(
+                              //           profileController
+                              //               .getProfileResponseModel
+                              //               ?.data
+                              //               ?.nationality,
+                              //         )
+                              //         ? _findMatchingCountry(
+                              //           profileController
+                              //               .getProfileResponseModel
+                              //               ?.data
+                              //               ?.nationality,
+                              //         )
+                              //         : null,
+                              value:
+                                  selectedNationality ??
+                                  _findMatchingCountry(
+                                    profileController
+                                        .getProfileResponseModel
+                                        ?.data
+                                        ?.nationality,
+                                  ),
                               items: uniqueCountryNames,
                               onChanged:
                                   (val) =>
                                       setState(() => selectedNationality = val),
-                              validator:
-                                  (value) =>
-                                      value == null
-                                          ? 'Please select nationality'
-                                          : null,
+                              validator: (value) {
+                                final profileNationality =
+                                    profileController
+                                        .getProfileResponseModel
+                                        ?.data
+                                        ?.nationality;
+
+                                hasChanged =
+                                    value != profileNationality ? true : false;
+
+                                // ✅ Only validate if changed
+                                if (hasChanged &&
+                                    (value == null || value.isEmpty)) {
+                                  return 'Please select nationality';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 12),
                           ],
@@ -390,7 +471,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
           text: TextSpan(
             text: label,
             style: const TextStyle(
-              color: Colors.black,
+              color: AppColors.secondayText,
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),
@@ -429,7 +510,8 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
             Icons.keyboard_arrow_down,
             color: AppColors.secondaryColor,
           ),
-          dropdownColor: const Color(0xffC4C4C4).withOpacity(0.8),
+          // dropdownColor: const Color(0xffC4C4C4).withOpacity(0.8),
+          dropdownColor: Colors.white.withOpacity(0.9),
           style: const TextStyle(color: AppColors.secondayText, fontSize: 16),
           items:
               items
@@ -440,7 +522,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           item,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: AppColors.secondayText),
                         ),
                       ),
                     ),

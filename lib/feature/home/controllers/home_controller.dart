@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/feature/home/domain/local/cencel_booking_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/create_offer_response_model.dart';
-
 import 'package:kobeur/feature/home/domain/local/get_home_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/add_fav_or_remove_fav_response_model.dart';
@@ -18,7 +15,6 @@ import 'package:kobeur/feature/home/domain/tourist/get_super_hatch_response_mode
 import 'package:kobeur/feature/home/domain/tourist/rate_a_local_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/search_offer_response_model.dart';
 import 'package:kobeur/feature/home/services/home_service_interface.dart';
-
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../domain/local/get_booking_details_response_model.dart';
 import '../domain/local/get_trip_response_api_bookings_model.dart';
@@ -575,6 +571,42 @@ class HomeController extends GetxController implements GetxService {
   }
 
   Future<void> rateALocal(String localId, String comment, String rating) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.rateALocal(
+        localId,
+        comment,
+        rating,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ rateALocal : for Tourist fetched successfully\n");
+        rateALocalResponseModel = RateALocalResponseModel.fromJson(
+          response.body,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        rateALocalResponseModel = RateALocalResponseModel.fromJson(
+          response.body,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : rateALocal : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+
+    Future<void> sendMessage(String localId, String comment, String rating) async {
     try {
       isLoading = true;
       update();

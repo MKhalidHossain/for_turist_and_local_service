@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/core/widgets/app_scaffold.dart';
 import 'package:kobeur/core/widgets/normal_custom_button.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/common/about_app_screen.dart';
@@ -53,8 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (profileController) {
         return profileController.isLoading
             ? Center(child: CircularProgressIndicator())
-            : Scaffold(
-              backgroundColor: Colors.white,
+            : AppScaffold(
               body: SafeArea(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
