@@ -22,9 +22,47 @@ class ProfileService implements ProfileServiceInterface {
     required String nationality,
     required String description,
     List<String>? languages,
-    XFile? profileImage,
+    required XFile profileImage,
   }) async {
     return await profileRepositoryInterface.updateProfile(
+      firstName: firstName,
+      lastName: lastName,
+      age: age,
+      gender: gender,
+      nationality: nationality,
+      description: description,
+      languages: languages,
+      profileImage: profileImage,
+    );
+  }
+
+  @override
+  Future<Response> updateSpacificFieldUserProfile({
+    String? firstName,
+    String? lastName,
+    int? age,
+    String? gender,
+    String? nationality,
+    String? description,
+    List<String>? languages,
+    XFile? profileImage,
+  }) async {
+    // ✅ Ensure at least one field is provided
+    // final noDataProvided =
+    //     firstName == null &&
+    //     lastName == null &&
+    //     age == null &&
+    //     gender == null &&
+    //     nationality == null &&
+    //     description == null &&
+    //     (languages == null || languages.isEmpty) &&
+    //     profileImage == null;
+
+    // if (noDataProvided) {
+    //   throw Exception("Please provide at least one field to update.");
+    // }
+
+    return await profileRepositoryInterface.updateSpacificFieldUserProfile(
       firstName: firstName,
       lastName: lastName,
       age: age,

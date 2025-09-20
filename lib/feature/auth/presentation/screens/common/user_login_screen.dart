@@ -12,37 +12,58 @@ import '../../../../../helpers/custom_snackbar.dart';
 import 'forgot_password_screen.dart';
 import 'user_signup_screen.dart';
 
-//import '../widgets/app_scaffold.dart';
-
 class UserLoginScreen extends StatefulWidget {
-  const UserLoginScreen({super.key});
+  UserLoginScreen({super.key});
 
   @override
   State<UserLoginScreen> createState() => UserLoginScreenState();
 }
 
 class UserLoginScreenState extends State<UserLoginScreen> {
+  String? userRole;
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
   @override
   void initState() {
+    super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
-    super.initState();
+
+    // Add listener to scroll when keyboard appears
+    _emailFocus.addListener(_scrollToShowButton);
+    _passwordFocus.addListener(_scrollToShowButton);
+  }
+
+  void _scrollToShowButton() {
+    if (_emailFocus.hasFocus || _passwordFocus.hasFocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent / 2,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   @override
   void dispose() {
-    _emailFocus.dispose();
-    _passwordFocus.dispose();
+    super.dispose();
+
     _emailController.dispose();
     _passwordController.dispose();
+    _scrollController.dispose();
 
-    super.dispose();
+    _emailFocus.removeListener(_scrollToShowButton);
+    _passwordFocus.removeListener(_scrollToShowButton);
+
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
   }
 
   @override
@@ -56,6 +77,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
+                  controller: _scrollController,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: ConstrainedBox(
@@ -113,6 +135,14 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                     color: AppColors.secondayText,
                                   ),
                                 ),
+                                filled: true,
+                                fillColor: const Color(
+                                  0xffC4C4C4,
+                                ).withOpacity(0.25),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
                               ),
                               onFieldSubmitted:
                                   (_) => FocusScope.of(
@@ -150,6 +180,14 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                     color: AppColors.secondayText,
                                   ),
                                 ),
+                                filled: true,
+                                fillColor: const Color(
+                                  0xffC4C4C4,
+                                ).withOpacity(0.25),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
                               ),
                               obscureText: true,
                               onFieldSubmitted:
@@ -181,9 +219,10 @@ class UserLoginScreenState extends State<UserLoginScreen> {
 
                             /// Login button
                             context.primaryButton(
-                              onPressed: () {
-                                String email = _emailController.text;
-                                String password = _passwordController.text;
+                              onPressed: () async {
+                                String email = _emailController.text.trim();
+                                String password =
+                                    _passwordController.text.trim();
                                 if (email.isEmpty) {
                                   showCustomSnackBar('email is required'.tr);
                                 } else if (password.isEmpty) {
@@ -194,6 +233,10 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                   );
                                 } else {
                                   authController.login(email, password);
+                                  // bool success = await authController.login(email, password);
+                                  // if (success && widget.onLoginSuccess != null) {
+                                  //   widget.onLoginSuccess?.call();
+                                  // }
                                 }
 
                                 // Navigator.push(
@@ -318,7 +361,7 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 50),
+              // const SizedBox(height: 50),
             ],
           ),
         );

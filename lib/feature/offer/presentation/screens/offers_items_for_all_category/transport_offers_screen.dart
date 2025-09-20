@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 
 import '../../../domain/model/offers_item.dart';
+import '../../../domain/model/service_data.dart';
+import '../offer_pricing_screen.dart';
 
 class TransportOffersScreen extends StatefulWidget {
   const TransportOffersScreen({super.key});
@@ -12,6 +15,8 @@ class TransportOffersScreen extends StatefulWidget {
 
 class _TransportOffersScreenState extends State<TransportOffersScreen> {
   String? selectedOffer;
+  String? selectedTransportOfferNameforStore;
+  ServiceData serviceData = ServiceData();
 
   final List<OfferItem> offers = [
     OfferItem(
@@ -21,13 +26,13 @@ class _TransportOffersScreenState extends State<TransportOffersScreen> {
       'arrival_departure_transport',
     ),
     OfferItem(
-      'Week tour',
+      'Week Tour',
       'Drive tourists on multi-day tours',
       'assets/icons/weekTour.png',
       'week_tour_transport',
     ),
     OfferItem(
-      'Day tour',
+      'Day Tour',
       'Take tourists on personalized day trips to their preferred spots',
       'assets/icons/dayTour.png',
       'day_tour_transport',
@@ -44,7 +49,6 @@ class _TransportOffersScreenState extends State<TransportOffersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       body: SafeArea(
         child: Column(
           children: [
@@ -52,24 +56,11 @@ class _TransportOffersScreenState extends State<TransportOffersScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 BackButton(color: Colors.black),
-                'Sport'.text22Black700(),
+                'What is your Offer?'.text22Black700(),
                 SizedBox(width: 50),
               ],
             ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'What is your Offer?',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -84,6 +75,7 @@ class _TransportOffersScreenState extends State<TransportOffersScreen> {
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
+                          selectedTransportOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -179,10 +171,18 @@ class _TransportOffersScreenState extends State<TransportOffersScreen> {
                 child: ElevatedButton(
                   onPressed:
                       selectedOffer != null
-                          ? () => Navigator.pushNamed(
-                            context,
-                            '/time-setting-sport',
-                          )
+                          ? () {
+                            serviceData.selectedOfferType =
+                                selectedTransportOfferNameforStore;
+                            serviceData.printData();
+                            Get.to(
+                              OfferPricingScreen(
+                                offer: offers.firstWhere(
+                                  (offer) => offer.value == selectedOffer!,
+                                ),
+                              ),
+                            );
+                          }
                           : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,

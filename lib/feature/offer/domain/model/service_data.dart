@@ -5,30 +5,50 @@ class ServiceData {
 
   // All service data in one place
   String? selectedCategory;
-  String? selectedOffer;
-  String? selectedTime;
+  String? selectedOfferType;
+  String? selectedPrcing;
+  String? selectedparticipants;
+  String? userGivenOfferTitle;
+  String? userGivenOfferDescription;
   List<String> uploadedPhotos = [];
+  
+  // Track selected dates
   List<DateTime> selectedDates = [];
-  List<String> selectedTimeSlots = [];
+
+  // Map each date to multiple selected time slots
+  Map<DateTime, List<String>> selectedDateSlots = {};
+
+  String? selectedTime; // optional, can be removed if using selectedDateSlots
 
   // Clear all data
   void clear() {
     selectedCategory = null;
-    selectedOffer = null;
+    selectedOfferType = null;
+    selectedPrcing = null;
+    selectedparticipants = null;
+    userGivenOfferTitle = null;
+    userGivenOfferDescription = null;
     selectedTime = null;
     uploadedPhotos.clear();
     selectedDates.clear();
-    selectedTimeSlots.clear();
+    selectedDateSlots.clear();
   }
 
   // Print current data (for debugging)
   void printData() {
     print('=== Service Data ===');
     print('Category: $selectedCategory');
-    print('Offer: $selectedOffer');
+    print('Offer: $selectedOfferType');
+    print('Pricing: $selectedPrcing');
+    print('Participants: $selectedparticipants');
+    print('Title: $userGivenOfferTitle');
+    print('Description: $userGivenOfferDescription');
     print('Time: $selectedTime');
     print('Photos: ${uploadedPhotos.length}');
     print('Dates: ${selectedDates.length}');
-    print('Time Slots: ${selectedTimeSlots.length}');
+    print('Time Slots per Date:');
+    selectedDateSlots.forEach((date, slots) {
+      print('  ${date.toIso8601String()}: $slots');
+    });
   }
 }

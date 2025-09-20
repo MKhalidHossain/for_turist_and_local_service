@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/offer/domain/model/service_data.dart';
 import 'package:kobeur/feature/offer/presentation/screens/offer_pricing_screen.dart';
-
 import '../../../domain/model/offers_item.dart';
 
 class FoodOffersScreen extends StatefulWidget {
@@ -14,10 +14,12 @@ class FoodOffersScreen extends StatefulWidget {
 
 class _FoodOffersScreenState extends State<FoodOffersScreen> {
   String? selectedOffer;
+  ServiceData serviceData = ServiceData();
+  String? selectedFoodOfferNameforStore;
 
   final List<OfferItem> offers = [
     OfferItem(
-      'At home',
+      'At Home',
       'Host a local meal at your home',
       'assets/icons/home.png',
       'home_food',
@@ -38,7 +40,7 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    // Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -69,6 +71,7 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
+                          selectedFoodOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -165,7 +168,13 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
                   onPressed:
                       selectedOffer != null
                           ? () {
-                            Get.to(OfferPricingScreen());
+                            print('Selected Offer: $selectedFoodOfferNameforStore');
+                            serviceData.selectedOfferType =
+                                selectedFoodOfferNameforStore;
+                            serviceData.printData();
+                            Get.to(OfferPricingScreen(
+                              offer: offers.firstWhere((offer) => offer.value == selectedOffer!),
+                            ));
                           }
                           : null,
                   style: ElevatedButton.styleFrom(

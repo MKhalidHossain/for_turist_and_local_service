@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 
 import '../../../domain/model/offers_item.dart';
+import '../../../domain/model/service_data.dart';
+import '../offer_pricing_screen.dart';
 
 class PhotographyOffersScreen extends StatefulWidget {
+  const PhotographyOffersScreen({super.key});
   @override
   _PhotographyOffersScreenState createState() =>
       _PhotographyOffersScreenState();
@@ -11,10 +15,12 @@ class PhotographyOffersScreen extends StatefulWidget {
 
 class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
   String? selectedOffer;
+  String? selectedPhotographyOfferNameforStore;
+  ServiceData serviceData = ServiceData();
 
   final List<OfferItem> offers = [
     OfferItem(
-      'Drone rental',
+      'Drone Rental',
       'Rent your drone for one or multiple days',
 
       'assets/icons/droneRental.png',
@@ -33,32 +39,18 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      
       body: SafeArea(
         child: Column(
           children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  BackButton(color: Colors.black),
-                  'Sport'.text22Black700(),
-                  SizedBox(width: 50),
-                ],
-              ),
-            Padding(
-              padding: EdgeInsets.all(20),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'What is your Offer?',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                BackButton(color: Colors.black),
+                'What is your Offer?'.text22Black700(),
+                SizedBox(width: 50),
+              ],
             ),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -66,13 +58,14 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
                 itemBuilder: (context, index) {
                   final offer = offers[index];
                   final isSelected = selectedOffer == offer.value;
-        
+
                   return Container(
                     margin: EdgeInsets.only(bottom: 12),
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
+                          selectedPhotographyOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -122,7 +115,9 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       color:
-                                          isSelected ? Colors.red : Colors.black,
+                                          isSelected
+                                              ? Colors.red
+                                              : Colors.black,
                                     ),
                                   ),
                                   SizedBox(height: 4),
@@ -166,10 +161,18 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
                 child: ElevatedButton(
                   onPressed:
                       selectedOffer != null
-                          ? () => Navigator.pushNamed(
-                            context,
-                            '/time-setting-photography',
-                          )
+                          ? () {
+                            serviceData.selectedOfferType =
+                                selectedPhotographyOfferNameforStore;
+                            serviceData.printData();
+                            Get.to(
+                              OfferPricingScreen(
+                                offer: offers.firstWhere(
+                                  (offer) => offer.value == selectedOffer!,
+                                ),
+                              ),
+                            );
+                          }
                           : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,

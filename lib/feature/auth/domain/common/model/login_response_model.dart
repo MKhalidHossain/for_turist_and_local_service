@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class LogInResponseModel {
   int? statusCode;
   bool? success;
@@ -7,6 +9,8 @@ class LogInResponseModel {
   LogInResponseModel({this.statusCode, this.success, this.message, this.data});
 
   LogInResponseModel.fromJson(Map<String, dynamic> json) {
+    debugPrint("LogInResponseModel.fromJson: $json");
+
     statusCode = json['statusCode'];
     success = json['success'];
     message = json['message'];

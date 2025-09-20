@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/offer/domain/model/service_data.dart';
 
 import 'offers_items_for_all_category/culture_offers_screen.dart';
 import 'offers_items_for_all_category/food_offers_screen.dart';
@@ -17,6 +18,8 @@ class CategorySelectionScreen extends StatefulWidget {
 
 class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   String? selectedCategory;
+  String? selectedCategoryNameforStore;
+  ServiceData serviceData = ServiceData();
 
   final List<CategoryItem> categories = [
     CategoryItem('Food', 'assets/icons/food.png', 'food'),
@@ -84,8 +87,13 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                       onTap: () {
                         setState(() {
                           selectedCategory = category.value;
+                          selectedCategoryNameforStore = category.name;
                         });
+                        print(
+                          '\n\n\n\n\n\nSelected Category in button : $selectedCategory\n\n\n\n\n\n\n',
+                        );
                       },
+
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -144,6 +152,13 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                   onPressed:
                       selectedCategory != null
                           ? () {
+                            print(
+                              '\n\n\n\n\n\nSelected Category: $selectedCategoryNameforStore\n\n\n\n\n\n\n',
+                            );
+                            serviceData.selectedCategory =
+                                selectedCategoryNameforStore;
+                            serviceData.printData();
+
                             switch (selectedCategory) {
                               case 'food':
                                 Get.to(FoodOffersScreen());

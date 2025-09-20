@@ -11,9 +11,19 @@ abstract class ProfileRepositoryInterface {
     required String nationality,
     required String description,
     List<String>? languages,
+    required XFile profileImage,
+  });
+  Future<Response> updateSpacificFieldUserProfile({
+    String? firstName,
+    String? lastName,
+    int? age,
+    String? gender,
+    String? nationality,
+    String? description,
+    List<String>? languages,
     XFile? profileImage,
   });
-    Future<Response> changePassword({
+  Future<Response> changePassword({
     required String currentPassword,
     required String newPassword,
     required String confirmPassword,

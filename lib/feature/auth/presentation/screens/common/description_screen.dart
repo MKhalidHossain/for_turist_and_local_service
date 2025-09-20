@@ -9,7 +9,9 @@ import '../../../../../core/widgets/choose_country/data/countries.dart';
 import 'upload_profile_picture.dart';
 
 class DescriptionScreen extends StatefulWidget {
-  const DescriptionScreen({super.key});
+  final String? userRole;
+
+  const DescriptionScreen({super.key, required this.userRole});
 
   @override
   State<DescriptionScreen> createState() => _DescriptionScreenState();
@@ -19,11 +21,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
   late TextEditingController _descriptionController;
 
   final FocusNode _descriptionFocus = FocusNode();
-
-  //String? selectedGender;
-  //String? selectedNationality;
   bool isEditing = true;
-
   final _formKey = GlobalKey<FormState>();
 
   final uniqueCountryNames = countries.map((c) => c.country).toSet().toList();
@@ -32,7 +30,6 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
   void initState() {
     _descriptionController =
         TextEditingController()..addListener(_onFieldChanged);
-
     super.initState();
   }
 
@@ -43,14 +40,17 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
     super.dispose();
   }
 
-
-
   void _onFieldChanged() {
     setState(() {});
   }
 
   bool get isFormValid {
-    return Validators.name(_descriptionController.text) == null;
+    return Validators.textLength(
+          minLength: 3,
+          maxLength: 600,
+          _descriptionController.text,
+        ) ==
+        null;
   }
 
   @override
@@ -85,16 +85,15 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 24),
-
                       Stack(
                         children: [
                           TextFormField(
                             controller: _descriptionController,
                             focusNode: _descriptionFocus,
                             keyboardType: TextInputType.multiline,
-                            maxLines: null,
+                            maxLines: 10,
                             minLines: 8,
-                            maxLength: 300,
+                            maxLength: 600,
                             buildCounter: (
                               BuildContext context, {
                               required int currentLength,
@@ -104,7 +103,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                               return null; // Hide default counter
                             },
                             style: const TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: Colors.black,
                               fontWeight: FontWeight.w400,
                             ),
@@ -121,7 +120,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                               contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16,
                                 horizontal: 12,
-                              ).copyWith(bottom: 32),
+                              ).copyWith(bottom: 48),
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
@@ -131,10 +130,10 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                             },
                           ),
                           Positioned(
-                            bottom: 32,
+                            bottom: 8,
                             right: 12,
                             child: Text(
-                              '${_descriptionController.text.length}/300',
+                              '${_descriptionController.text.length}/600',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade600,
@@ -186,7 +185,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                       '${UserProfileService.instance.profile.description}',
                 );
                 await Future.delayed(Duration(seconds: 1));
-                Get.to(UploadProfilePicture());
+                Get.to(UploadProfilePicture(userRole: widget.userRole));
               }
             },
             text: "Continue",

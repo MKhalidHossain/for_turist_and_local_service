@@ -1,13 +1,10 @@
-
-abstract class AuthRepositoryInterface{
-
+abstract class AuthRepositoryInterface {
   Future<dynamic> register(
-
     String email,
     String password,
     String confirmPassword,
   );
-  Future<dynamic> login(String email,  String password);
+  Future<dynamic> login(String email, String password);
   Future<dynamic> accessAndRefreshToken(String refreshToken);
   Future<dynamic> changePassword(
     String currentPassword,
@@ -18,13 +15,21 @@ abstract class AuthRepositoryInterface{
   Future<dynamic> verifyCode(String email, String otp);
   Future<dynamic> resendOtp(String email);
   Future<dynamic> sendOtp({required String phone});
-  Future<dynamic> resetPassword(String email , String newPassword, String repeatNewPassword);
-  Future<dynamic> logout();
+  Future<dynamic> resetPassword(
+    String email,
+    String newPassword,
+    String repeatNewPassword,
+  );
 
   bool isLoggedIn();
+  Future<dynamic> saveLogin(String token);
+  Future<dynamic> logout();
+ 
+
   Future<bool> clearUserCredentials();
   bool clearSharedAddress();
   String getUserToken();
+  
 
   Future<dynamic> updateToken();
   Future<bool?> saveUserToken(String token, String refreshToken);
@@ -32,6 +37,9 @@ abstract class AuthRepositoryInterface{
 
   bool isFirstTimeInstall();
   void setFirstTimeInstall();
-  Future<dynamic> chooseRole(String role);
+  Future<dynamic> chooseRole(String role , String token);
+  Future<bool?> saveUserRole(String userRole);
+  String getUserRole();
+
 
 }

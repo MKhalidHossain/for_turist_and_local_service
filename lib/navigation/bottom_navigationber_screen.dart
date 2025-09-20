@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
-
+import 'package:kobeur/feature/home/presentation/screens/tourist/tourist_booking_screen.dart';
 import '../core/themes/app_color.dart';
-import '../feature/home/presentation/screens/tourist/home_screen.dart';
-import '../feature/trip_local/presentation/screens/bookings_screen.dart';
-import '../feature/chat/tourist/message/presentation/screens/message_screen.dart';
+import '../feature/home/presentation/screens/local/local_home_screen.dart';
+import '../feature/home/presentation/screens/local/local_trip_screen.dart';
+import '../feature/home/presentation/screens/tourist/tourist_home_screen.dart';
+import '../feature/chat/presentation/screens/message_screen.dart';
 import '../feature/profile/presentation/screens/profile_screen.dart';
 
 class BottomNavbar extends StatefulWidget {
-  const BottomNavbar({super.key});
+  final String? userRole;
+  const BottomNavbar({super.key, required this.userRole});
+
   @override
   State<BottomNavbar> createState() => _BottomNavbarState();
 }
 
 class _BottomNavbarState extends State<BottomNavbar> {
   int _selectedIndex = 0;
+  late List<Widget> _screens;
 
-  final List<Widget> _screens = [
-    HomeScreen(),
-    BookingsPage(),
-    MessagesScreen(),
-    ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      (widget.userRole?.toLowerCase() == 'tourist'
+          ? TouristHomeScreen()
+          : LocalHomeScreen()),
+      (widget.userRole?.toLowerCase() == 'tourist'
+          ? TouristBookingScreen()
+          : LocalTripScreen()),
+      MessagesScreen(),
+      ProfileScreen(userRole: widget.userRole.toString(),),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +67,12 @@ class _BottomNavbarState extends State<BottomNavbar> {
                 //   'assets/icons/chat.png',
                 //   'assets/icons/profile.png',
                 // ];
-                final labels = ['Home', 'Bookings', 'Messages', 'Profile'];
+                final labels = [
+                  'Home',
+                  widget.userRole == 'tourist' ? 'Bookings' : 'My Trip',
+                  'Messages',
+                  'Profile',
+                ];
 
                 return GestureDetector(
                   onTap: () {

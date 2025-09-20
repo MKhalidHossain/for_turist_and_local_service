@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class AppConstants {
   static const String token = 'token';
-  static const String refreshToken = 'token';
+  static const String refreshToken = 'refreshToken';
+
+  static const String userRole = 'role';
 
   static const String appName = 'Kobeur';
 

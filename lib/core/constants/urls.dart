@@ -1,56 +1,19 @@
 class Urls {
-  //.............................Auth.............................. with localhost
+  // ................................Auth...............................with local or server
 
-  //static const String baseUrl = 'http://localhost:8000';
-  // static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
-  // static const String register = '/api/v1/auth/register';
-  // static const String login = '/auth/login';
-  // static const String refreshAccessToken = '/api/v1/auth/refresh-access-token';
-  // // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
-  // static const String changePassword = '/api/v1/auth/change-password';
-  // static const String forgetPassword = '/api/v1/auth/forgot-password';
-  // static const String resetPassword = '/api/v1/auth/reset-password';
-  // static const String verifyCode = '/api/v1/auth/verify-otp';
-  // static const String logOut = '/api/v1/auth/logout';
-
-  // static const String chooseRole = '/auth/choose-role';
-
-  // // ................................Profile / User...............................
-
-  // static const String changeAvatar = '/api/v1/users/add-avatar';
-
-  // static const String deleteAvatar = '/api/v1/users/delete-avatar';
-
-  // static const String getUserById = '/api/v1/users/profile';
-
-  // // ................................Tasks...............................
-
-  // static const String addTask = '/api/v1/tasks';
-
-  // static const String getAllTasks = '/api/v1/tasks';
-
-  // static const String getRequestById = '/api/v1/tasks/';
-
-  // static const String editTask = '/api/v1/tasks/';
-
-  // static const String deleteTask = '/api/v1/tasks/';
-
-  // ................................Auth...............................with render
-
-  //static const String baseUrl = 'http://localhost:8000';
-  static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+  static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
+  // static const String baseUrl = 'https://api.hatchr.app/api/v1';
 
   // Auth Module
-
   static const String register = '/auth/signup';
   static const String login = '/auth/login';
   static const String refreshAccessToken = '/auth/refresh-token';
   // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
-  static const String changePassword = '/api/v1/auth/change-password';
+  static const String changePassword = '/profile/change-password';
   static const String forgetPassword = '/auth/forgot-password';
   static const String resetPassword = '/auth/reset-password';
   static const String verifyCode = '/auth/verify-otp';
-  static const String logOut = '/api/v1/auth/logout';
+  static const String logOut = '/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';
 
@@ -59,8 +22,6 @@ class Urls {
   static const String getProfile = '/profile';
 
   static const String updateProfile = '/profile';
-
-  //static const String changePassword = '/profile/change-password';
 
   // ................................Tourist Module...............................
 
@@ -72,51 +33,69 @@ class Urls {
 
   static const String searchOffer = '/tourist/search';
 
-  static const String getOfferDetails = '/tourist/offer/:localId/:offerId';
+  static const String getOfferDetails = '/tourist/offer/';
 
-  static const String getLocalProfile = '/tourist//:localId';
+  static const String getLocalProfile = '/tourist/';
 
-  static const String postAddFavouriteOrRemoveFavourite = '/tourist/favorite';
+  static const String addFavouriteOrRemoveFavourite = '/tourist/favorite';
 
   static const String getFavorites = '/tourist/favorites';
 
   static const String rateALocal = '/tourist/rate-local';
 
-  static const String cencelTripForTuourist = '/local/trip/:tripId/cancel';
+  static const String cancelTripForTuourist = '/local/trip/cancel/';
 
-  // ................................Booking Module...............................
+  // ................................Booking  Module...............................
 
   static const String createBooking = '/booking/';
 
   static const String confirmBooking = '/booking/confirm-booking';
 
-  static const String updateBooking = '/booking/:bookingId';
+  static const String updateBooking = '/booking/';
 
-  static const String getBookingDetails =
-      '/booking/'; // need bookingId here in last of the url
+  static const String getBookingDetails = '/booking/';
 
-  static const String getBookingsByStatus = '/booking?status=confirmed';
+  static const String getBookingsByStatus = '/booking/cancel/';
 
-  // ................................Local Module...............................
+  // ................................Local  Module...............................
 
-  static const String createOffer = '/local';
+  static const String createOffer = '/local/';
 
-  static const String updateOffer = '/local/:offerId/update';
+  static const String updateOffer = '/local/update';
 
   static const String getHome = '/local/';
 
-  static const String getTrips =
-      '/trips'; // need bookingId here in last of the url
+  static const String getTripsDetails = '/local/trip/';
 
-  static const String cencelTripForLocal = '/local/trip/:tripId/cancel';
+  // static const String getBookingsUpcoming = '/local/trips?status=upcoming';
+
+  // static const String getBookingsConfirmed = '/local/trips?status=confirmed';
+  static const String getBookingsAll = '/local/trips';
+
+  static const String getBookingsCategories = '/local/trips?status=';
+
+  static const String cencelBooking = '/local/trip/cancel/';
+
+  // // ................................Booking Module...............................
+
+  // static const String createBooking = '/booking/';
+
+  // static const String confirmBooking = '/booking/confirm-booking';
+
+  // static const String updateBooking = '/booking/:bookingId';
+
+  // static const String getBookingDetails =
+  //     '/booking/'; // need bookingId here in last of the url
+
+  // static const String getBookingsByStatus = '/booking?status=confirmed';
 
   // ................................Message Module...............................
 
   static const String sendMessage = '/chat/message';
 
-  static const String getMessage = '/messages/history/:receiverId';
+  static const String getMessage = '/chat/history/';
 
-  static const String getUserAssociatWithChat = '/messages/list';
+  static const String getUserAssociatWithChat = '/chat/list';
 
   // ................................Payment Module...............................
 

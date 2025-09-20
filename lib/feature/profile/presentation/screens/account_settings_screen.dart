@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/language_picker_screen.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/personal_informetion_screen.dart';
-import 'package:kobeur/feature/profile/presentation/screens/common/about_me_screen.dart';
+import 'package:kobeur/feature/profile/presentation/screens/common/update_about_me_screen.dart';
 import '../../../../core/widgets/app_scaffold.dart';
+import 'common/change_password_from_profile_screen.dart';
+import 'common/update_personal_informetion_screen.dart';
+import 'common/update_spoken_language_screen_profile.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -21,7 +21,7 @@ class AccountSettingsScreen extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        leading: const BackButton(color: Colors.black),
+        leading: BackButton(color: Colors.black),
         elevation: 0,
       ),
       body: SafeArea(
@@ -29,106 +29,36 @@ class AccountSettingsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // const SizedBox(height: 24),
-              // ListTile(
-              //   leading: CircleAvatar(
-              //     radius: 30,
-              //     backgroundImage: NetworkImage(
-              //       "https://randomuser.me/api/portraits/women/44.jpg",
-              //     ),
-              //   ),
-              //   title: const Text(
-              //     'Kristin Watson',
-              //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              //   ),
-              //   subtitle: const Text('Tourist'),
-              // ),
-              // Row(
-              //   children: [
-              //     Stack(
-              //       clipBehavior: Clip.none,
-              //       children: [
-              //         const CircleAvatar(
-              //           radius: 35,
-              //           backgroundImage: NetworkImage(
-              //             "https://randomuser.me/api/portraits/women/44.jpg",
-              //           ),
-              //         ),
-              //         Positioned(
-              //           bottom: 0,
-              //           right: -2,
-              //           child: GestureDetector(
-              //             onTap: () {
-              //               // Handle image change
-              //             },
-              //             child: Container(
-              //               padding: const EdgeInsets.all(4),
-              //               decoration: const BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Colors.red,
-              //               ),
-              //               child: const Icon(
-              //                 Icons.camera_alt,
-              //                 size: 14,
-              //                 color: Colors.white,
-              //               ),
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //     const SizedBox(width: 16),
-              //     Expanded(
-              //       child: Column(
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           'Jerome Bell'.text20Grey700(),
-              //           'China'.text16Grey(),
-              //         ],
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(height: 24),
-
-              // _buildMenuItem(
-              //   icon: Icons.settings,
-              //   text: "Account Settings",
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (_) => const AccountSettingsScreen(),
-              //       ),
-              //     );
-              //   },
-              // ),
               _buildMenuItem(
                 icon: Icons.person,
                 text: "Personal Information",
                 onTap: () {
-                  Get.to(PersonalInformetionScreen());
+                  Get.to(UpdatePersonalInformetionScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(
                 icon: Icons.document_scanner_outlined,
                 text: "About Me",
                 onTap: () {
-                  Get.to(AboutMeScreen());
+                  Get.to(UpdateAboutMeScreenProfile());
                 },
               ),
               _buildMenuItem(
                 icon: Icons.language_outlined,
                 text: "Spoken Language",
                 onTap: () {
-                  Get.to(LanguagePickerScreen());
+                  Get.to(UpdateSpokenLanguageScreen(userRole: 'tourist'));
                 },
               ),
               _buildMenuItem(
                 icon: Icons.lock_outline_rounded,
                 text: "Change Password",
                 onTap: () {
-                  Get.to(ChangePassword(userEmail: 'compilefiller@gmail'));
+                  Get.to(
+                    ChangePasswordFromProfileScreen(
+                      userEmail: 'compilefiller@gmail.com',
+                    ),
+                  );
                 },
               ),
 

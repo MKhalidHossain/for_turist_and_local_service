@@ -1,4 +1,9 @@
 import 'package:get/get.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
+import 'package:kobeur/feature/home/repositories/home_repository.dart';
+import 'package:kobeur/feature/home/repositories/home_repository_interface.dart';
+import 'package:kobeur/feature/home/services/home_service.dart';
+import 'package:kobeur/feature/home/services/home_service_interface.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/constants/urls.dart';
@@ -24,16 +29,16 @@ Future<void> initDI() async {
   //////////// Auth Service, Repository and Controller ////////////////////////////////
 
   Get.lazyPut(
-    () => ApiClient(appBaseUrl: 'appBaseUrl', sharedPreferences: prefs),
+    () => apiClient
   );
-  Get.lazyPut(
-    () => AuthRepository(apiClient: Get.find(), sharedPreferences: prefs),
-  );
+  // Get.lazyPut(
+  //   () => AuthRepository(apiClient: Get.find(), sharedPreferences: prefs),
+  // );
   AuthRepositoryInterface authRepositoryInterface = AuthRepository(
     apiClient: Get.find(),
     sharedPreferences: prefs,
   );
-  Get.lazyPut(() => authRepositoryInterface);
+  Get.lazyPut<AuthRepositoryInterface>(() => authRepositoryInterface);
   AuthServiceInterface authServiceInterface = AuthService(Get.find());
   Get.lazyPut(() => authServiceInterface);
   Get.lazyPut(() => AuthController(authServiceInterface: Get.find()));
@@ -43,24 +48,8 @@ Future<void> initDI() async {
   ///
   ///
 
-  // // 1. Register ProfileRepository as ProfileRepositoryInterface
-  // Get.lazyPut<ProfileRepositoryInterface>(
-  //   () => ProfileRepository(apiClient: apiClient, sharedPreferences: prefs),
-  // );
-
-  // // 2. Register ProfileService as ProfileServiceInterface
-  // Get.lazyPut<ProfileServiceInterface>(
-  //   () => ProfileService(profileRepositoryInterface: Get.find()),
-  // );
-
-  // // 3. Register ProfileController
-  // Get.lazyPut(() => ProfileController(profileServiceInterface: Get.find()));
-
-  //
-
-  Get.lazyPut(() => ProfileRepository(Get.find(), prefs));
   ProfileRepositoryInterface profileRepositoryInterface = ProfileRepository(
-    apiClient,
+    Get.find(),
     prefs,
   );
   Get.lazyPut(() => profileRepositoryInterface);
@@ -68,6 +57,20 @@ Future<void> initDI() async {
   Get.lazyPut(() => profileServiceInterface);
   Get.lazyPut(() => ProfileController(profileServiceInterface));
   Get.lazyPut(() => ProfileService(Get.find()));
+
+  //////////// home  Service, Repository and Controller ////////////////////////////////
+  ///
+  ///
+
+  HomeRepositoryInterface localHomeRepositoryInterface = HomeRepository(
+    Get.find(),
+    prefs,
+  );
+  Get.lazyPut(() => localHomeRepositoryInterface);
+  HomeServiceInterface localHomeServiceInterface = HomeService(Get.find());
+  Get.lazyPut(() => localHomeServiceInterface);
+  Get.lazyPut(() => HomeController(localHomeServiceInterface));
+  Get.lazyPut(() => HomeService(Get.find()));
 
   //
 

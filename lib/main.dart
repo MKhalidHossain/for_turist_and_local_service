@@ -1,87 +1,102 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kobeur/feature/auth/presentation/screens/common/description_screen.dart';
-import 'core/constants/splash_screen.dart';
-import 'core/services/profile_storage_service.dart';
-import 'feature/auth/controllers/auth_controller.dart';
-import 'feature/auth/presentation/screens/common/tourist_or_local_screen.dart';
-import 'feature/auth/presentation/screens/common/user_login_screen.dart';
-import 'feature/offer/presentation/details_offer_local.dart';
-import 'feature/profile/presentation/screens/profile_screen.dart';
-import 'helpers/dependency_injection.dart';
-import 'navigation/bottom_navigationber_screen.dart';
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   await initDI();
-//   if (!Get.find<AuthController>().isFirstTimeInstall()) {
-//     print("object ---------------000000000000-----------------");
-
-//     Get.find<AuthController>().setFirstTimeInstall();
-//     Get.lazyPut(() => ProfileStorageService());
-//   } else {
-//     print("object ---------------11111111111-----------------");
-//   }
-
-//   Get.put(AppBarTheme());
-//   runApp(MyApp());
-// }
+import 'package:kobeur/core/constants/splash_screen.dart';
+import 'package:kobeur/core/constants/splash_screen_without_loading.dart';
+import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
+import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
+import 'package:kobeur/helpers/dependency_injection.dart';
+import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDI();
-
-  final authController = Get.find<AuthController>();
-  final isFirstTime = await authController.isFirstTimeInstall();
-
-  if (isFirstTime) {
-    print("object ---------------000000000000-----------------");
-    await authController.setFirstTimeInstall();
-    Get.lazyPut(() => ProfileStorageService());
-  } else {
-    print("object ---------------11111111111-----------------");
-  }
-
+  //final authController = Get.find<AuthController>();
+  // final authController = Get.find<AuthController>();
   runApp(MyApp());
 }
 
+// http://localhost:5001/api/v1
 class MyApp extends StatelessWidget {
+  // final bool isFirstTimeInstall;
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-
-      title: 'Flutter Demo',
+      title: 'Kobeur',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xffF5F5F5)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xffF5F5F5)),
       ),
-      home:
-          //  GetBuilder<AuthController>(
-          //   builder: (authController) {
-          //     // return OnBoard();
-          //     if (authController.isLoggedIn()) {
-          //       return BottomNavbar();
-          //     } else if (authController.isFirstTimeInstall()) {
-          //       return UserLoginScreen();
-          //     } else {
-          //       return SplashScreen();
-          //     }
-          //   },
-          // ),
-          // DetailsOfferLocal(),
-          // ProfileScreen(),
-          //BottomNavbar(),
-          //TouristORLocalScreen(),
-          //UserLoginScreen(),
-          DescriptionScreen(),
-      //CreateFirstServiceScreen(),
-      // BottomNavbar(),
-
-      // SpokenLanguageScreen(),
+      home: const SplashScreen(),
     );
   }
 }
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  // final profileController = Get.find<ProfileController>();
+  final authController = Get.find<AuthController>();
+
+  bool isLoading = true;
+  bool? isFirstTime;
+  // String? userRole;
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initApp();
+  }
+
+  Future<void> _initApp() async {
+    setState(() => isLoading = true);
+
+    final prefs = await SharedPreferences.getInstance();
+    isFirstTime = prefs.getBool('first_time') ?? true;
+
+    if (isFirstTime!) {
+      await prefs.setBool('first_time', false);
+    }
+
+    final authController = Get.find<AuthController>();
+    isLoggedIn = authController.isLoggedIn();
+
+    debugPrint('isFirstTime: $isFirstTime, isLoggedIn: $isLoggedIn');
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const SplashScreenWithoutLoading();
+    }
+    return GetBuilder<AuthController>(
+      builder: (authController) {
+        if (authController.isLoggedIn()) {
+          final role = authController.getUserRole();
+          print('Retrieved userRole: $role');
+          if (role == null || role.isEmpty) {
+            return UserLoginScreen();
+          }
+          print(
+            'User is logged in, navigating to userRole: ${authController.userRole} \n\n\n\n ',
+          );
+          return BottomNavbar(userRole: role);
+        }
+        return UserLoginScreen();
+      },
+    );
+  }
+}
+
+
