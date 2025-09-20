@@ -601,212 +601,218 @@ class _LocalsProfileForTouristScreenState
 
 // Shimmer loader widget
 Widget _buildShimmerLoader(Size size) {
-  return SingleChildScrollView(
-    padding: const EdgeInsets.only(bottom: 80),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Header image
-        Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
-          child: Container(
-            width: double.infinity,
-            height: size.height * 0.35,
-            color: Colors.white,
-          ),
-        ),
-
-        SizedBox(height: 16),
-
-        // Info Card
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Shimmer.fromColors(
+  return Scaffold(
+    body: SingleChildScrollView(
+      padding: const EdgeInsets.only(bottom: 80),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header image
+          Shimmer.fromColors(
             baseColor: Colors.grey.shade300,
             highlightColor: Colors.grey.shade100,
             child: Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Name & Rating
-                  Row(
-                    children: [
-                      Container(width: 150, height: 20, color: Colors.white),
-                      Spacer(),
-                      Container(width: 50, height: 20, color: Colors.white),
-                    ],
-                  ),
-                  SizedBox(height: 8),
+              width: double.infinity,
+              height: size.height * 0.35,
+              color: Colors.white,
+            ),
+          ),
 
-                  // Location
-                  Container(width: 100, height: 16, color: Colors.white),
-                  SizedBox(height: 4),
+          SizedBox(height: 16),
 
-                  // Languages
-                  Container(width: 120, height: 16, color: Colors.white),
-                  SizedBox(height: 12),
+          // Info Card
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Name & Rating
+                    Row(
+                      children: [
+                        Container(width: 150, height: 20, color: Colors.white),
+                        Spacer(),
+                        Container(width: 50, height: 20, color: Colors.white),
+                      ],
+                    ),
+                    SizedBox(height: 8),
 
-                  // About
-                  Container(
-                    width: double.infinity,
-                    height: 60,
-                    color: Colors.white,
-                  ),
-                ],
+                    // Location
+                    Container(width: 100, height: 16, color: Colors.white),
+                    SizedBox(height: 4),
+
+                    // Languages
+                    Container(width: 120, height: 16, color: Colors.white),
+                    SizedBox(height: 12),
+
+                    // About
+                    Container(
+                      width: double.infinity,
+                      height: 60,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
 
-        SizedBox(height: 24),
+          SizedBox(height: 24),
 
-        // Offer section title
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: Container(width: 100, height: 20, color: Colors.white),
+          // Offer section title
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Container(width: 100, height: 20, color: Colors.white),
+            ),
           ),
-        ),
 
-        SizedBox(height: 16),
+          SizedBox(height: 16),
 
-        // Offer cards shimmer
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: List.generate(2, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
-                  child: Container(
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
+          // Offer cards shimmer
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: List.generate(2, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          // Image
+                          Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 12),
+                          // Text lines
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 16,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  width: double.infinity,
+                                  height: 12,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  width: 60,
+                                  height: 14,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                        ],
+                      ),
                     ),
+                  ),
+                );
+              }),
+            ),
+          ),
+
+          SizedBox(height: 24),
+
+          // Reviews section title
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Container(width: 80, height: 20, color: Colors.white),
+            ),
+          ),
+
+          SizedBox(height: 16),
+
+          // Reviews shimmer
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: List.generate(2, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Image
-                        Container(width: 100, height: 100, color: Colors.white),
+                        // Profile image circle
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
                         SizedBox(width: 12),
-                        // Text lines
+                        // Name + comment
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
                                 width: 100,
-                                height: 16,
+                                height: 14,
                                 color: Colors.white,
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: 6),
                               Container(
                                 width: double.infinity,
                                 height: 12,
                                 color: Colors.white,
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: 6),
                               Container(
                                 width: 60,
-                                height: 14,
+                                height: 12,
                                 color: Colors.white,
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(width: 8),
                       ],
                     ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
+            ),
           ),
-        ),
 
-        SizedBox(height: 24),
-
-        // Reviews section title
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: Container(width: 80, height: 20, color: Colors.white),
-          ),
-        ),
-
-        SizedBox(height: 16),
-
-        // Reviews shimmer
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: List.generate(2, (index) {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Profile image circle
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      // Name + comment
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 14,
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 6),
-                            Container(
-                              width: double.infinity,
-                              height: 12,
-                              color: Colors.white,
-                            ),
-                            SizedBox(height: 6),
-                            Container(
-                              width: 60,
-                              height: 12,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
-        ),
-
-        SizedBox(height: 24),
-      ],
+          SizedBox(height: 24),
+        ],
+      ),
     ),
   );
 }
