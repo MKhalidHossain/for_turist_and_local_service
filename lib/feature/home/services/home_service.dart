@@ -150,8 +150,8 @@ required List<Map<String, dynamic>> availability,
   }
   
   @override
-  Future<Response> sendMessage(String userId, String message) async{
-    return await homeRepositoryInterface.sendMessage(userId, message);
+  Future<Response> sendMessage(String receiverId, String message) async{
+    return await homeRepositoryInterface.sendMessage(receiverId, message);
   }
   
   @override
