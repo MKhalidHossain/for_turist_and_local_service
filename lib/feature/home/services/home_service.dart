@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
 import '../repositories/home_repository_interface.dart';

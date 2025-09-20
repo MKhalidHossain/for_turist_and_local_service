@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/urls.dart';
 import '../../../helpers/remote/data/api_client.dart';
-import '../domain/local/create_offer_response_model.dart';
 import 'home_repository_interface.dart';
 
 class HomeRepository implements HomeRepositoryInterface {
