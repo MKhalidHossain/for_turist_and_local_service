@@ -26,7 +26,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   final FocusNode _lastNameNameFocus = FocusNode();
   final FocusNode _ageFocus = FocusNode();
   late ProfileController profileController;
-   bool hasChanged = false;
+  bool hasChanged = false;
 
   String? selectedGender;
   String? selectedNationality;
@@ -312,7 +312,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                                         ?.data
                                         ?.gender;
 
-                                 hasChanged = value != profileGender;
+                                hasChanged = value != profileGender;
 
                                 // ✅ Only validate if changed
                                 if (hasChanged && value == null) {
@@ -357,7 +357,8 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                                         ?.data
                                         ?.nationality;
 
-                                 hasChanged = value != profileNationality ? true : false;
+                                hasChanged =
+                                    value != profileNationality ? true : false;
 
                                 // ✅ Only validate if changed
                                 if (hasChanged &&
@@ -470,7 +471,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
           text: TextSpan(
             text: label,
             style: const TextStyle(
-              color: Colors.black,
+              color: AppColors.secondayText,
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),
@@ -521,7 +522,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Text(
                           item,
-                          style: const TextStyle(color: Colors.black),
+                          style: const TextStyle(color: AppColors.secondayText),
                         ),
                       ),
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/core/widgets/app_scaffold.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/local/locals_profile_for_tourist_show.dart';
 import '../../widgets/favorite_button.dart';
@@ -228,7 +229,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
         final superHatchData = homeController.getSuperHatchResponseModel?.data;
         return homeController.isLoading
             ? _buildFullScreenShimmer(size)
-            : Scaffold(
+            : AppScaffold(
               body: SafeArea(
                 child: SingleChildScrollView(
                   child: Column(

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'country_list_view.dart';
-
 @override
 Widget build(BuildContext context) {
   return Scaffold(
