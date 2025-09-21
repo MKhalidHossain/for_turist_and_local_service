@@ -27,9 +27,14 @@ class MessageModel {
   });
 }
 
-class MessagesScreen extends StatelessWidget {
+class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
 
+  @override
+  State<MessagesScreen> createState() => _MessagesScreenState();
+}
+
+class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     final List<MessageModel> messages = [
@@ -157,7 +162,7 @@ class MessagesScreen extends StatelessWidget {
                   Icon(
                     message.isRead ? Icons.done_all : Icons.check,
                     size: 16,
-                    color: message.isRead ? Colors.blue : Colors.grey,
+                    color: message.isRead ? Color(0XFFFF3951) : Colors.grey,
                   ),
                 if (message.isSentByMe &&
                     !message.isMedia &&
@@ -192,7 +197,10 @@ class MessagesScreen extends StatelessWidget {
               children: [
                 Text(
                   message.time,
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: message.isRead ? Colors.grey : Colors.black54,
+                  ),
                 ),
                 if (message.unreadCount > 0)
                   Container(
@@ -211,12 +219,6 @@ class MessagesScreen extends StatelessWidget {
             ),
             onTap: () {
               Get.to(() => ChatScreen());
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (_) => ChatScreen(),
-              //   ),
-              // );
             },
           );
         },
