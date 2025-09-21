@@ -40,244 +40,304 @@ class _LocalsProfileForTouristScreenState
         return homeController.isLoading
             ? _buildShimmerLoader(size)
             : Scaffold(
-                body: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      padding: EdgeInsets.only(bottom: size.height * 0.12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(16),
-                                  bottomRight: Radius.circular(16),
-                                ),
-                                child: FadeInImage.assetNetwork(
-                                  width: size.width,
-                                  height: size.height * 0.35,
-                                  fit: BoxFit.cover,
-                                  placeholder:
-                                      'assets/images/profileBlankImage.png',
-                                  image: localProfileDetails?.profileImage ?? '',
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) {
-                                    return Image.asset(
-                                      'assets/images/profileBlankImage.png',
-                                      width: size.width,
-                                      height: size.height * 0.35,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                ),
+              body: Stack(
+                children: [
+                  SingleChildScrollView(
+                    padding: EdgeInsets.only(bottom: size.height * 0.12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(16),
+                                bottomRight: Radius.circular(16),
                               ),
-                              Positioned(
-                                top: size.height * 0.05,
-                                left: size.width * 0.05,
-                                child: InkWell(
-                                  onTap: () => Navigator.pop(context),
-                                  child: CircleAvatar(
-                                    radius: size.width * 0.06,
-                                    backgroundColor: Colors.white,
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.black,
-                                      size: size.width * 0.05,
-                                    ),
+                              child: FadeInImage.assetNetwork(
+                                width: size.width,
+                                height: size.height * 0.35,
+                                fit: BoxFit.cover,
+                                placeholder:
+                                    'assets/images/profileBlankImage.png',
+                                image: localProfileDetails?.profileImage ?? '',
+                                imageErrorBuilder: (
+                                  context,
+                                  error,
+                                  stackTrace,
+                                ) {
+                                  return Image.asset(
+                                    'assets/images/profileBlankImage.png',
+                                    width: size.width,
+                                    height: size.height * 0.35,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              top: size.height * 0.05,
+                              left: size.width * 0.05,
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: CircleAvatar(
+                                  radius: size.width * 0.06,
+                                  backgroundColor: Colors.white,
+                                  child: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.black,
+                                    size: size.width * 0.05,
                                   ),
                                 ),
                               ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.04,
+                          ),
+                          padding: EdgeInsets.all(size.width * 0.04),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10,
+                                offset: Offset(0, 5),
+                              ),
                             ],
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: size.width * 0.04,
-                            ),
-                            padding: EdgeInsets.all(size.width * 0.04),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            transform: Matrix4.translationValues(0, -size.height * 0.05, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: "${localProfileDetails?.name ?? 'Loading'}"
-                                          .text20Black700(),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: size.width * 0.02,
-                                        vertical: size.width * 0.01,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xffFF3951),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.star,
-                                            size: size.width * 0.035,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(width: size.width * 0.01),
-                                          Text(
-                                            localProfileDetails?.rating?.average?.toStringAsFixed(1) ?? '4.8',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: size.width * 0.03,
-                                              fontFamily: 'Poppins',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: size.height * 0.01),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Icon(
-                                      Icons.location_on_outlined,
-                                      size: size.width * 0.065,
-                                      color: const Color(0xff666666),
-                                    ),
-                                    SizedBox(width: size.width * 0.01),
-                                    '${localProfileDetails?.country ?? 'Unknown'}'
-                                        .text16Grey500(),
-                                  ],
-                                ),
-                                SizedBox(height: size.height * 0.005),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.language,
-                                      size: size.width * 0.055,
-                                      color: const Color(0xff666666),
-                                    ),
-                                    SizedBox(width: size.width * 0.01),
-                                    Expanded(
-                                      child: Row(
-                                        children:
-                                            localProfileDetails?.languages != null
-                                                ? List.generate(
-                                                    localProfileDetails!.languages!.length,
-                                                    (index) => Row(
-                                                      children: [
-                                                        Text(
-                                                          localProfileDetails.languages![index],
-                                                          style: TextStyle(fontSize: size.width * 0.035),
-                                                        ),
-                                                        if (index !=
-                                                            localProfileDetails.languages!.length - 1)
-                                                          Text(", "),
-                                                      ],
-                                                    ),
-                                                  )
-                                                : [Text('No languages', style: TextStyle(fontSize: size.width * 0.035))],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: size.height * 0.015),
-                                '${localProfileDetails?.about ?? 'No description'}'.text14Grey(),
-                              ],
-                            ),
+                          transform: Matrix4.translationValues(
+                            0,
+                            -size.height * 0.05,
+                            0,
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                'Offer'.text20Black700(),
-                                SizedBox(height: size.height * 0.02),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: localProfileDetails?.offers != null &&
-                                          localProfileDetails!.offers!.isNotEmpty
-                                      ? localProfileDetails.offers!.map((offer) {
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child:
+                                        "${localProfileDetails?.name ?? 'Loading'}"
+                                            .text20Black700(),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: size.width * 0.02,
+                                      vertical: size.width * 0.01,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xffFF3951),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.star,
+                                          size: size.width * 0.035,
+                                          color: Colors.white,
+                                        ),
+                                        SizedBox(width: size.width * 0.01),
+                                        Text(
+                                          localProfileDetails?.rating?.average
+                                                  ?.toStringAsFixed(1) ??
+                                              '4.8',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: size.width * 0.03,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: size.height * 0.01),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.location_on_outlined,
+                                    size: size.width * 0.065,
+                                    color: const Color(0xff666666),
+                                  ),
+                                  SizedBox(width: size.width * 0.01),
+                                  '${localProfileDetails?.country ?? 'Unknown'}'
+                                      .text16Grey500(),
+                                ],
+                              ),
+                              SizedBox(height: size.height * 0.005),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.language,
+                                    size: size.width * 0.055,
+                                    color: const Color(0xff666666),
+                                  ),
+                                  SizedBox(width: size.width * 0.01),
+                                  Expanded(
+                                    child: Row(
+                                      children:
+                                          localProfileDetails?.languages != null
+                                              ? List.generate(
+                                                localProfileDetails!
+                                                    .languages!
+                                                    .length,
+                                                (index) => Row(
+                                                  children: [
+                                                    Text(
+                                                      localProfileDetails
+                                                          .languages![index],
+                                                      style: TextStyle(
+                                                        fontSize:
+                                                            size.width * 0.035,
+                                                      ),
+                                                    ),
+                                                    if (index !=
+                                                        localProfileDetails
+                                                                .languages!
+                                                                .length -
+                                                            1)
+                                                      Text(", "),
+                                                  ],
+                                                ),
+                                              )
+                                              : [
+                                                Text(
+                                                  'No languages',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        size.width * 0.035,
+                                                  ),
+                                                ),
+                                              ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: size.height * 0.015),
+                              '${localProfileDetails?.about ?? 'No description'}'
+                                  .text14Grey(),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: size.width * 0.04,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              'Offer'.text20Black700(),
+                              SizedBox(height: size.height * 0.02),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children:
+                                    localProfileDetails?.offers != null &&
+                                            localProfileDetails!
+                                                .offers!
+                                                .isNotEmpty
+                                        ? localProfileDetails.offers!.map((
+                                          offer,
+                                        ) {
                                           return Padding(
-                                            padding: EdgeInsets.only(bottom: size.height * 0.015),
+                                            padding: EdgeInsets.only(
+                                              bottom: size.height * 0.015,
+                                            ),
                                             child: _buildOfferCard(
                                               offer.title ?? "No Title",
-                                              offer.description ?? "No Description",
+                                              offer.description ??
+                                                  "No Description",
                                               "\$${offer.pricePerPerson}",
-                                              (offer.photos != null && offer.photos!.isNotEmpty)
+                                              (offer.photos != null &&
+                                                      offer.photos!.isNotEmpty)
                                                   ? offer.photos![0]
                                                   : "assets/icons/spa.png",
                                               () {
                                                 Get.to(
-                                                  () => OfferDetailsScreenForTouristScreen(
-                                                    localID: localProfileDetails.id ?? "",
-                                                    offerId: offer.sId ?? "",
-                                                  ),
+                                                  () =>
+                                                      OfferDetailsScreenForTouristScreen(
+                                                        localID:
+                                                            localProfileDetails
+                                                                .id ??
+                                                            "",
+                                                        offerId:
+                                                            offer.sId ?? "",
+                                                      ),
                                                 );
                                               },
                                               size,
                                             ),
                                           );
                                         }).toList()
-                                      : [
+                                        : [
                                           Center(
                                             child: Text(
                                               "No offers available",
-                                              style: TextStyle(fontSize: size.width * 0.04),
+                                              style: TextStyle(
+                                                fontSize: size.width * 0.04,
+                                              ),
                                             ),
                                           ),
                                         ],
-                                ),
-                                SizedBox(height: size.height * 0.03),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Reviews',
-                                      style: TextStyle(
-                                        fontSize: size.width * 0.045,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                              ),
+                              SizedBox(height: size.height * 0.03),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Reviews',
+                                    style: TextStyle(
+                                      fontSize: size.width * 0.045,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    Text(
-                                      'See All',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: size.width * 0.035,
-                                      ),
+                                  ),
+                                  Text(
+                                    'See All',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: size.width * 0.035,
                                     ),
-                                  ],
-                                ),
-                                SizedBox(height: size.height * 0.02),
-                                Column(
-                                  children: (localProfileDetails?.rating?.reviews != null &&
-                                          localProfileDetails!.rating!.reviews!.isNotEmpty)
-                                      ? localProfileDetails.rating!.reviews!.map((review) {
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: size.height * 0.02),
+                              Column(
+                                children:
+                                    (localProfileDetails?.rating?.reviews !=
+                                                null &&
+                                            localProfileDetails!
+                                                .rating!
+                                                .reviews!
+                                                .isNotEmpty)
+                                        ? localProfileDetails.rating!.reviews!.map((
+                                          review,
+                                        ) {
                                           return Padding(
-                                            padding: EdgeInsets.only(bottom: size.height * 0.015),
+                                            padding: EdgeInsets.only(
+                                              bottom: size.height * 0.015,
+                                            ),
                                             child: _buildReviewItem(
-                                              review.reviewer?.name ?? "Anonymous",
+                                              review.reviewer?.name ??
+                                                  "Anonymous",
                                               review.comment ?? "",
                                               review.reviewer?.profileImage ??
                                                   "assets/images/profileBlankImage.png",
                                               () {},
-                                              review.rating?.toStringAsFixed(1) ?? "0.0",
+                                              review.rating?.toStringAsFixed(
+                                                    1,
+                                                  ) ??
+                                                  "0.0",
                                               size,
                                             ),
                                           );
                                         }).toList()
-                                      : [
+                                        : [
                                           Text(
                                             'No reviews available',
                                             style: TextStyle(
@@ -286,65 +346,73 @@ class _LocalsProfileForTouristScreenState
                                             ),
                                           ),
                                         ],
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                          top: size.height * 0.01,
-                          bottom: MediaQuery.of(context).padding.bottom + size.height * 0.02,
-                          left: size.width * 0.04,
-                          right: size.width * 0.04,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border(
-                            top: BorderSide(color: Colors.grey.shade200),
-                          ),
-                        ),
-                        child: SizedBox(
-                          width: size.width,
-                          height: size.height * 0.06,
-                          child: OutlinedButton.icon(
-                            onPressed: () {
-                              Get.to(
-                                () => ChatScreen(
-                                  userIdForChat: localProfileDetails?.id,
-                                  userReceiverNameForChat: localProfileDetails?.name,
-                                  userReceiverImageForChat: localProfileDetails?.profileImage,
-                                ),
-                              );
-                            },
-                            icon: Icon(Icons.chat, color: Colors.red, size: size.width * 0.05),
-                            label: Text(
-                              'Chat',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w600,
-                                fontSize: size.width * 0.04,
-                              ),
-                            ),
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.red),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: EdgeInsets.only(
+                        top: size.height * 0.01,
+                        bottom:
+                            MediaQuery.of(context).padding.bottom +
+                            size.height * 0.02,
+                        left: size.width * 0.04,
+                        right: size.width * 0.04,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border(
+                          top: BorderSide(color: Colors.grey.shade200),
                         ),
                       ),
+                      child: SizedBox(
+                        width: size.width,
+                        height: size.height * 0.06,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            Get.to(
+                              () => ChatScreen(
+                                userIdForChat: localProfileDetails?.id,
+                                userReceiverNameForChat:
+                                    localProfileDetails?.name,
+                                userReceiverImageForChat:
+                                    localProfileDetails?.profileImage,
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.chat,
+                            color: Colors.red,
+                            size: size.width * 0.05,
+                          ),
+                          label: Text(
+                            'Chat',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w600,
+                              fontSize: size.width * 0.04,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Colors.red),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ],
-                ),
-              );
+                  ),
+                ],
+              ),
+            );
       },
     );
   }
@@ -374,30 +442,38 @@ class _LocalsProfileForTouristScreenState
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
-              child: (image.isNotEmpty && image.startsWith("http"))
-                  ? Image.network(
-                      image,
-                      fit: BoxFit.cover,
-                      width: size.width * 0.25,
-                      height: size.width * 0.25,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return _buildShimmerBox(
-                          width: size.width * 0.25,
-                          height: size.width * 0.25,
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return _buildShimmerBox(
-                          width: size.width * 0.25,
-                          height: size.width * 0.25,
-                        );
-                      },
-                    )
-                  : _buildShimmerBox(
-                      width: size.width * 0.25,
-                      height: size.width * 0.25,
-                    ),
+              child:
+                  (image.isNotEmpty && image.startsWith("http"))
+                      ? Image.network(
+                        image,
+                        fit: BoxFit.cover,
+                        width: size.width * 0.25,
+                        height: size.width * 0.25,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return _buildShimmerBox(
+                            width: size.width * 0.25,
+                            height: size.width * 0.25,
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return _buildShimmerBox(
+                            width: size.width * 0.25,
+                            height: size.width * 0.25,
+                          );
+                        },
+                      )
+                      : Image.asset(
+                        // ✅ Show local placeholder if URL is empty or invalid
+                        'assets/images/bannerPlaceholder.jpg',
+                        fit: BoxFit.cover,
+                        width: size.width * 0.25,
+                        height: size.width * 0.25,
+                      ),
+              // _buildShimmerBox(
+              //   width: size.width * 0.25,
+              //   height: size.width * 0.25,
+              // ),
             ),
           ),
           SizedBox(width: size.width * 0.03),
@@ -486,42 +562,40 @@ class _LocalsProfileForTouristScreenState
         children: [
           Text(
             description,
-            style: TextStyle(
-              fontSize: size.width * 0.035,
-              color: Colors.grey,
-            ),
+            style: TextStyle(fontSize: size.width * 0.035, color: Colors.grey),
           ),
           SizedBox(height: size.height * 0.01),
           Row(
             children: [
               ClipOval(
-                child: (profileImage.isNotEmpty && profileImage.startsWith("http"))
-                    ? Image.network(
-                        profileImage,
-                        width: size.width * 0.1,
-                        height: size.width * 0.1,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return _buildShimmerBox(
-                            width: size.width * 0.1,
-                            height: size.width * 0.1,
-                            isCircle: true,
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return _buildShimmerBox(
-                            width: size.width * 0.1,
-                            height: size.width * 0.1,
-                            isCircle: true,
-                          );
-                        },
-                      )
-                    : _buildShimmerBox(
-                        width: size.width * 0.1,
-                        height: size.width * 0.1,
-                        isCircle: true,
-                      ),
+                child:
+                    (profileImage.isNotEmpty && profileImage.startsWith("http"))
+                        ? Image.network(
+                          profileImage,
+                          width: size.width * 0.1,
+                          height: size.width * 0.1,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return _buildShimmerBox(
+                              width: size.width * 0.1,
+                              height: size.width * 0.1,
+                              isCircle: true,
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return _buildShimmerBox(
+                              width: size.width * 0.1,
+                              height: size.width * 0.1,
+                              isCircle: true,
+                            );
+                          },
+                        )
+                        : _buildShimmerBox(
+                          width: size.width * 0.1,
+                          height: size.width * 0.1,
+                          isCircle: true,
+                        ),
               ),
               SizedBox(width: size.width * 0.02),
               Column(
@@ -560,7 +634,7 @@ class _LocalsProfileForTouristScreenState
     );
   }
 
-  Widget _buildShimmerLoader(Size size ) {
+  Widget _buildShimmerLoader(Size size) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -833,9 +907,6 @@ Widget _buildShimmerBox({
     ),
   );
 }
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';

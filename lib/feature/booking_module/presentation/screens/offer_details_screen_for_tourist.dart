@@ -80,7 +80,7 @@ class _OfferDetailsScreenForTouristScreenState
                                     offer?.photos != null &&
                                             offer!.photos!.isNotEmpty &&
                                             selectedImageIndex <
-                                                offer.photos!.length  &&
+                                                offer.photos!.length &&
                                             offer
                                                 .photos![selectedImageIndex]
                                                 .isNotEmpty
@@ -345,61 +345,156 @@ class _OfferDetailsScreenForTouristScreenState
 
 Widget buildShimmer(BuildContext context) {
   final size = MediaQuery.of(context).size;
-  return Shimmer.fromColors(
-    baseColor: Colors.grey[300]!,
-    highlightColor: Colors.grey[100]!,
-    child: SingleChildScrollView(
+
+  return Scaffold(
+    backgroundColor: Colors.white,
+    body: SingleChildScrollView(
       padding: const EdgeInsets.only(bottom: 80),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header image
-          Container(
-            width: double.infinity,
-            height: size.height * 0.35,
-            color: Colors.white,
+          // Top Banner Image
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: double.infinity,
+              height: size.height * 0.35,
+              color: Colors.white,
+            ),
           ),
-          const SizedBox(height: 16),
+
           Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Title
-                Container(
-                  width: size.width * 0.6,
-                  height: 28,
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 16),
-                // Star rating
-                Container(width: 100, height: 20, color: Colors.white),
-                const SizedBox(height: 16),
-                // Image thumbnails
+                // Rating placeholder
                 Row(
-                  children: List.generate(4, (index) {
-                    return Container(
-                      width: size.width * 0.2,
-                      height: 70,
-                      margin: const EdgeInsets.only(right: 8),
-                      color: Colors.white,
-                    );
-                  }),
+                  children: List.generate(
+                    5,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Icon(Icons.star, size: 24, color: Colors.white),
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
-                // Description
-                Container(
-                  width: double.infinity,
-                  height: 80,
-                  color: Colors.white,
+
+                // Title placeholder
+                Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    width: size.width * 0.6,
+                    height: 28,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(height: 16),
-                Container(
-                  width: double.infinity,
-                  height: 80,
-                  color: Colors.white,
+
+                // Image thumbnails placeholder
+                SizedBox(
+                  height: 70,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: size.width * 0.2,
+                        height: 70,
+                        margin: const EdgeInsets.only(right: 8),
+                        child: Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Description placeholder
+                Column(
+                  children: List.generate(
+                    4,
+                    (index) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          width: double.infinity,
+                          height: 14,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    ),
+
+    // Bottom Button placeholder
+    bottomNavigationBar: Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Price placeholder
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(width: 50, height: 14, color: Colors.white),
+              ),
+              const SizedBox(height: 6),
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(width: 80, height: 20, color: Colors.white),
+              ),
+            ],
+          ),
+
+          // Button placeholder
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: 130,
+              height: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
+              ),
             ),
           ),
         ],

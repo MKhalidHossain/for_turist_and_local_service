@@ -43,7 +43,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
     },
     {
       'imagePath': 'assets/icons/photo.png',
-      'label': 'Photography',
+      'label': 'Photo',
       'color': Colors.white,
     },
     {
@@ -289,8 +289,9 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      width: size.width * 0.155,
-                                      height: size.width * 0.15,
+                                      width: 60,
+                                      // height: size.width * 0.15,
+                                      height: 60,
                                       decoration: BoxDecoration(
                                         color: category['color'],
                                         borderRadius: BorderRadius.circular(12),
@@ -298,8 +299,8 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
                                       child: Center(
                                         child: Image.asset(
                                           category['imagePath'],
-                                          width: size.width * 0.15,
-                                          height: size.width * 0.15,
+                                          width: size.width * 0.25,
+                                          height: size.width * 0.25,
                                           fit: BoxFit.cover,
                                         ),
                                         // Text(
@@ -308,7 +309,7 @@ class _TouristHomeScreenState extends State<TouristHomeScreen> {
                                         // ),
                                       ),
                                     ),
-                                    SizedBox(height: 8),
+                                    SizedBox(height: 4),
                                     Text(
                                       category['label'],
                                       style: TextStyle(
