@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_confarm.dart';
 import 'package:shimmer/shimmer.dart';
-
 import '../../../home/domain/tourist/get_offer_details_response_model.dart';
 
 class BookingOfferSummaryScreen extends StatefulWidget {
@@ -282,7 +281,6 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                 ],
               ),
             ),
-
             SizedBox(height: 20),
           ],
         ),

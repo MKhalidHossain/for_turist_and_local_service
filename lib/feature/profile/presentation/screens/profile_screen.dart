@@ -143,7 +143,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   const SizedBox(height: 8),
                                   NormalCustomButton(
                                     weight: size.width * 0.4,
-                                    text: "Switch to Tourist",
+                                    text:
+                                        widget.userRole.toLowerCase() == 'local'
+                                            ? "Switch to Tourist"
+                                            : "Switch to Local",
 
                                     showIcon: true,
                                     sufixIcon: Icons.switch_access_shortcut,

@@ -379,7 +379,7 @@ class _LocalsProfileForTouristScreenState
                           onPressed: () {
                             Get.to(
                               () => ChatScreen(
-                                userIdForChat: localProfileDetails?.id,
+                                receiverIdForChat: localProfileDetails?.id,
                                 userReceiverNameForChat:
                                     localProfileDetails?.name,
                                 userReceiverImageForChat:

@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
-import '../../../home/domain/local/create_offer_response_model.dart';
 import '../../domain/model/service_data.dart';
 
 class DateSelectionScreen extends StatefulWidget {
