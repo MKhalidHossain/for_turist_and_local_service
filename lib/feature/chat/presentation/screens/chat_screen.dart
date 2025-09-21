@@ -20,13 +20,13 @@ bool isOnline = false;
 String lastSeen = "5 min ago";
 
 class ChatScreen extends StatefulWidget {
-  final String? userIdForChat;
+  final String? receiverIdForChat;
   final String? userReceiverNameForChat;
   final String? userReceiverImageForChat;
 
   ChatScreen({
     super.key,
-    this.userIdForChat,
+    this.receiverIdForChat,
     this.userReceiverNameForChat,
     this.userReceiverImageForChat,
   });
@@ -77,7 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    print("userIdForChat: ${widget.userIdForChat}");
+    print("userIdForChat: ${widget.receiverIdForChat}");
 
     return GetBuilder<ProfileController>(
       builder: (profileController) {

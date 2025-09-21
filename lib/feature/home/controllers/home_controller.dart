@@ -58,7 +58,7 @@ class HomeController extends GetxController implements GetxService {
       SendMessageResponseModel();
   GetMessagesPreviousResponseModel getMessagesPreviousResponseModel =
       GetMessagesPreviousResponseModel();
-      GetUserAssociatedWithChatResponseModel getUserAssociatedWithChatResponseModel =
+  GetUserAssociatedWithChatResponseModel getUserAssociatedWithChatResponseModel =
       GetUserAssociatedWithChatResponseModel();
 
   bool isLoading = false;
