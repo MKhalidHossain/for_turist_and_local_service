@@ -5,7 +5,7 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 
 import '../../../../core/constants/app_colors.dart';
-import 'chat_screen.dart'; // Update to match your structure
+import 'chat_screen.dart'; 
 
 class MessageModel {
   final String name;
@@ -147,7 +147,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     return GetBuilder<HomeController>(
       builder: (homeController) {
         print(
-          "This is from message screen ${homeController.getUserAssociatedWithChatResponseModel.data?.first.name}",
+          "This is from message screen :${homeController.getUserAssociatedWithChatResponseModel.data?.first.name}",
         );
         // final receiverData =
         //     homeController.getUserAssociatedWithChatResponseModel.data;
