@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -23,12 +25,14 @@ class ChatScreen extends StatefulWidget {
   final String? receiverIdForChat;
   final String? userReceiverNameForChat;
   final String? userReceiverImageForChat;
+  final String? userSenderImageForChat;
 
   ChatScreen({
     super.key,
     this.receiverIdForChat,
     this.userReceiverNameForChat,
     this.userReceiverImageForChat,
+    this.userSenderImageForChat,
   });
 
   @override
@@ -36,57 +40,87 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  late HomeController homeController;
   late ProfileController profileController;
+  late final TextEditingController _messageController;
 
   @override
   void initState() {
     super.initState();
+
+    homeController = Get.find<HomeController>();
     profileController = Get.find<ProfileController>();
-    profileController.getUserProfile();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeController.getMessage(widget.receiverIdForChat!);
+      profileController.getUserProfile();
+    });
+    _messageController = TextEditingController();
   }
 
-  final List<ChatMessage> messages = [
-    ChatMessage(
-      text: "Hi there! How can I help you?",
-      isSentByMe: false,
-      time: "10:32 AM",
-    ),
-    ChatMessage(
-      text: "Hi! I’m interested in your City Tour.",
-      isSentByMe: true,
-      time: "10:32 AM",
-    ),
-    ChatMessage(
-      text: "Great! When are you planning to visit China?",
-      isSentByMe: false,
-      time: "10:32 AM",
-    ),
-    ChatMessage(
-      text: "Great! When are you planning to visit China?",
-      isSentByMe: true,
-      time: "10:32 AM",
-    ),
-    ChatMessage(
-      text:
-          "Perfect! I have availability on Tuesday and Wednesday. Would either of those days work for you?",
-      isSentByMe: false,
-      time: "10:32 AM",
-    ),
-  ];
+  @override
+  void dispose() {
+    super.dispose();
+    _messageController.dispose();
+  }
+
+  // final List<ChatMessage> messages = [
+  //   ChatMessage(
+  //     text: "Hi there! How can I help you?",
+  //     isSentByMe: false,
+  //     time: "10:32 AM",
+  //   ),
+  //   ChatMessage(
+  //     text: "Hi! I’m interested in your City Tour.",
+  //     isSentByMe: true,
+  //     time: "10:32 AM",
+  //   ),
+  //   ChatMessage(
+  //     text: "Great! When are you planning to visit China?",
+  //     isSentByMe: false,
+  //     time: "10:32 AM",
+  //   ),
+  //   ChatMessage(
+  //     text: "Great! When are you planning to visit China?",
+  //     isSentByMe: true,
+  //     time: "10:32 AM",
+  //   ),
+  //   ChatMessage(
+  //     text:
+  //         "Perfect! I have availability on Tuesday and Wednesday. Would either of those days work for you?",
+  //     isSentByMe: false,
+  //     time: "10:32 AM",
+  //   ),
+  // ];
+  
+
+  String formatChatTime(String isoString) {
+    try {
+      DateTime utcTime =
+          DateTime.parse(isoString).toLocal(); // convert to local
+      return DateFormat.jm().format(utcTime); // e.g., "5:27 AM"
+    } catch (e) {
+      return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     print("userIdForChat: ${widget.receiverIdForChat}");
 
-    return GetBuilder<ProfileController>(
-      builder: (profileController) {
+    return GetBuilder<HomeController>(
+      builder: (homeController) {
+        // print(
+        //   " from chat Screen finding user id : ${homeController.getProfileResponseModel?.data?.sId}",
+        // );
         print(
-          " from chat Screen finding user id : ${profileController.getProfileResponseModel?.data?.sId}",
+          "from chat Screen finding user id : ${homeController.getMessagesPreviousResponseModel.data?.messages?.first.message}",
         );
 
+        final allDataMessages =
+            homeController.getMessagesPreviousResponseModel.data;
         final senderProfile = profileController.getProfileResponseModel?.data;
-        return profileController.isLoading
+        return homeController.isLoading
             ? Center(child: CircularProgressIndicator())
             : Scaffold(
               backgroundColor: Colors.white,
@@ -179,17 +213,34 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     Expanded(
                       child: ListView.builder(
+                        reverse: true,
                         padding: EdgeInsets.all(16),
-                        itemCount: messages.length,
+                        itemCount: allDataMessages?.messages?.length,
                         itemBuilder: (context, index) {
-                          final message = messages[index];
-                          final isMe = message.isSentByMe;
+                          // final reversedIndex =
+                          //     (allDataMessages!.messages!.length - 1) -
+                          //     index; // 👈 reverse logic
+                          final message = allDataMessages?.messages?[index];
+                          final myUserId =
+                              profileController
+                                  .getProfileResponseModel
+                                  ?.data
+                                  ?.sId;
+
+                          final isMe = message?.senderId == myUserId;
+                          final isSentByMe = isMe;
 
                           // Check if the previous message is from a different sender
                           bool isNewSender = true;
                           if (index > 0) {
-                            final prev = messages[index - 1];
-                            isNewSender = prev.isSentByMe != message.isSentByMe;
+                            final prevMessage =
+                                allDataMessages?.messages?[index - 1];
+                            final prevIsSentByMe =
+                                prevMessage?.receiverId ==
+                                        widget.receiverIdForChat
+                                    ? false
+                                    : true;
+                            isNewSender = prevIsSentByMe != isSentByMe;
                           }
 
                           return Padding(
@@ -271,7 +322,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                               : CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          message.text,
+                                          message?.message ?? 'no message',
                                           style: TextStyle(
                                             color:
                                                 isMe
@@ -284,7 +335,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                         const SizedBox(height: 4),
 
                                         Text(
-                                          message.time,
+                                          formatChatTime(
+                                            (message?.time) ?? '0.00',
+                                          ),
                                           style: TextStyle(
                                             fontSize: 10,
                                             fontWeight: FontWeight.w400,
@@ -382,6 +435,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Expanded(
             child: TextField(
+              controller: _messageController,
               decoration: InputDecoration(
                 hintText: "Type a message...",
                 hintStyle: TextStyle(
@@ -413,7 +467,13 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: EdgeInsets.zero,
               icon: Icon(Icons.send, size: 18, color: Colors.white),
               onPressed: () {
-                // Handle send
+                if (_messageController.text.isNotEmpty) {
+                  homeController.sendMessage(
+                    widget.receiverIdForChat!,
+                    _messageController.text,
+                  );
+                  _messageController.clear();
+                }
               },
             ),
           ),
