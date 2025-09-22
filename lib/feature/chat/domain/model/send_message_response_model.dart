@@ -22,10 +22,10 @@ class SendMessageResponseModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "statusCode": statusCode,
-      "success": success,
-      "message": message,
-      "data": data?.toJson(),
+      'statusCode': statusCode,
+      'success': success,
+      'message': message,
+      'data': data?.toJson(),
     };
   }
 }
@@ -33,7 +33,6 @@ class SendMessageResponseModel {
 class MessageData {
   final String? name;
   final String? message;
-  final String? time;
   final String? avatar;
   final int? unreadCount;
   final bool? isRead;
@@ -50,7 +49,6 @@ class MessageData {
   MessageData({
     this.name,
     this.message,
-    this.time,
     this.avatar,
     this.unreadCount,
     this.isRead,
@@ -69,7 +67,6 @@ class MessageData {
     return MessageData(
       name: json['name'],
       message: json['message'],
-      time: json['time'],
       avatar: json['avatar'],
       unreadCount: json['unreadCount'],
       isRead: json['isRead'],
@@ -81,28 +78,26 @@ class MessageData {
       fileUrl: json['fileUrl'],
       fileType: json['fileType'],
       sender: json['sender'] != null ? UserInfo.fromJson(json['sender']) : null,
-      receiver:
-          json['receiver'] != null ? UserInfo.fromJson(json['receiver']) : null,
+      receiver: json['receiver'] != null ? UserInfo.fromJson(json['receiver']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "name": name,
-      "message": message,
-      "time": time,
-      "avatar": avatar,
-      "unreadCount": unreadCount,
-      "isRead": isRead,
-      "isMedia": isMedia,
-      "isDocument": isDocument,
-      "isSentByMe": isSentByMe,
-      "senderId": senderId,
-      "receiverId": receiverId,
-      "fileUrl": fileUrl,
-      "fileType": fileType,
-      "sender": sender?.toJson(),
-      "receiver": receiver?.toJson(),
+      'name': name,
+      'message': message,
+      'avatar': avatar,
+      'unreadCount': unreadCount,
+      'isRead': isRead,
+      'isMedia': isMedia,
+      'isDocument': isDocument,
+      'isSentByMe': isSentByMe,
+      'senderId': senderId,
+      'receiverId': receiverId,
+      'fileUrl': fileUrl,
+      'fileType': fileType,
+      'sender': sender?.toJson(),
+      'receiver': receiver?.toJson(),
     };
   }
 }
@@ -128,9 +123,9 @@ class UserInfo {
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "name": name,
-      "avatar": avatar,
+      'id': id,
+      'name': name,
+      'avatar': avatar,
     };
   }
 }

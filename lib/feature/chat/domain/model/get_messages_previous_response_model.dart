@@ -2,7 +2,7 @@ class GetMessagesPreviousResponseModel {
   final int? statusCode;
   final bool? success;
   final String? message;
-  final ChatData? data;
+  final MessagesData? data;
 
   GetMessagesPreviousResponseModel({
     this.statusCode,
@@ -16,7 +16,7 @@ class GetMessagesPreviousResponseModel {
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: json['data'] != null ? ChatData.fromJson(json['data']) : null,
+      data: json['data'] != null ? MessagesData.fromJson(json['data']) : null,
     );
   }
 
@@ -30,19 +30,19 @@ class GetMessagesPreviousResponseModel {
   }
 }
 
-class ChatData {
+class MessagesData {
   final List<Message>? messages;
   final int? limit;
   final int? totalMessages;
 
-  ChatData({
+  MessagesData({
     this.messages,
     this.limit,
     this.totalMessages,
   });
 
-  factory ChatData.fromJson(Map<String, dynamic> json) {
-    return ChatData(
+  factory MessagesData.fromJson(Map<String, dynamic> json) {
+    return MessagesData(
       messages: json['messages'] != null
           ? List<Message>.from(json['messages'].map((x) => Message.fromJson(x)))
           : [],
@@ -74,8 +74,8 @@ class Message {
   final String? receiverId;
   final String? fileUrl;
   final String? fileType;
-  final UserInfo? sender;
-  final UserInfo? receiver;
+  final User? sender;
+  final User? receiver;
 
   Message({
     this.name,
@@ -110,8 +110,8 @@ class Message {
       receiverId: json['receiverId'],
       fileUrl: json['fileUrl'],
       fileType: json['fileType'],
-      sender: json['sender'] != null ? UserInfo.fromJson(json['sender']) : null,
-      receiver: json['receiver'] != null ? UserInfo.fromJson(json['receiver']) : null,
+      sender: json['sender'] != null ? User.fromJson(json['sender']) : null,
+      receiver: json['receiver'] != null ? User.fromJson(json['receiver']) : null,
     );
   }
 
@@ -136,19 +136,19 @@ class Message {
   }
 }
 
-class UserInfo {
+class User {
   final String? id;
   final String? name;
   final String? avatar;
 
-  UserInfo({
+  User({
     this.id,
     this.name,
     this.avatar,
   });
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    return UserInfo(
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
       id: json['id'],
       name: json['name'],
       avatar: json['avatar'],

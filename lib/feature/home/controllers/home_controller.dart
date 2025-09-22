@@ -58,7 +58,8 @@ class HomeController extends GetxController implements GetxService {
       SendMessageResponseModel();
   GetMessagesPreviousResponseModel getMessagesPreviousResponseModel =
       GetMessagesPreviousResponseModel();
-  GetUserAssociatedWithChatResponseModel getUserAssociatedWithChatResponseModel =
+  GetUserAssociatedWithChatResponseModel
+  getUserAssociatedWithChatResponseModel =
       GetUserAssociatedWithChatResponseModel();
 
   bool isLoading = false;
@@ -620,21 +621,26 @@ class HomeController extends GetxController implements GetxService {
       isLoading = true;
       update();
 
-      final response = await homeServiceInterface.sendMessage(receiverId, message);
+      final response = await homeServiceInterface.sendMessage(
+        receiverId,
+        message,
+      );
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 201) {
         print("✅ sendMessage : for Tourist fetched successfully\n");
-        sendMessageResponseModel =
-            SendMessageResponseModel.fromJson(response.body);
+        sendMessageResponseModel = SendMessageResponseModel.fromJson(
+          response.body,
+        );
 
         isLoading = false;
         update();
       } else {
-        sendMessageResponseModel =
-            SendMessageResponseModel.fromJson(response.body);
+        sendMessageResponseModel = SendMessageResponseModel.fromJson(
+          response.body,
+        );
       }
     } catch (e) {
       print("⚠️ Error fetching profile : sendMessage : $e\n");
@@ -672,6 +678,7 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+
   Future<void> getUserAssociatedWithChat() async {
     try {
       isLoading = true;
@@ -683,15 +690,21 @@ class HomeController extends GetxController implements GetxService {
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
-        print("✅ getUserAssociatedWithChat : for Tourist fetched successfully\n");
+        print(
+          "✅ getUserAssociatedWithChat : for Tourist fetched successfully\n",
+        );
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
         getUserAssociatedWithChatResponseModel =
-            GetUserAssociatedWithChatResponseModel.fromJson(response.body);
+            GetUserAssociatedWithChatResponseModel.fromJson(decoded);
 
         isLoading = false;
         update();
       } else {
-       getUserAssociatedWithChatResponseModel =
-            GetUserAssociatedWithChatResponseModel.fromJson(response.body);
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        getUserAssociatedWithChatResponseModel =
+            GetUserAssociatedWithChatResponseModel.fromJson(decoded);
       }
     } catch (e) {
       print("⚠️ Error fetching profile : getUserAssociatedWithChat : $e\n");
