@@ -5,6 +5,7 @@ import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatMessage {
   final String text;
@@ -42,11 +43,29 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   late HomeController homeController;
   late ProfileController profileController;
-  late final TextEditingController _messageController;
+  late TextEditingController _messageController;
+  late IO.Socket _socket;
+
+  _connectSocket() {
+    _socket.onConnect((data) => print('connection established'));
+    _socket.onConnectError((data) => print('Connect Error: $data'));
+    _socket.onDisconnect((data) => print('Socket.IO sever Disconnected'));
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _socket = IO.io(
+      // 'http://localhost:3000',
+      'http://10.0.2.2:5001',
+      IO.OptionBuilder()
+          .setTransports(['websocket'])
+          // .setQuery({'userId': widget.receiverIdForChat})
+          .build(),
+    );
+
+    _connectSocket();
 
     homeController = Get.find<HomeController>();
     profileController = Get.find<ProfileController>();
@@ -91,7 +110,6 @@ class _ChatScreenState extends State<ChatScreen> {
   //     time: "10:32 AM",
   //   ),
   // ];
-  
 
   String formatChatTime(String isoString) {
     try {
