@@ -264,19 +264,27 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  _buildPaymentOption(
-                    'Pay With Card',
-                    Icons.credit_card,
-                    'card',
-                  ),
+                  // _buildPaymentOption(
+                  //   'Pay With Card',
+                  //   Icons.credit_card,
+                  //   'card',
+                  // ),
+                  // SizedBox(height: 12),
+                  // _buildPaymentOption('Pay With Apple', Icons.apple, 'apple'),
+                  // SizedBox(height: 12),
+                  // _buildPaymentOption(
+                  //   'Pay With Google',
+                  //   Icons.g_mobiledata,
+                  //   'google',
+                  //   subtitle: 'Final Copy',
+                  // ),
                   SizedBox(height: 12),
-                  _buildPaymentOption('Pay With Apple', Icons.apple, 'apple'),
-                  SizedBox(height: 12),
                   _buildPaymentOption(
-                    'Pay With Google',
-                    Icons.g_mobiledata,
-                    'google',
-                    subtitle: 'Final Copy',
+                    'Pay With Stripe',
+
+                    'assets/icons/stripe_icon.png',
+                    'stripe',
+                    // subtitle: 'Final Copy',
                   ),
                 ],
               ),
@@ -332,7 +340,7 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
 
   Widget _buildPaymentOption(
     String title,
-    IconData icon,
+    String image,
     String value, {
     String? subtitle,
   }) {
@@ -397,19 +405,24 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                 ],
               ),
             ),
-            if (value == 'card')
-              Icon(Icons.credit_card, size: 24, color: Colors.blue)
-            else if (value == 'apple')
-              Icon(Icons.apple, size: 24, color: Colors.black)
-            else if (value == 'google')
-              Text(
-                'G Pay',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
+            Image.asset(image, height: 16, width: 38, fit: BoxFit.cover),
+            // if (value == 'stripe')
+            //   Image.network(image, height: 24, width: 24)
+            // else if (value == 'card')
+            //   // Icon(Icons.credit_card, size: 24, color: Colors.blue)
+            //   Image.network(image, height: 24, width: 24)
+            // else if (value == 'apple')
+            //   // Icon(Icons.apple, size: 24, color: Colors.black)
+            //   Image.network(image, height: 24, width: 24)
+            // else if (value == 'google')
+            //   Text(
+            //     'G Pay',
+            //     style: TextStyle(
+            //       fontSize: 16,
+            //       fontWeight: FontWeight.bold,
+            //       color: Colors.blue,
+            //     ),
+            //   ),
           ],
         ),
       ),
