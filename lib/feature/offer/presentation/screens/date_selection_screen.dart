@@ -132,56 +132,49 @@ class _DateSelectionScreenState extends State<DateSelectionScreen> {
                               ],
                             ),
                             const SizedBox(height: 20),
-                            Row(
+
+                            Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 12,
+                              runSpacing: 8,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(Icons.chevron_left),
-                                        onPressed: () {
-                                          setState(() {
-                                            currentMonth = DateTime(
-                                              currentMonth.year,
-                                              currentMonth.month - 1,
-                                            );
-                                          });
-                                        },
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.chevron_left),
+                                      onPressed: () {
+                                        setState(() {
+                                          currentMonth = DateTime(
+                                            currentMonth.year,
+                                            currentMonth.month - 1,
+                                          );
+                                        });
+                                      },
+                                    ),
+                                    Text(
+                                      "${_monthName(currentMonth.month)} ${currentMonth.year}",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
                                       ),
-                                      Text(
-                                        "${_monthName(currentMonth.month)} ${currentMonth.year}",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.chevron_right),
-                                        onPressed: () {
-                                          setState(() {
-                                            currentMonth = DateTime(
-                                              currentMonth.year,
-                                              currentMonth.month + 1,
-                                            );
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.chevron_right),
+                                      onPressed: () {
+                                        setState(() {
+                                          currentMonth = DateTime(
+                                            currentMonth.year,
+                                            currentMonth.month + 1,
+                                          );
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
 
-                                // Selected Date Range
                                 if (selectedRange.isNotEmpty)
                                   Container(
-                                    margin: EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 10,
-                                    ),
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 12,
                                       vertical: 6,
@@ -201,6 +194,75 @@ class _DateSelectionScreenState extends State<DateSelectionScreen> {
                                   ),
                               ],
                             ),
+                            // Row(
+                            //   children: [
+                            //     Padding(
+                            //       padding: const EdgeInsets.symmetric(
+                            //         horizontal: 16,
+                            //       ),
+                            //       child: Row(
+                            //         mainAxisAlignment:
+                            //             MainAxisAlignment.spaceBetween,
+                            //         children: [
+                            //           IconButton(
+                            //             icon: Icon(Icons.chevron_left),
+                            //             onPressed: () {
+                            //               setState(() {
+                            //                 currentMonth = DateTime(
+                            //                   currentMonth.year,
+                            //                   currentMonth.month - 1,
+                            //                 );
+                            //               });
+                            //             },
+                            //           ),
+                            //           Text(
+                            //             "${_monthName(currentMonth.month)} ${currentMonth.year}",
+                            //             style: TextStyle(
+                            //               fontSize: 16,
+                            //               fontWeight: FontWeight.w600,
+                            //             ),
+                            //           ),
+                            //           IconButton(
+                            //             icon: Icon(Icons.chevron_right),
+                            //             onPressed: () {
+                            //               setState(() {
+                            //                 currentMonth = DateTime(
+                            //                   currentMonth.year,
+                            //                   currentMonth.month + 1,
+                            //                 );
+                            //               });
+                            //             },
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+
+                            //     // Selected Date Range
+                            //     if (selectedRange.isNotEmpty)
+                            //       Container(
+                            //         margin: EdgeInsets.symmetric(
+                            //           horizontal: 20,
+                            //           vertical: 10,
+                            //         ),
+                            //         padding: EdgeInsets.symmetric(
+                            //           horizontal: 12,
+                            //           vertical: 6,
+                            //         ),
+                            //         decoration: BoxDecoration(
+                            //           color: Colors.red,
+                            //           borderRadius: BorderRadius.circular(16),
+                            //         ),
+                            //         child: Text(
+                            //           selectedRange,
+                            //           style: TextStyle(
+                            //             color: Colors.white,
+                            //             fontSize: 12,
+                            //             fontWeight: FontWeight.w500,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //   ],
+                            // ),
                             // Calendar Header
 
                             // Calendar

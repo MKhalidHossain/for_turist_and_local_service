@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 import '../../../../../core/widgets/choose_country/model/country.dart';
@@ -15,21 +16,50 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  int selectedDate = 1;
+  // int selectedDate = 1;
+  List<DateTime> selectedDates = [];
   int guestCount = 2;
-  String currentMonth = 'Dec 2024';
+  DateTime currentMonth = DateTime(2025, 12, 1);
   Set<String> selectedLanguages = {'中文 (Chinese)'};
   String? selectedService;
   TextEditingController searchController = TextEditingController();
 
-  final List<List<int?>> dates = [
-    [null, null, null, null, null, null, 1],
-    [2, 3, 4, 5, 6, 7, 8],
-    [9, 10, 11, 12, 13, 14, 15],
-    [16, 17, 18, 19, 20, 21, 22],
-    [23, 24, 25, 26, 27, 28, 29],
-    [30, 31, null, null, null, null, null],
-  ];
+  String get selectedRange {
+    if (selectedDates.isEmpty) return "";
+    selectedDates.sort((a, b) => a.compareTo(b));
+    final start = selectedDates.first;
+    final end = selectedDates.last;
+    return "${start.day} ${_monthName(start.month)} ${start.year} - "
+        "${end.day} ${_monthName(end.month)} ${end.year}";
+  }
+
+  String _monthName(int month) {
+    const months = [
+      "",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return months[month];
+  }
+
+  // final List<List<int?>> dates = [
+  //   [null, null, null, null, null, null, 1],
+  //   [2, 3, 4, 5, 6, 7, 8],
+  //   [9, 10, 11, 12, 13, 14, 15],
+  //   [16, 17, 18, 19, 20, 21, 22],
+  //   [23, 24, 25, 26, 27, 28, 29],
+  //   [30, 31, null, null, null, null, null],
+  // ];
 
   final List<String> weekDays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
@@ -54,11 +84,11 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void _selectDate(int date) {
-    setState(() {
-      selectedDate = date;
-    });
-  }
+  // void _selectDate(int date) {
+  //   setState(() {
+  //     selectedDate = date;
+  //   });
+  // }
 
   void _changeGuestCount(int change) {
     setState(() {
@@ -227,7 +257,8 @@ class _SearchScreenState extends State<SearchScreen> {
   void _navigateToResults() {
     Map<String, dynamic> searchParams = {
       'query': searchController.text,
-      'date': 'December $selectedDate, 2024',
+      // 'date': 'December $selectedDate, 2024',
+      // 'date': selectedDate,
       'guests': guestCount,
       'languages': selectedLanguages.toList(),
       'service': selectedService,
@@ -293,123 +324,126 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
-                    CustomStyledCalendar(
-                      onDateSelected: (date) {
-                        print("Picked date: $date"); // e.g. 08/12/25
-                      },
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     BackButton(color: Colors.black),
+                        //     'Manage Availability'.text22Black700(),
+                        //     const SizedBox(width: 50),
+                        //   ],
+                        // ),
+                        const SizedBox(height: 20),
+
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 12,
+                          runSpacing: 8,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.chevron_left),
+                                  onPressed: () {
+                                    setState(() {
+                                      currentMonth = DateTime(
+                                        currentMonth.year,
+                                        currentMonth.month - 1,
+                                      );
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  "${_monthName(currentMonth.month)} ${currentMonth.year}",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.chevron_right),
+                                  onPressed: () {
+                                    setState(() {
+                                      currentMonth = DateTime(
+                                        currentMonth.year,
+                                        currentMonth.month + 1,
+                                      );
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+
+                            if (selectedRange.isNotEmpty)
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: Text(
+                                  selectedRange,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                        // Calendar Header
+
+                        // Calendar
+                        Container(
+                          height: size.height * 0.35,
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              // Weekdays
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Row(
+                                  children:
+                                      ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+                                          .map(
+                                            (day) => Expanded(
+                                              child: Center(
+                                                child: Text(
+                                                  day,
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey[600],
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+
+                              // Calendar Grid
+                              Expanded(child: _buildCalendarGrid()),
+                            ],
+                          ),
+                        ),
+
+                        // Time Slots
+                      ],
                     ),
-
-                    // SizedBox(height: 16),
-
-                    // Month Navigation
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     IconButton(
-                    //       onPressed: () {},
-                    //       icon: Icon(Icons.chevron_left),
-                    //     ),
-                    //     Text(
-                    //       currentMonth,
-                    //       style: TextStyle(fontWeight: FontWeight.w500),
-                    //     ),
-                    //     IconButton(
-                    //       onPressed: () {},
-                    //       icon: Icon(Icons.chevron_right),
-                    //     ),
-                    //   ],
-                    // ),
-
-                    // Calendar
-                    // Container(
-                    //   padding: EdgeInsets.symmetric(vertical: 16),
-                    //   child: Column(
-                    //     children: [
-                    //       // Week days
-                    //       Row(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //         children:
-                    //             weekDays
-                    //                 .map(
-                    //                   (day) => Container(
-                    //                     width: 40,
-                    //                     height: 32,
-                    //                     alignment: Alignment.center,
-                    //                     child: Text(
-                    //                       day,
-                    //                       style: TextStyle(
-                    //                         color: Colors.grey,
-                    //                         fontSize: 12,
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 )
-                    //                 .toList(),
-                    //       ),
-                    //       // Calendar dates
-                    //       ...dates
-                    //           .map(
-                    //             (week) => Row(
-                    //               mainAxisAlignment:
-                    //                   MainAxisAlignment.spaceAround,
-                    //               children:
-                    //                   week
-                    //                       .map(
-                    //                         (date) => Container(
-                    //                           width: 40,
-                    //                           height: 40,
-                    //                           child:
-                    //                               date != null
-                    //                                   ? GestureDetector(
-                    //                                     onTap:
-                    //                                         () => _selectDate(
-                    //                                           date,
-                    //                                         ),
-                    //                                     child: Container(
-                    //                                       decoration: BoxDecoration(
-                    //                                         color:
-                    //                                             date ==
-                    //                                                     selectedDate
-                    //                                                 ? Colors.red
-                    //                                                 : Colors
-                    //                                                     .transparent,
-                    //                                         shape:
-                    //                                             BoxShape.circle,
-                    //                                       ),
-                    //                                       alignment:
-                    //                                           Alignment.center,
-                    //                                       child: Text(
-                    //                                         '$date',
-                    //                                         style: TextStyle(
-                    //                                           color:
-                    //                                               date ==
-                    //                                                       selectedDate
-                    //                                                   ? Colors
-                    //                                                       .white
-                    //                                                   : Colors
-                    //                                                       .black,
-                    //                                           fontWeight:
-                    //                                               date ==
-                    //                                                       selectedDate
-                    //                                                   ? FontWeight
-                    //                                                       .w600
-                    //                                                   : FontWeight
-                    //                                                       .normal,
-                    //                                         ),
-                    //                                       ),
-                    //                                     ),
-                    //                                   )
-                    //                                   : SizedBox(),
-                    //                         ),
-                    //                       )
-                    //                       .toList(),
-                    //             ),
-                    //           )
-                    //           .toList(),
-                    //     ],
-                    //   ),
-                    // ),
-                    SizedBox(height: 36),
 
                     // Guest Count
                     Text(
@@ -719,6 +753,74 @@ class _SearchScreenState extends State<SearchScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCalendarGrid() {
+    final firstDayOfMonth = DateTime(currentMonth.year, currentMonth.month, 1);
+    final lastDayOfMonth = DateTime(
+      currentMonth.year,
+      currentMonth.month + 1,
+      0,
+    );
+    final firstWeekday = firstDayOfMonth.weekday;
+    final daysInMonth = lastDayOfMonth.day;
+
+    List<Widget> dayWidgets = [];
+
+    for (int i = 1; i < firstWeekday; i++) {
+      dayWidgets.add(Container());
+    }
+
+    for (int day = 1; day <= daysInMonth; day++) {
+      final date = DateTime(currentMonth.year, currentMonth.month, day);
+      final isSelected = selectedDates.any(
+        (d) =>
+            d.year == date.year && d.month == date.month && d.day == date.day,
+      );
+
+      dayWidgets.add(
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              if (isSelected) {
+                selectedDates.removeWhere(
+                  (d) =>
+                      d.year == date.year &&
+                      d.month == date.month &&
+                      d.day == date.day,
+                );
+              } else {
+                selectedDates.add(date);
+              }
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(0),
+            decoration: BoxDecoration(
+              color: isSelected ? Color(0xFFFFE1E5) : Colors.transparent,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Center(
+              child: Text(
+                day.toString(),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: isSelected ? Color(0xFFFF3951) : Colors.black,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return GridView.count(
+      crossAxisCount: 7,
+      children: dayWidgets,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
     );
   }
 }
