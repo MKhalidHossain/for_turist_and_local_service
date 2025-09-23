@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/core/constants/urls.dart';
-import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;

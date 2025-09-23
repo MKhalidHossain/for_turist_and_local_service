@@ -6,6 +6,10 @@ import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../../helpers/remote/data/api_client.dart';
+import '../../../../utils/app_constants.dart';
 
 class ChatMessage {
   final String text;
@@ -46,6 +50,11 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController _messageController;
   late IO.Socket _socket;
 
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(AppConstants.token);
+  }
+
   _connectSocket() {
     _socket.onConnect((data) => print('connection established'));
     _socket.onConnectError((data) => print('Connect Error: $data'));
@@ -55,17 +64,20 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-
-    _socket = IO.io(
-      // 'http://localhost:3000',
-      'http://10.0.2.2:5001',
-      IO.OptionBuilder()
-          .setTransports(['websocket'])
-          // .setQuery({'userId': widget.receiverIdForChat})
-          .build(),
-    );
-
-    _connectSocket();
+    getToken().then((token) {
+      _socket = IO.io(
+        // 'http://localhost:5001',
+        'http://10.0.2.2:5001',
+        IO.OptionBuilder()
+            .setTransports(['websocket'])
+            .setExtraHeaders({'Authorization': token})
+            .setTimeout(5000)
+            // .setQuery({'userId': widget.receiverIdForChat})
+            .build(),
+      );
+      _connectSocket();
+      _socket.connect();
+    });
 
     homeController = Get.find<HomeController>();
     profileController = Get.find<ProfileController>();
@@ -79,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     super.dispose();
+    _socket.dispose();
     _messageController.dispose();
   }
 
