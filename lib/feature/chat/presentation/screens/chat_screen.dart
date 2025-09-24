@@ -7,8 +7,6 @@ import 'package:shimmer/shimmer.dart';
 import '../../../../core/constants/app_colors.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../helpers/remote/data/api_client.dart';
 import '../../../../utils/app_constants.dart';
 
 class ChatMessage {
@@ -67,7 +65,8 @@ class _ChatScreenState extends State<ChatScreen> {
     getToken().then((token) {
       _socket = IO.io(
         // 'http://localhost:5001',
-        'http://10.0.2.2:5001',
+        'http://localhost:5001',
+      //  'http://10.0.2.2:5001',
         IO.OptionBuilder()
             .setTransports(['websocket'])
             .setExtraHeaders({'Authorization': token})

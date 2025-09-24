@@ -137,8 +137,6 @@ class AuthController extends GetxController implements GetxService {
     update();
   }
 
- 
-
   void addImageAndRemoveMultiParseData() {
     multipartList.clear();
     identityImages.clear();
@@ -385,6 +383,9 @@ class AuthController extends GetxController implements GetxService {
           Get.offAll(() => BottomNavbar(userRole: userRole));
         } else if (userRole.toString().toLowerCase() == 'local') {
           _checkIsFirstOffer().then((_) {
+            print(
+              '\n\nHave Offer from auth Controller for navigation: $haveOffer\n\n',
+            );
             haveOffer
                 ? Get.offAll(() => BottomNavbar(userRole: userRole))
                 : Get.offAll(() => CreateFirstServiceScreen());
