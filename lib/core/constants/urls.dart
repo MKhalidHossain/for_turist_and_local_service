@@ -104,15 +104,15 @@ class Urls {
 
   // ................................Payment Module...............................
 
-  // static const String sendMessage = '/chat/message';
+  static const String connectAccount = '/payment/connect-account';
 
-  // static const String getMessage = '/messages/history/:receiverId';
+  static const String createPayment = '/payment/create';
 
-  // static const String getUserAssociatWithChat = '/messages/list';
+  static const String confirmPayment = '/payment/confirm';
 
-  // static const String getOfferDetails = '/api/v1/tasks/';
+  static const String resendOnboarding = '/payment/resend-onboarding';
 
-  // static const String getOfferDetails = '/api/v1/tasks/';
+
 
   //
 

@@ -185,25 +185,59 @@ class HomeRepository implements HomeRepositoryInterface {
       "message": message,
     });
   }
-  
+
   @override
-  Future<Response> getMessages(String userId) async{
-   return await apiClient.getData(Urls.getMessage + userId);
+  Future<Response> getMessages(String userId) async {
+    return await apiClient.getData(Urls.getMessage + userId);
   }
-  
+
   @override
-  Future<Response> getUserAssociatedWithChat() async{
+  Future<Response> getUserAssociatedWithChat() async {
     return await apiClient.getData(Urls.getUserAssociatWithChat);
   }
-  
+
   @override
-  Future<Response> getAllOwnOffer()async {
+  Future<Response> getAllOwnOffer() async {
     return await apiClient.getData(Urls.getAllOwnOffer);
   }
-  
+
   @override
-  Future<Response> getOwnOfferById(String offerId) async{
+  Future<Response> getOwnOfferById(String offerId) async {
     return await apiClient.getData(Urls.getOwnOfferById + offerId);
+  }
+
+  @override
+  Future<Response> confirmPayment(
+    String paymentIntentId,
+    String paymentMethodId,
+  ) async {
+    return await apiClient.postData(Urls.confirmPayment, {
+      "paymentIntentId": paymentIntentId,
+      "paymentMethodId": paymentMethodId,
+    });
+  }
+
+  @override
+  Future<Response> connectAccount() async {
+    return await apiClient.postData(Urls.connectAccount,{});
+  }
+
+  @override
+  Future<Response> createPayment(
+    String bookingCode,
+    String amount,
+    String localId,
+  ) async {
+    return await apiClient.postData(Urls.createPayment, {
+      "bookingCode": bookingCode,
+      "amount": amount,
+      "localId": localId,
+    });
+  }
+
+  @override
+  Future<Response> resendOnboarding(String localId) async{
+    return await apiClient.postData(Urls.resendOnboarding, {"localId": localId});
   }
 
   // @override

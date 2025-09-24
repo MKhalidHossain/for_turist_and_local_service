@@ -29,6 +29,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  app_links: ^6.4.1
   cupertino_icons: ^1.0.8
   dotted_border: ^2.0.0
   file_picker: ^10.1.9
@@ -46,8 +47,13 @@ dependencies:
   shared_preferences: ^2.5.3
   shimmer: ^3.0.0
   socket_io_client: ^3.1.2
+  # uni_links3: ^6.4.1
+  
   url_launcher: ^6.3.2
   video_player: ^2.9.5
+  webview_flutter: ^4.13.0
+  webview_flutter_android:
+  webview_flutter_wkwebview:
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.4

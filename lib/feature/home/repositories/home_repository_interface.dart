@@ -57,5 +57,18 @@ abstract class HomeRepositoryInterface {
   Future<Response> sendMessage(String receiverId, String message);
   Future<Response> getMessages(String userId);
   Future<Response> getUserAssociatedWithChat();
+  Future<Response> connectAccount();
+  Future<Response> createPayment(
+    String bookingCode,
+    String amount,
+    String localId,
+  );
+  Future<Response> confirmPayment(
+     String paymentIntentId,
+    String paymentMethodId,
+  );
+  Future<Response> resendOnboarding(
+    String localId,
+  );
 
 }

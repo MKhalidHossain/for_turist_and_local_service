@@ -173,4 +173,24 @@ required List<Map<String, dynamic>> availability,
   Future<Response> getOwnOfferById(String offerId) async{
    return await homeRepositoryInterface.getOwnOfferById(offerId);
   }
+  
+  @override
+  Future<Response> confirmPayment(String paymentIntentId, String paymentMethodId) async{
+    return await homeRepositoryInterface.confirmPayment(paymentIntentId, paymentMethodId);
+  }
+  
+  @override
+  Future<Response> connectAccount()async{
+    return await homeRepositoryInterface.connectAccount();
+  }
+  
+  @override
+  Future<Response> createPayment(String bookingCode, String amount, String localId) async{
+    return await homeRepositoryInterface.createPayment(bookingCode, amount, localId);
+  }
+  
+  @override
+  Future<Response> resendOnboarding(String localId) async{
+    return await homeRepositoryInterface.resendOnboarding(localId);
+  }
 }
