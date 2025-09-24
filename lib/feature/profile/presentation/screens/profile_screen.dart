@@ -151,7 +151,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     showIcon: true,
                                     sufixIcon: Icons.switch_access_shortcut,
 
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await Get.find<AuthController>()
+                                          .roleSwitch();
+                                    },
                                   ),
                                 ],
                               ),

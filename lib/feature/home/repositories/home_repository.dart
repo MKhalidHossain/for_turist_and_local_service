@@ -195,6 +195,16 @@ class HomeRepository implements HomeRepositoryInterface {
   Future<Response> getUserAssociatedWithChat() async{
     return await apiClient.getData(Urls.getUserAssociatWithChat);
   }
+  
+  @override
+  Future<Response> getAllOwnOffer()async {
+    return await apiClient.getData(Urls.getAllOwnOffer);
+  }
+  
+  @override
+  Future<Response> getOwnOfferById(String offerId) async{
+    return await apiClient.getData(Urls.getOwnOfferById + offerId);
+  }
 
   // @override
   // Future<Response> getProfile() async {

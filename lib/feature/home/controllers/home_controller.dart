@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/feature/home/domain/local/cencel_booking_response_model.dart';
-import 'package:kobeur/feature/home/domain/local/create_offer_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/create_offer_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/get_home_response_model.dart';
-import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/get_all_own_offer_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/get_own_offer_by_id_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/update_offer_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/add_fav_or_remove_fav_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_fab_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_favorite_hatch_response_model.dart';
@@ -32,6 +34,11 @@ class HomeController extends GetxController implements GetxService {
       CreateOfferResponseModel();
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
+
+  GetAllOwnOfferResponseModel getAllOwnOfferResponseModel =
+      GetAllOwnOfferResponseModel();
+  GetOwnOfferByIdResponseModel getOwnOfferByIdResponseModel =
+      GetOwnOfferByIdResponseModel();
   GetHomeResponseModel getHomeResponseModel = GetHomeResponseModel();
   GetTripsDetailsResponseModel getBookingDetailsResponseModel =
       GetTripsDetailsResponseModel();
@@ -190,6 +197,64 @@ class HomeController extends GetxController implements GetxService {
       }
     } catch (e) {
       print("⚠️ Error updating offer from local: $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> getAllOwnOffer() async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getAllOwnOffer();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getAllOwnOffer : for Tourist fetched successfully\n");
+        getAllOwnOfferResponseModel =
+            GetAllOwnOfferResponseModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      } else {
+         getAllOwnOfferResponseModel =
+            GetAllOwnOfferResponseModel.fromJson(response.body);
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getAllOwnOffer : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> getOwnOfferById(String offerId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getOwnOfferById(offerId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getOwnOfferById : for Tourist fetched successfully\n");
+        getOwnOfferByIdResponseModel =
+            GetOwnOfferByIdResponseModel.fromJson(response.body);
+
+        isLoading = false;
+        update();
+      } else {
+        getOwnOfferByIdResponseModel =
+            GetOwnOfferByIdResponseModel.fromJson(response.body);
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getOwnOfferById : $e\n");
     } finally {
       isLoading = false;
       update();

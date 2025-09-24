@@ -1,3 +1,5 @@
+import 'package:get/get_connect/http/src/response/response.dart';
+
 abstract class AuthRepositoryInterface {
   Future<dynamic> register(
     String email,
@@ -40,6 +42,7 @@ abstract class AuthRepositoryInterface {
   Future<dynamic> chooseRole(String role , String token);
   Future<bool?> saveUserRole(String userRole);
   String getUserRole();
-
+  
+  Future<Response> roleSwitch();
 
 }

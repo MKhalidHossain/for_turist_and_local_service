@@ -24,6 +24,11 @@ abstract class HomeRepositoryInterface {
     required XFile photos,
     required String availabilityTimeSlots,
   });
+
+  Future<Response> getAllOwnOffer();
+  Future<Response> getOwnOfferById(String offerId);
+
+
   Future<Response> getHome();
   Future<Response> getBookingDetails(String tripId);
   Future<Response> getBookings(String status);

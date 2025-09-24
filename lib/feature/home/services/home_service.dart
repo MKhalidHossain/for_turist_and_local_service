@@ -163,4 +163,14 @@ required List<Map<String, dynamic>> availability,
   Future<Response> getMessages(String userId) async{
     return await homeRepositoryInterface.getMessages(userId);
   }
+  
+  @override
+  Future<Response> getAllOwnOffer() async{
+    return await homeRepositoryInterface.getAllOwnOffer();
+  }
+  
+  @override
+  Future<Response> getOwnOfferById(String offerId) async{
+   return await homeRepositoryInterface.getOwnOfferById(offerId);
+  }
 }

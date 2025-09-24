@@ -16,6 +16,10 @@ class Urls {
   static const String logOut = '/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';
+  
+  static const String roleSwitch = '/auth/role-switch';
+
+
 
   // ................................Profile Module...............................
 
@@ -63,13 +67,14 @@ class Urls {
 
   static const String updateOffer = '/local/update';
 
+  static const String getAllOwnOffer = '/local/offers';
+
+  static const String getOwnOfferById = '/local/offer/';
+
   static const String getHome = '/local/';
 
   static const String getTripsDetails = '/local/trip/';
 
-  // static const String getBookingsUpcoming = '/local/trips?status=upcoming';
-
-  // static const String getBookingsConfirmed = '/local/trips?status=confirmed';
   static const String getBookingsAll = '/local/trips';
 
   static const String getBookingsCategories = '/local/trips?status=';

@@ -234,6 +234,11 @@ class AuthRepository implements AuthRepositoryInterface {
     return await apiClient.postData(Urls.chooseRole, {"role": role});
   }
   
+  @override
+  Future<Response> roleSwitch()async {
+    return await apiClient.postData(Urls.roleSwitch, {});
+  }
+  
 
 
 }
