@@ -4,7 +4,11 @@ import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/normal_custom_button.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_offer_summery.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
+import 'package:kobeur/utils/display_helper.dart';
+
 import 'package:shimmer/shimmer.dart';
+
+import '../../../home/domain/tourist/get_offer_details_response_model.dart';
 
 // ignore: must_be_immutable
 class OfferDetailsScreenForTouristScreen extends StatefulWidget {
@@ -26,6 +30,10 @@ class _OfferDetailsScreenForTouristScreenState
     extends State<OfferDetailsScreenForTouristScreen> {
   late HomeController homeController;
   int selectedImageIndex = 0;
+  int? selectedDateIndex;
+  String? selectedDate;
+  String? selectedTime;
+  List<Availability>? availableDates;
 
   @override
   void initState() {
@@ -44,6 +52,7 @@ class _OfferDetailsScreenForTouristScreenState
     final local = homeController.getOfferDetailsResponseModel.data?.local;
     final offer = homeController.getOfferDetailsResponseModel.data?.offer;
     final avgRatting = local?.averageRating;
+    availableDates = offer?.availability;
 
     return GetBuilder<HomeController>(
       builder: (homeController) {
@@ -269,6 +278,194 @@ class _OfferDetailsScreenForTouristScreenState
                                 ),
                               ),
                               SizedBox(height: 100),
+                              // ✅ Available Dates & Times Section
+                              if (offer?.availability != null &&
+                                  offer!.availability!.isNotEmpty)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Available Dates",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+
+                                    // Dates in a Wrap (instead of horizontal list)
+                                    Wrap(
+                                      spacing: 12,
+                                      runSpacing: 12,
+                                      children:
+                                          availableDates!.asMap().entries.map((
+                                            entry,
+                                          ) {
+                                            final index = entry.key;
+                                            final availability = entry.value;
+
+                                            final date = DateTime.tryParse(
+                                              availability.date ?? " ",
+                                            );
+                                            final formattedDate =
+                                                date != null
+                                                    ? "${date.day}/${date.month}/${date.year}"
+                                                    : "Invalid Date";
+
+                                            final isSelected =
+                                                selectedDateIndex == index;
+
+                                            return GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedDateIndex = index;
+                                                  selectedDate =
+                                                      entry.value.date;
+                                                  print(
+                                                    "Selected Date: $selectedDate",
+                                                  );
+                                                  selectedTime = null;
+                                                });
+                                              },
+                                              child: Container(
+                                                width:
+                                                    (MediaQuery.of(
+                                                              context,
+                                                            ).size.width -
+                                                            10) /
+                                                        3 -
+                                                    20, // ~3 per row
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 16,
+                                                      vertical: 10,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  border: Border.all(
+                                                    width: isSelected ? 2 : 1,
+                                                    color:
+                                                        isSelected
+                                                            ? const Color(
+                                                              0xffFF3951,
+                                                            )
+                                                            : Colors.grey[300]!,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    formattedDate,
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          isSelected
+                                                              ? FontWeight.bold
+                                                              : FontWeight
+                                                                  .normal,
+                                                      fontFamily: 'Poppins',
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                    ),
+
+                                    const SizedBox(height: 20),
+
+                                    // Show times when a date is selected
+                                    if (selectedDateIndex != null) ...[
+                                      const Text(
+                                        "Selected a Time Slots",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+
+                                      // Times in a wrap (2–3 per row depending on width)
+                                      Wrap(
+                                        spacing: 12,
+                                        runSpacing: 12,
+                                        children:
+                                            availableDates![selectedDateIndex!]
+                                                .timeSlots!
+                                                .map((time) {
+                                                  final isSelected =
+                                                      selectedTime == time;
+                                                  return GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        selectedTime = time;
+                                                        print(
+                                                          "Selected Time: $selectedTime",
+                                                        );
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      width:
+                                                          (MediaQuery.of(
+                                                                    context,
+                                                                  ).size.width -
+                                                                  10) /
+                                                              3 -
+                                                          20, // ~3 per row
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 16,
+                                                            vertical: 10,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            isSelected
+                                                                ? Colors.red
+                                                                : Colors
+                                                                    .grey[200],
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          time,
+                                                          style: TextStyle(
+                                                            color:
+                                                                isSelected
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black,
+                                                            fontWeight:
+                                                                isSelected
+                                                                    ? FontWeight
+                                                                        .bold
+                                                                    : FontWeight
+                                                                        .normal,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                })
+                                                .toList(),
+                                      ),
+
+                                      const SizedBox(height: 16),
+
+                                      // Total count of slots
+                                      Text(
+                                        "Total Slots: ${availableDates![selectedDateIndex!].timeSlots?.length ?? 0}",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
                             ],
                           ),
                         ),
@@ -318,7 +515,6 @@ class _OfferDetailsScreenForTouristScreenState
                         ),
                       ],
                     ),
-
                     NormalCustomButton(
                       height: 40,
                       weight: 130,
@@ -326,12 +522,27 @@ class _OfferDetailsScreenForTouristScreenState
                       sufixIcon: Icons.calendar_today_outlined,
                       text: 'Book Now',
                       onPressed: () {
-                        Get.to(
-                          BookingOfferSummaryScreen(
-                            offer: offer!,
-                            local: local!,
-                          ),
-                        );
+                        if (selectedDate == null &&
+                            selectedTime == null &&
+                            selectedDate!.isEmpty &&
+                            selectedTime!.isEmpty) {
+                              
+
+                          Get.to(
+                            BookingOfferSummaryScreen(
+                              offer: offer!,
+                              local: local!,
+                              userSelectedDateForBooking:
+                                  selectedDate ?? '00/00/0000',
+                              userSelectedTimeForBooking:
+                                  selectedTime ?? '00:00',
+                            ),
+                          );
+                        } else {
+                          showCustomSnackBar(
+                            'Please select date and time for booking',
+                          );
+                        }
                       },
                     ),
                   ],
