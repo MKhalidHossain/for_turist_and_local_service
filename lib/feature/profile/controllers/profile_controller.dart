@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
+import 'package:kobeur/feature/payment/presentation/screens/local/connect_stripe_screen.dart';
 import 'package:kobeur/feature/profile/domain/model/get_profile_response_model.dart';
 import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
@@ -226,7 +227,8 @@ class ProfileController extends GetxController implements GetxService {
             );
             Get.offAll(() => BottomNavbar(userRole: userRole));
           } else if (userRole.toString().toLowerCase() == 'local') {
-            Get.offAll(() => CreateFirstServiceScreen());
+            // Get.offAll(() => CreateFirstServiceScreen());
+            Get.offAll(() => ConnectStripeScreen());
           } else {
             showCustomSnackBar(
               'You have not selected your role yet, please select your role',

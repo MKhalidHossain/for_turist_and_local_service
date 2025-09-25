@@ -48,7 +48,7 @@ class _LocalTripDetailsScreenState extends State<LocalTripDetailsScreen> {
     // Defer the asynchronous call to avoid calling during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.tripId != null) {
-        localHomeController.getBookingDetails(widget.tripId!);
+        localHomeController.getTripsDetails(widget.tripId!);
       } else {
         Get.snackbar('Error', 'Invalid trip ID');
       }
@@ -59,7 +59,7 @@ class _LocalTripDetailsScreenState extends State<LocalTripDetailsScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       builder: (controller) {
-        final bookingDetails = controller.getBookingDetailsResponseModel.data;
+        final bookingDetails = controller.getTripsDetailsResponseModel.data;
 
         // Handle loading and error states
         if (controller.isLoading == true) {

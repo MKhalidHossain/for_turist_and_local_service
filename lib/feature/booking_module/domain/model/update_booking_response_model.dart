@@ -1,18 +1,18 @@
-class ConfirmBookingResponseModel {
+class UpdateBookingResponseModel {
   final int? statusCode;
   final bool? success;
   final String? message;
   final BookingData? data;
 
-  ConfirmBookingResponseModel({
+  UpdateBookingResponseModel({
     this.statusCode,
     this.success,
     this.message,
     this.data,
   });
 
-  factory ConfirmBookingResponseModel.fromJson(Map<String, dynamic> json) {
-    return ConfirmBookingResponseModel(
+  factory UpdateBookingResponseModel.fromJson(Map<String, dynamic> json) {
+    return UpdateBookingResponseModel(
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],

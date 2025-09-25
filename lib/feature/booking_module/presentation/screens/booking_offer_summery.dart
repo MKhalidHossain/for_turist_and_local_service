@@ -3,18 +3,25 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_confarm.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
+import 'package:kobeur/helpers/custom_snackbar.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../home/domain/tourist/get_offer_details_response_model.dart';
 
 class BookingOfferSummaryScreen extends StatefulWidget {
   final Offer offer;
   final Local local;
+  final String userSelectedDateForBooking;
+  final String userSelectedTimeForBooking;
 
   const BookingOfferSummaryScreen({
-    Key? key,
+    super.key,
     required this.offer,
     required this.local,
-  }) : super(key: key);
+    required this.userSelectedDateForBooking,
+    required this.userSelectedTimeForBooking,
+  });
+
   @override
   _BookingOfferSummaryScreenState createState() =>
       _BookingOfferSummaryScreenState();
@@ -24,6 +31,7 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
   String selectedPaymentMethod = 'card';
   // final TextEditingController _promoController = TextEditingController();
   String formattedDate = '';
+  late HomeController homeController;
 
   String formatDateTime(List<Availability>? availability) {
     if (availability == null || availability.isEmpty) return "";
@@ -32,11 +40,15 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
     final rawDate = DateTime.parse(item.date!); // item.date is String
     final times = (item.timeSlots ?? []).map((t) => t.toString()).join(", ");
     final formattedDate = DateFormat("MM/dd/yy").format(rawDate);
-
     return "$times, $formattedDate";
   }
 
-  // 👉 "10:00 AM, 11:00 AM, 09/17/25"
+  @override
+  void initState() {
+    super.initState();
+    homeController = Get.find<HomeController>();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +312,16 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
           height: 50,
           child: ElevatedButton(
             onPressed: () {
+              if (selectedPaymentMethod == null ||
+                  selectedPaymentMethod.isEmpty) {
+                showCustomSnackBar('Please select payment method for payment');
+              } else if (selectedPaymentMethod == 'stripe') {
+                // StripePaymentScreen(
+                //   localProfileDetails: widget.local,
+                //   offer: widget.offer,
+                //   totalPrice: totalPrice,
+                // );
+              }
               Get.to(BookingConfirmedScreen());
             },
             // onPressed: () => Navigator.pushNamed(context, '/payment'),

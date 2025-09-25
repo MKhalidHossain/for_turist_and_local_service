@@ -12,6 +12,7 @@ import 'common/privacy_policy_screen.dart';
 import 'common/terms_condition_screen.dart';
 import 'local/my_service_screen.dart';
 
+// ignore: must_be_immutable
 class ProfileScreen extends StatefulWidget {
   String userRole;
   ProfileScreen({super.key, required this.userRole});
@@ -151,7 +152,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     showIcon: true,
                                     sufixIcon: Icons.switch_access_shortcut,
 
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await Get.find<AuthController>()
+                                          .roleSwitch();
+                                    },
                                   ),
                                 ],
                               ),

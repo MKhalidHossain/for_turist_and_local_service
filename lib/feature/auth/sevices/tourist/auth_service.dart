@@ -1,3 +1,5 @@
+import 'package:get/get_connect/http/src/response/response.dart';
+
 import '../../repositories/tourist/auth_repository_interface.dart';
 import 'auth_service_interface.dart';
 
@@ -144,5 +146,10 @@ class AuthService implements AuthServiceInterface {
   @override
   Future chooseRole(String role, String token) async {
     return await authRepositoryInterface.chooseRole(role, token);
+  }
+
+  @override
+  Future<Response> roleSwitch() async{
+    return await authRepositoryInterface.roleSwitch();
   }
 }

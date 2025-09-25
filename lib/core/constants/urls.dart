@@ -16,6 +16,10 @@ class Urls {
   static const String logOut = '/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';
+  
+  static const String roleSwitch = '/auth/role-switch';
+
+
 
   // ................................Profile Module...............................
 
@@ -55,7 +59,7 @@ class Urls {
 
   static const String getBookingDetails = '/booking/';
 
-  static const String getBookingsByStatus = '/booking/cancel/';
+  static const String getBookingsByStatus = '/booking?status=';
 
   // ................................Local  Module...............................
 
@@ -63,13 +67,14 @@ class Urls {
 
   static const String updateOffer = '/local/update';
 
+  static const String getAllOwnOffer = '/local/offers';
+
+  static const String getOwnOfferById = '/local/offer/';
+
   static const String getHome = '/local/';
 
   static const String getTripsDetails = '/local/trip/';
 
-  // static const String getBookingsUpcoming = '/local/trips?status=upcoming';
-
-  // static const String getBookingsConfirmed = '/local/trips?status=confirmed';
   static const String getBookingsAll = '/local/trips';
 
   static const String getBookingsCategories = '/local/trips?status=';
@@ -99,15 +104,15 @@ class Urls {
 
   // ................................Payment Module...............................
 
-  // static const String sendMessage = '/chat/message';
+  static const String connectAccount = '/payment/connect-account';
 
-  // static const String getMessage = '/messages/history/:receiverId';
+  static const String createPayment = '/payment/create';
 
-  // static const String getUserAssociatWithChat = '/messages/list';
+  static const String confirmPayment = '/payment/confirm';
 
-  // static const String getOfferDetails = '/api/v1/tasks/';
+  static const String resendOnboarding = '/payment/resend-onboarding';
 
-  // static const String getOfferDetails = '/api/v1/tasks/';
+
 
   //
 

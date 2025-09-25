@@ -2,10 +2,17 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kobeur/feature/booking_module/domain/model/confirm_booking_response_model.dart';
+import 'package:kobeur/feature/booking_module/domain/model/create_booking_response_model.dart';
+import 'package:kobeur/feature/booking_module/domain/model/get_booking_by_status_response_model.dart';
+import 'package:kobeur/feature/booking_module/domain/model/get_booking_details_response_model.dart';
+import 'package:kobeur/feature/booking_module/domain/model/update_booking_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/cencel_booking_response_model.dart';
-import 'package:kobeur/feature/home/domain/local/create_offer_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/create_offer_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/get_home_response_model.dart';
-import 'package:kobeur/feature/home/domain/local/update_offer_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/get_all_own_offer_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/get_own_offer_by_id_response_model.dart';
+import 'package:kobeur/feature/offer/domain/model/update_offer_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/add_fav_or_remove_fav_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_fab_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/get_favorite_hatch_response_model.dart';
@@ -15,11 +22,18 @@ import 'package:kobeur/feature/home/domain/tourist/get_super_hatch_response_mode
 import 'package:kobeur/feature/home/domain/tourist/rate_a_local_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/search_offer_response_model.dart';
 import 'package:kobeur/feature/home/services/home_service_interface.dart';
+import 'package:kobeur/feature/offer/presentation/screens/create_first_service_screen.dart';
+import 'package:kobeur/feature/payment/domain/model/confirm_payment_response_model.dart';
+import 'package:kobeur/feature/payment/domain/model/connect_account_response_model.dart';
+import 'package:kobeur/feature/payment/domain/model/create_payment_response_model.dart';
+import 'package:kobeur/feature/payment/domain/model/resend_onboarding_response_model.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../chat/domain/model/get_messages_previous_response_model.dart';
 import '../../chat/domain/model/get_user_associated_with_chat_response_model.dart';
 import '../../chat/domain/model/send_message_response_model.dart';
-import '../domain/local/get_booking_details_response_model.dart';
+import '../../payment/presentation/screens/common/stripe_connect_full_screen.dart';
+import '../../payment/presentation/screens/local/connect_stripe_screen.dart';
+import '../domain/local/get_trips_details_response_model.dart';
 import '../domain/local/get_trip_response_api_bookings_model.dart';
 
 class HomeController extends GetxController implements GetxService {
@@ -32,8 +46,13 @@ class HomeController extends GetxController implements GetxService {
       CreateOfferResponseModel();
   UpdateOfferResponseModel updateOfferResponseModel =
       UpdateOfferResponseModel();
+
+  GetAllOwnOfferResponseModel getAllOwnOfferResponseModel =
+      GetAllOwnOfferResponseModel();
+  GetOwnOfferByIdResponseModel getOwnOfferByIdResponseModel =
+      GetOwnOfferByIdResponseModel();
   GetHomeResponseModel getHomeResponseModel = GetHomeResponseModel();
-  GetTripsDetailsResponseModel getBookingDetailsResponseModel =
+  GetTripsDetailsResponseModel getTripsDetailsResponseModel =
       GetTripsDetailsResponseModel();
   GetTripResponseApiBookingsModel getTripResponseApiBookingsModel =
       GetTripResponseApiBookingsModel();
@@ -53,7 +72,7 @@ class HomeController extends GetxController implements GetxService {
       AddFavOrRemoveFavResponseModel();
   GetFavResponseModel getFavResponseModel = GetFavResponseModel();
   RateALocalResponseModel rateALocalResponseModel = RateALocalResponseModel();
-
+//chat
   SendMessageResponseModel sendMessageResponseModel =
       SendMessageResponseModel();
   GetMessagesPreviousResponseModel getMessagesPreviousResponseModel =
@@ -61,6 +80,26 @@ class HomeController extends GetxController implements GetxService {
   GetUserAssociatedWithChatResponseModel
   getUserAssociatedWithChatResponseModel =
       GetUserAssociatedWithChatResponseModel();
+  //payment
+  ConnectAccountResponseModel connectAccountResponseModel =
+      ConnectAccountResponseModel();
+  CreatePaymentResponseModel createPaymentResponseModel =
+      CreatePaymentResponseModel();
+  ConfirmPaymentResponseModel confirmPaymentResponseModel =
+      ConfirmPaymentResponseModel();
+  ResendOnboardingResponseModel resendOnboardingResponseModel =
+      ResendOnboardingResponseModel();
+  //bookings
+  CreateBookingResponseModel createBookingResponseModel =
+      CreateBookingResponseModel();
+  ConfirmBookingResponseModel confirmBookingResponseModel =
+      ConfirmBookingResponseModel();
+  UpdateBookingResponseModel updateBookingResponseModel =
+      UpdateBookingResponseModel();
+  GetBookingDetailsResponseModel getBookingDetailsResponseModel =
+      GetBookingDetailsResponseModel();
+  GetBookingByStatusResponseModel getBookingByStatusResponseModel =
+      GetBookingByStatusResponseModel();
 
   bool isLoading = false;
 
@@ -196,6 +235,68 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
+  Future<void> getAllOwnOffer() async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getAllOwnOffer();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getAllOwnOffer : for Tourist fetched successfully\n");
+        getAllOwnOfferResponseModel = GetAllOwnOfferResponseModel.fromJson(
+          response.body,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        getAllOwnOfferResponseModel = GetAllOwnOfferResponseModel.fromJson(
+          response.body,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getAllOwnOffer : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> getOwnOfferById(String offerId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getOwnOfferById(offerId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getOwnOfferById : for Tourist fetched successfully\n");
+        getOwnOfferByIdResponseModel = GetOwnOfferByIdResponseModel.fromJson(
+          response.body,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        getOwnOfferByIdResponseModel = GetOwnOfferByIdResponseModel.fromJson(
+          response.body,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getOwnOfferById : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
   Future<void> getHome() async {
     try {
       isLoading = true;
@@ -221,19 +322,19 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> getBookingDetails(String tripId) async {
+  Future<void> getTripsDetails(String tripId) async {
     try {
       isLoading = true;
       update();
 
-      final response = await homeServiceInterface.getBookingDetails(tripId);
+      final response = await homeServiceInterface.getTripsDetails(tripId);
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         print("✅ getBookingDetails: for local fetched successfully\n");
-        getBookingDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(
+        getTripsDetailsResponseModel = GetTripsDetailsResponseModel.fromJson(
           response.body,
         );
 
@@ -708,6 +809,345 @@ class HomeController extends GetxController implements GetxService {
       }
     } catch (e) {
       print("⚠️ Error fetching profile : getUserAssociatedWithChat : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> connectAccount() async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.connectAccount();
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ connectAccount : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        connectAccountResponseModel = ConnectAccountResponseModel.fromJson(
+          decoded,
+        );
+        // Get.to(() => CreateFirstServiceScreen());
+        print(' stripe url : ${connectAccountResponseModel.data!.url}');
+        Get.to(
+          () => StripeConnectFullScreen(
+            connectUrl: connectAccountResponseModel.data!.url,
+          ),
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        connectAccountResponseModel = ConnectAccountResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : connectAccount : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> createPayment(
+    String bookingCode,
+    String amount,
+    String localId,
+  ) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.createPayment(
+        bookingCode,
+        amount,
+        localId,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ createPayment : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : createPayment : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> confirmPayment(
+    String paymentIntentId,
+    String paymentMethodId,
+  ) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.confirmPayment(
+        paymentIntentId,
+        paymentMethodId,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ confirmPayment : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : confirmPayment : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> resendOnboarding(String localId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.resendOnboarding(localId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ resendOnboarding : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        resendOnboardingResponseModel = ResendOnboardingResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        resendOnboardingResponseModel = ResendOnboardingResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : resendOnboarding : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> createBooking(
+    String localId,
+    String offerId,
+    String date,
+    String participants,
+    ) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.createBooking(localId, offerId, date, participants);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 201) {
+        print("✅ createBooking : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        createBookingResponseModel = CreateBookingResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+         createBookingResponseModel = CreateBookingResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : createBooking : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> confirmBooking(String bookingId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.confirmBooking(bookingId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ confirmBooking : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        confirmBookingResponseModel = ConfirmBookingResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+          confirmBookingResponseModel = ConfirmBookingResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : confirmBooking : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> updateBooking(
+    String bookingId,
+    String participants
+    ) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.updateBooking(bookingId, participants);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ updateBooking : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        updateBookingResponseModel = UpdateBookingResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+         updateBookingResponseModel = UpdateBookingResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : updateBooking : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> getBookingDetails(String bookingId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getBookingDetails(bookingId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getBookingDetails : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        getBookingDetailsResponseModel = GetBookingDetailsResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+         getBookingDetailsResponseModel = GetBookingDetailsResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getBookingDetails : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  Future<void> getBookingByStatus(String status) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.getBookingByStatus(status);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ getBookingByStatus : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        getBookingByStatusResponseModel = GetBookingByStatusResponseModel.fromJson(
+          decoded,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+         getBookingByStatusResponseModel = GetBookingByStatusResponseModel.fromJson(
+          decoded,
+        );
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : getBookingByStatus : $e\n");
     } finally {
       isLoading = false;
       update();
