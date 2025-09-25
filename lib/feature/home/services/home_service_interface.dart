@@ -29,7 +29,7 @@ abstract class HomeServiceInterface {
   Future<Response> getOwnOfferById(String offerId);
 
   Future<Response> getHome();
-  Future<Response> getBookingDetails(String tripId);
+  Future<Response> getTripsDetails(String tripId);
   Future<Response> getBookings(String status);
   Future<Response> getBookingsAll();
   Future<Response> cencelBookings(String id);
@@ -65,4 +65,20 @@ abstract class HomeServiceInterface {
     String paymentMethodId,
   );
   Future<Response> resendOnboarding(String localId);
+    //bookings
+   Future<Response> createBooking(
+    String localId,
+    String offerId,
+    String date,
+    String participants,
+  );
+   Future<Response> confirmBooking(
+    String bookingId,
+  );
+   Future<Response> updateBooking(
+    String bookingId,
+    String participants
+  );
+   Future<Response> getBookingDetails(String bookingId);
+   Future<Response> getBookingByStatus(String status);
 }

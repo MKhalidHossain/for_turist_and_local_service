@@ -59,7 +59,7 @@ class Urls {
 
   static const String getBookingDetails = '/booking/';
 
-  static const String getBookingsByStatus = '/booking/cancel/';
+  static const String getBookingsByStatus = '/booking?status=';
 
   // ................................Local  Module...............................
 

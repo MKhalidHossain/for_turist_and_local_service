@@ -16,9 +16,8 @@ class HomeService implements HomeServiceInterface {
     required String maxParticipants,
     required String title,
     required String description,
-required List<Map<String, dynamic>> availability,
+    required List<Map<String, dynamic>> availability,
     required List<XFile> photos,
-
   }) async {
     return await homeRepositoryInterface.createOffer(
       category: category,
@@ -29,7 +28,6 @@ required List<Map<String, dynamic>> availability,
       description: description,
       availability: availability,
       photos: photos,
- 
     );
   }
 
@@ -66,8 +64,8 @@ required List<Map<String, dynamic>> availability,
   }
 
   @override
-  Future<Response> getBookingDetails(String tripId) async {
-    return await homeRepositoryInterface.getBookingDetails(tripId);
+  Future<Response> getTripsDetails(String tripId) async {
+    return await homeRepositoryInterface.getTripsDetails(tripId);
   }
 
   @override
@@ -148,49 +146,88 @@ required List<Map<String, dynamic>> availability,
   ) async {
     return await homeRepositoryInterface.rateALocal(localId, comment, rating);
   }
-  
+
   @override
-  Future<Response> sendMessage(String receiverId, String message) async{
+  Future<Response> sendMessage(String receiverId, String message) async {
     return await homeRepositoryInterface.sendMessage(receiverId, message);
   }
-  
+
   @override
-  Future<Response> getUserAssociatedWithChat() async{
+  Future<Response> getUserAssociatedWithChat() async {
     return await homeRepositoryInterface.getUserAssociatedWithChat();
   }
-  
+
   @override
-  Future<Response> getMessages(String userId) async{
+  Future<Response> getMessages(String userId) async {
     return await homeRepositoryInterface.getMessages(userId);
   }
-  
+
   @override
-  Future<Response> getAllOwnOffer() async{
+  Future<Response> getAllOwnOffer() async {
     return await homeRepositoryInterface.getAllOwnOffer();
   }
-  
+
   @override
-  Future<Response> getOwnOfferById(String offerId) async{
-   return await homeRepositoryInterface.getOwnOfferById(offerId);
+  Future<Response> getOwnOfferById(String offerId) async {
+    return await homeRepositoryInterface.getOwnOfferById(offerId);
   }
-  
+
   @override
-  Future<Response> confirmPayment(String paymentIntentId, String paymentMethodId) async{
-    return await homeRepositoryInterface.confirmPayment(paymentIntentId, paymentMethodId);
+  Future<Response> confirmPayment(
+    String paymentIntentId,
+    String paymentMethodId,
+  ) async {
+    return await homeRepositoryInterface.confirmPayment(
+      paymentIntentId,
+      paymentMethodId,
+    );
   }
-  
+
   @override
-  Future<Response> connectAccount()async{
+  Future<Response> connectAccount() async {
     return await homeRepositoryInterface.connectAccount();
   }
-  
+
   @override
-  Future<Response> createPayment(String bookingCode, String amount, String localId) async{
-    return await homeRepositoryInterface.createPayment(bookingCode, amount, localId);
+  Future<Response> createPayment(
+    String bookingCode,
+    String amount,
+    String localId,
+  ) async {
+    return await homeRepositoryInterface.createPayment(
+      bookingCode,
+      amount,
+      localId,
+    );
+  }
+
+  @override
+  Future<Response> resendOnboarding(String localId) async {
+    return await homeRepositoryInterface.resendOnboarding(localId);
   }
   
   @override
-  Future<Response> resendOnboarding(String localId) async{
-    return await homeRepositoryInterface.resendOnboarding(localId);
+  Future<Response> confirmBooking(String bookingId) async{
+    return await homeRepositoryInterface.confirmBooking(bookingId);
+  }
+  
+  @override
+  Future<Response> createBooking(String localId, String offerId, String date, String participants) async{
+    return await homeRepositoryInterface.createBooking(localId, offerId, date, participants);
+  }
+  
+  @override
+  Future<Response> getBookingByStatus(String status) async{
+    return await homeRepositoryInterface.getBookingByStatus(status);
+  }
+  
+  @override
+  Future<Response> getBookingDetails(String bookingId) async{
+    return await homeRepositoryInterface.getBookingDetails( bookingId);
+  }
+  
+  @override
+  Future<Response> updateBooking(String bookingId, String participants) async{
+    return await homeRepositoryInterface.updateBooking(bookingId, participants);
   }
 }

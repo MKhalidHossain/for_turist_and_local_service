@@ -86,7 +86,7 @@ class HomeRepository implements HomeRepositoryInterface {
   }
 
   @override
-  Future<Response> getBookingDetails(String tripId) async {
+  Future<Response> getTripsDetails(String tripId) async {
     return await apiClient.getData(Urls.getTripsDetails + tripId);
   }
 
@@ -219,7 +219,7 @@ class HomeRepository implements HomeRepositoryInterface {
 
   @override
   Future<Response> connectAccount() async {
-    return await apiClient.postData(Urls.connectAccount,{});
+    return await apiClient.postData(Urls.connectAccount, {});
   }
 
   @override
@@ -236,8 +236,50 @@ class HomeRepository implements HomeRepositoryInterface {
   }
 
   @override
-  Future<Response> resendOnboarding(String localId) async{
-    return await apiClient.postData(Urls.resendOnboarding, {"localId": localId});
+  Future<Response> resendOnboarding(String localId) async {
+    return await apiClient.postData(Urls.resendOnboarding, {
+      "localId": localId,
+    });
+  }
+
+  @override
+  Future<Response> confirmBooking(String bookingId) async {
+    return await apiClient.patchData(Urls.confirmBooking, {
+      "bookingId": bookingId,
+    });
+  }
+
+  @override
+  Future<Response> createBooking(
+    String localId,
+    String offerId,
+    String date,
+    String participants,
+  ) async {
+    return await apiClient.postData(Urls.createBooking, {
+      "localId": localId,
+      "offerId": offerId,
+      "date": date,
+      "participants": participants,
+    });
+  }
+
+  @override
+  Future<Response> getBookingByStatus(String status) async {
+    return await apiClient.getData(Urls.getBookingsByStatus+status);
+  }
+
+  @override
+  Future<Response> getBookingDetails(String bookingId) async {
+    return await apiClient.getData(Urls.getBookingDetails + bookingId);
+  }
+
+  @override
+  Future<Response> updateBooking(String bookingId, String participants) async {
+    return await apiClient.patchData(Urls.updateBooking + bookingId, {
+      "bookingId": bookingId,
+      "participants": participants,
+    });
   }
 
   // @override
