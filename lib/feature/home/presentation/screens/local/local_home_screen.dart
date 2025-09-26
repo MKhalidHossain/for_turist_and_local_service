@@ -5,7 +5,7 @@ import 'package:kobeur/core/themes/app_color.dart';
 import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import '../../../../../core/common/button/button_widget.dart';
 import '../../../../chat/presentation/screens/chat_screen.dart';
-import '../../../../offer/presentation/screens/category_selection_screen.dart';
+import '../../../../offer/presentation/screens/common/category_selection_screen.dart';
 import '../../../../trip_module/presentation/screens/local/local_booking_details_screen.dart';
 import '../../../../trip_module/presentation/widgets/upcoming_cart_widget.dart';
 import '../../../controllers/home_controller.dart';
@@ -402,12 +402,19 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Dynamic font sizes based on screen width
+    double labelFont = screenWidth < 360 ? 10 : screenWidth < 600 ? 12 : 14;
+    double valueFont = screenWidth < 360 ? 12 : screenWidth < 600 ? 14 : 18;
+    double subTextFont = screenWidth < 360 ? 8 : 10;
+
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(screenWidth * 0.03), // scales padding
       margin: const EdgeInsets.only(right: 0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: BorderRadius.circular(8), // slightly rounder for modern look
         boxShadow: [
           BoxShadow(
             color: Colors.grey.shade200,
@@ -419,36 +426,59 @@ class _StatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Top Row (icon + label)
           Row(
             children: [
-              // Icon(iamge, color: AppColors.primaryColor, size: 18),
-              Image.asset(image, height: 18, width: 18),
+              Image.asset(
+                image,
+                height: screenWidth * 0.05, // responsive icon size
+                width: screenWidth * 0.05,
+                fit: BoxFit.contain,
+              ),
               const SizedBox(width: 6),
-              label.text14Grey(),
-              // Text(
-              //   label,
-              //   style: const TextStyle(
-              //     fontSize: 12,
-              //     color: Colors.grey,
-
-              //     fontWeight: FontWeight.w500,
-              //     fontFamily: 'Poppins',
-              //   ),
-              // ),
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: labelFont,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w500,
+                    fontFamily: 'Poppins',
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
+
+          // Value + Subtext
           Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Poppins',
+              Flexible(
+                child: Text(
+                  value,
+                  style: TextStyle(
+                    fontSize: valueFont,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (subText.isNotEmpty) "/$subText".text10DarkGrey(),
+              if (subText.isNotEmpty) ...[
+                const SizedBox(width: 4),
+                Text(
+                  "/$subText",
+                  style: TextStyle(
+                    fontSize: subTextFont,
+                    color: Colors.grey[600],
+                    fontFamily: 'Poppins',
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ],
           ),
         ],
@@ -456,6 +486,78 @@ class _StatCard extends StatelessWidget {
     );
   }
 }
+
+// class _StatCard extends StatelessWidget {
+//   final String image;
+//   final String label;
+//   final String value;
+//   final String subText;
+
+//   const _StatCard({
+//     required this.image,
+//     required this.label,
+//     required this.value,
+//     required this.subText,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final screenWidth = MediaQuery.of(context).size.width;
+    
+//     return Container(
+//       padding: const EdgeInsets.all(12),
+//       margin: const EdgeInsets.only(right: 0),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(4),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.grey.shade200,
+//             blurRadius: 6,
+//             offset: const Offset(0, 4),
+//           ),
+//         ],
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Row(
+//             children: [
+//               // Icon(iamge, color: AppColors.primaryColor, size: 18),
+//               Image.asset(image, height: 18, width: 18),
+//               const SizedBox(width: 6),
+//               label.text14Grey(),
+//               // Text(
+//               //   label,
+//               //   style: const TextStyle(
+//               //     fontSize: 12,
+//               //     color: Colors.grey,
+
+//               //     fontWeight: FontWeight.w500,
+//               //     fontFamily: 'Poppins',
+//               //   ),
+//               // ),
+//             ],
+//           ),
+//           const SizedBox(height: 6),
+//           Row(
+//             children: [
+//               Text(
+//                 value,
+//                 style: const TextStyle(
+//                   fontSize: 16,
+//                   fontWeight: FontWeight.bold,
+//                   fontFamily: 'Poppins',
+//                 ),
+//               ),
+//               if (subText.isNotEmpty) "/$subText".text10DarkGrey(),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 
 /// ---------------- Trip Card ----------------
 

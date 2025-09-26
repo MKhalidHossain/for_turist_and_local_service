@@ -1,62 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/offer/domain/model/service_data.dart';
-import 'package:kobeur/feature/offer/presentation/screens/offer_pricing_screen.dart';
 
-import '../../../domain/model/offers_item.dart';
+import '../../../../domain/model/offers_item.dart';
+import '../../../../domain/model/service_data.dart';
+import '../offer_pricing_screen.dart';
 
-class ExperienceOffersScreen extends StatefulWidget {
-  const ExperienceOffersScreen({super.key});
+class CultureOffersScreen extends StatefulWidget {
+  const CultureOffersScreen({super.key});
 
   @override
-  _ExperienceOffersScreenState createState() => _ExperienceOffersScreenState();
+  State<CultureOffersScreen> createState() => _CultureOffersScreenState();
 }
 
-class _ExperienceOffersScreenState extends State<ExperienceOffersScreen> {
+class _CultureOffersScreenState extends State<CultureOffersScreen> {
   String? selectedOffer;
-  String? selectedExperienceOfferNameforStore;
+  String? selectedCultureNameforStore;
   ServiceData serviceData = ServiceData();
 
   final List<OfferItem> offers = [
     OfferItem(
-      'Day Trip',
-      'Spend a day with the tourist and show them around your area',
+      'Museums',
+      'Lead museum tours, sharing essential insights with tourists',
 
-      'assets/icons/dayTrip.png',
-      'day_trip_experience',
+      "assets/icons/museums.png",
+      'museums',
     ),
     OfferItem(
-      'Manual Activity',
-      'Teach tourists local skills like pottery, crafts, or traditional techniques.',
-      'assets/icons/manualActivity.png',
-      'manual_activity_experience',
-    ),
-    OfferItem(
-      'Spa',
-      'Give a massage, rent a sauna or hammam',
-      'assets/icons/spa.png',
-      'spa_experience',
-    ),
-    OfferItem(
-      'Journey',
-      'Show tourists the most popular attractions and landmarks',
-      'assets/icons/journey.png',
-      'Journey_experience',
-    ),
-    OfferItem(
-      'Island Hopping',
-      'Offer unforgettable island hopping adventures for tourists',
-      'assets/icons/islandHopping.png',
-      'island_hopping_experience',
+      'Monuments',
+      'Lead tourists on tours to your city’s best landmarks',
+      'assets/icons/monuments.png',
+      'monuments',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
+      //backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -83,7 +64,7 @@ class _ExperienceOffersScreenState extends State<ExperienceOffersScreen> {
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
-                          selectedExperienceOfferNameforStore = offer.title;
+                          selectedCultureNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -181,7 +162,7 @@ class _ExperienceOffersScreenState extends State<ExperienceOffersScreen> {
                       selectedOffer != null
                           ? () {
                             serviceData.selectedOfferType =
-                                selectedExperienceOfferNameforStore;
+                                selectedCultureNameforStore;
                             serviceData.printData();
                             Get.to(
                               OfferPricingScreen(

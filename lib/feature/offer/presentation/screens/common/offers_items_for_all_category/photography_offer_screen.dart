@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import '../../../domain/model/offers_item.dart';
-import '../../../domain/model/service_data.dart';
+
+import '../../../../domain/model/offers_item.dart';
+import '../../../../domain/model/service_data.dart';
 import '../offer_pricing_screen.dart';
 
-class SportOffersScreen extends StatefulWidget {
-  SportOffersScreen({super.key});
+class PhotographyOffersScreen extends StatefulWidget {
+  const PhotographyOffersScreen({super.key});
   @override
-  _SportOffersScreenState createState() => _SportOffersScreenState();
+  _PhotographyOffersScreenState createState() =>
+      _PhotographyOffersScreenState();
 }
 
-class _SportOffersScreenState extends State<SportOffersScreen> {
+class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
   String? selectedOffer;
-  String? selectedSportOfferNameforStore;
+  String? selectedPhotographyOfferNameforStore;
   ServiceData serviceData = ServiceData();
 
   final List<OfferItem> offers = [
     OfferItem(
-      'Coach',
-      'Coach tourists for the time they need, on your schedule',
-      'assets/icons/coach.png',
-      'Coach',
-    ),
+      'Drone Rental',
+      'Rent your drone for one or multiple days',
 
+      'assets/icons/droneRental.png',
+      'drone_rental',
+    ),
     OfferItem(
-      'Yoga',
-      'Teach yoga lessons to tourists seeking relaxation',
-      'assets/icons/yoga.png',
-      'yoga',
+      'Photo',
+      'Photograph tourists during their trip',
+      'assets/icons/photo.png',
+      'Photo',
     ),
   ];
 
@@ -63,7 +65,7 @@ class _SportOffersScreenState extends State<SportOffersScreen> {
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
-                          selectedSportOfferNameforStore = offer.title;
+                          selectedPhotographyOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -161,12 +163,15 @@ class _SportOffersScreenState extends State<SportOffersScreen> {
                       selectedOffer != null
                           ? () {
                             serviceData.selectedOfferType =
-                                selectedSportOfferNameforStore;
+                                selectedPhotographyOfferNameforStore;
                             serviceData.printData();
-                            Get.to(OfferPricingScreen(
-                              offer:  offers.firstWhere((offer) => offer.value == selectedOffer!,
-                              )
-                            ));
+                            Get.to(
+                              OfferPricingScreen(
+                                offer: offers.firstWhere(
+                                  (offer) => offer.value == selectedOffer!,
+                                ),
+                              ),
+                            );
                           }
                           : null,
                   style: ElevatedButton.styleFrom(

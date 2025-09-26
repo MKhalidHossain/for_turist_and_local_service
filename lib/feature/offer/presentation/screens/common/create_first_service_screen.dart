@@ -2,7 +2,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/offer/presentation/screens/category_selection_screen.dart';
+import 'package:kobeur/feature/offer/presentation/screens/common/category_selection_screen.dart';
 
 class CreateFirstServiceScreen extends StatelessWidget {
   

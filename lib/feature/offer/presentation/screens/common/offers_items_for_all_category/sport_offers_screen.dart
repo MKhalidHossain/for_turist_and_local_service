@@ -1,46 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/offer/domain/model/service_data.dart';
-import 'package:kobeur/feature/offer/presentation/screens/offer_pricing_screen.dart';
-import '../../../domain/model/offers_item.dart';
+import '../../../../domain/model/offers_item.dart';
+import '../../../../domain/model/service_data.dart';
+import '../offer_pricing_screen.dart';
 
-class FoodOffersScreen extends StatefulWidget {
-  const FoodOffersScreen({super.key});
-
+class SportOffersScreen extends StatefulWidget {
+  SportOffersScreen({super.key});
   @override
-  State<FoodOffersScreen> createState() => _FoodOffersScreenState();
+  _SportOffersScreenState createState() => _SportOffersScreenState();
 }
 
-class _FoodOffersScreenState extends State<FoodOffersScreen> {
+class _SportOffersScreenState extends State<SportOffersScreen> {
   String? selectedOffer;
+  String? selectedSportOfferNameforStore;
   ServiceData serviceData = ServiceData();
-  String? selectedFoodOfferNameforStore;
 
   final List<OfferItem> offers = [
     OfferItem(
-      'At Home',
-      'Host a local meal at your home',
-      'assets/icons/home.png',
-      'home_food',
+      'Coach',
+      'Coach tourists for the time they need, on your schedule',
+      'assets/icons/coach.png',
+      'Coach',
     ),
+
     OfferItem(
-      'Restaurant',
-      'Invite the tourist to a local restaurant you enjoy and share a meal together',
-      'assets/icons/restaurant.png',
-      'restaurant_food',
-    ),
-    OfferItem(
-      'Takeaway',
-      'Prepare a homemade meal for the tourist to pick up',
-      'assets/images/takeaway.png',
-      'takeaway_food',
+      'Yoga',
+      'Teach yoga lessons to tourists seeking relaxation',
+      'assets/icons/yoga.png',
+      'yoga',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
-    // Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -56,7 +49,6 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
               ],
             ),
             const SizedBox(height: 20),
-
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -71,7 +63,7 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
-                          selectedFoodOfferNameforStore = offer.title;
+                          selectedSportOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -107,7 +99,7 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
                                 offer.imagePath,
                                 fit: BoxFit.cover,
                                 // color: Colors.white,
-                                //height: 70,
+                                height: 70,
                               ),
                             ),
                             SizedBox(width: 16),
@@ -168,12 +160,12 @@ class _FoodOffersScreenState extends State<FoodOffersScreen> {
                   onPressed:
                       selectedOffer != null
                           ? () {
-                            print('Selected Offer: $selectedFoodOfferNameforStore');
                             serviceData.selectedOfferType =
-                                selectedFoodOfferNameforStore;
+                                selectedSportOfferNameforStore;
                             serviceData.printData();
                             Get.to(OfferPricingScreen(
-                              offer: offers.firstWhere((offer) => offer.value == selectedOffer!),
+                              offer:  offers.firstWhere((offer) => offer.value == selectedOffer!,
+                              )
                             ));
                           }
                           : null,

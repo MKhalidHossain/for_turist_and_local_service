@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 
-import '../../../domain/model/offers_item.dart';
-import '../../../domain/model/service_data.dart';
+import '../../../../domain/model/offers_item.dart';
+import '../../../../domain/model/service_data.dart';
 import '../offer_pricing_screen.dart';
 
 class TransportOffersScreen extends StatefulWidget {

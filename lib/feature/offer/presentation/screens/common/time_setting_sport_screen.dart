@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../domain/model/service_data.dart';
+import '../../../domain/model/service_data.dart';
 import 'photo_upload_screen.dart';
 
 class TimeSettingSportScreen extends StatefulWidget {

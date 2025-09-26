@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../navigation/bottom_navigationber_screen.dart';
+import '../../../../../navigation/bottom_navigationber_screen.dart';
 import 'create_first_service_screen.dart';
 
 class ServiceCompleteScreen extends StatelessWidget {

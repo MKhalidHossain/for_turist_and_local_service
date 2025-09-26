@@ -1,41 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/offer/domain/model/service_data.dart';
+import 'package:kobeur/feature/offer/presentation/screens/common/offer_pricing_screen.dart';
+import '../../../../domain/model/offers_item.dart';
 
-import '../../../domain/model/offers_item.dart';
-import '../../../domain/model/service_data.dart';
-import '../offer_pricing_screen.dart';
+class FoodOffersScreen extends StatefulWidget {
+  const FoodOffersScreen({super.key});
 
-class PhotographyOffersScreen extends StatefulWidget {
-  const PhotographyOffersScreen({super.key});
   @override
-  _PhotographyOffersScreenState createState() =>
-      _PhotographyOffersScreenState();
+  State<FoodOffersScreen> createState() => _FoodOffersScreenState();
 }
 
-class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
+class _FoodOffersScreenState extends State<FoodOffersScreen> {
   String? selectedOffer;
-  String? selectedPhotographyOfferNameforStore;
   ServiceData serviceData = ServiceData();
+  String? selectedFoodOfferNameforStore;
 
   final List<OfferItem> offers = [
     OfferItem(
-      'Drone Rental',
-      'Rent your drone for one or multiple days',
-
-      'assets/icons/droneRental.png',
-      'drone_rental',
+      'At Home',
+      'Host a local meal at your home',
+      'assets/icons/home.png',
+      'home_food',
     ),
     OfferItem(
-      'Photo',
-      'Photograph tourists during their trip',
-      'assets/icons/photo.png',
-      'Photo',
+      'Restaurant',
+      'Invite the tourist to a local restaurant you enjoy and share a meal together',
+      'assets/icons/restaurant.png',
+      'restaurant_food',
+    ),
+    OfferItem(
+      'Takeaway',
+      'Prepare a homemade meal for the tourist to pick up',
+      'assets/images/takeaway.png',
+      'takeaway_food',
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    // Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
 
@@ -51,6 +56,7 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
               ],
             ),
             const SizedBox(height: 20),
+
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -65,7 +71,7 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
                       onTap: () {
                         setState(() {
                           selectedOffer = offer.value;
-                          selectedPhotographyOfferNameforStore = offer.title;
+                          selectedFoodOfferNameforStore = offer.title;
                         });
                       },
                       child: Container(
@@ -101,7 +107,7 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
                                 offer.imagePath,
                                 fit: BoxFit.cover,
                                 // color: Colors.white,
-                                height: 70,
+                                //height: 70,
                               ),
                             ),
                             SizedBox(width: 16),
@@ -162,16 +168,13 @@ class _PhotographyOffersScreenState extends State<PhotographyOffersScreen> {
                   onPressed:
                       selectedOffer != null
                           ? () {
+                            print('Selected Offer: $selectedFoodOfferNameforStore');
                             serviceData.selectedOfferType =
-                                selectedPhotographyOfferNameforStore;
+                                selectedFoodOfferNameforStore;
                             serviceData.printData();
-                            Get.to(
-                              OfferPricingScreen(
-                                offer: offers.firstWhere(
-                                  (offer) => offer.value == selectedOffer!,
-                                ),
-                              ),
-                            );
+                            Get.to(OfferPricingScreen(
+                              offer: offers.firstWhere((offer) => offer.value == selectedOffer!),
+                            ));
                           }
                           : null,
                   style: ElevatedButton.styleFrom(

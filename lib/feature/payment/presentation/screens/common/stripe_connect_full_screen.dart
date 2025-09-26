@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_links/app_links.dart';
 
-import '../../../../offer/presentation/screens/create_first_service_screen.dart';
+import '../../../../offer/presentation/screens/common/create_first_service_screen.dart';
 
 class StripeConnectFullScreen extends StatefulWidget {
   final String connectUrl;

@@ -10,7 +10,7 @@ import 'account_settings_screen.dart';
 import 'common/help_support_screen.dart';
 import 'common/privacy_policy_screen.dart';
 import 'common/terms_condition_screen.dart';
-import 'local/my_service_screen.dart';
+import 'local/my_offers_list_screen.dart';
 
 // ignore: must_be_immutable
 class ProfileScreen extends StatefulWidget {
@@ -143,7 +143,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       .text16Grey(),
                                   const SizedBox(height: 8),
                                   NormalCustomButton(
+                                    fontSize: size.width* 0.035,
                                     weight: size.width * 0.4,
+                                    
                                     text:
                                         widget.userRole.toLowerCase() == 'local'
                                             ? "Switch to Tourist"
@@ -181,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.wallet_giftcard_outlined,
                             text: "My Offer",
                             onTap: () {
-                              Get.to((MyServiceScreen()));
+                              Get.to((MyOffersListScreen(localId: profileController.getProfileResponseModel?.data?.sId ?? '' ,)));
                             },
                           )
                           : SizedBox(height: 0),

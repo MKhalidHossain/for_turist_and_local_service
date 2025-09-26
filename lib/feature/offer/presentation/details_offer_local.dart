@@ -6,7 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/validation/validators.dart';
 import '../../../core/widgets/app_scaffold.dart';
 import '../../auth/domain/common/singleton/user_profile_service.dart';
-import 'screens/photo_upload_screen.dart';
+import 'screens/common/photo_upload_screen.dart';
 import 'package:kobeur/feature/offer/domain/model/service_data.dart';
 
 class DetailsOfferLocal extends StatefulWidget {

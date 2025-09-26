@@ -8,7 +8,7 @@ import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../../utils/display_helper.dart';
 import '../../auth/presentation/screens/common/user_login_screen.dart';
-import '../../offer/presentation/screens/create_first_service_screen.dart';
+import '../../offer/presentation/screens/common/create_first_service_screen.dart';
 import '../domain/model/update_profile_response_model.dart';
 import '../services/profile_service_interface.dart';
 

@@ -22,7 +22,7 @@ import 'package:kobeur/feature/home/domain/tourist/get_super_hatch_response_mode
 import 'package:kobeur/feature/home/domain/tourist/rate_a_local_response_model.dart';
 import 'package:kobeur/feature/home/domain/tourist/search_offer_response_model.dart';
 import 'package:kobeur/feature/home/services/home_service_interface.dart';
-import 'package:kobeur/feature/offer/presentation/screens/create_first_service_screen.dart';
+import 'package:kobeur/feature/offer/presentation/screens/common/create_first_service_screen.dart';
 import 'package:kobeur/feature/payment/domain/model/confirm_payment_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/connect_account_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/create_payment_response_model.dart';

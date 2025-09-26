@@ -9,7 +9,7 @@ import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/validation/validators.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
-import '../../../../offer/presentation/screens/create_first_service_screen.dart';
+import '../../../../offer/presentation/screens/common/create_first_service_screen.dart';
 import '../../../../profile/controllers/profile_controller.dart';
 
 class UploadProfilePicture extends StatefulWidget {

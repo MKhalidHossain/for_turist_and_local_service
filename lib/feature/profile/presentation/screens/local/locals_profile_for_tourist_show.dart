@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
-import 'package:kobeur/feature/booking_module/presentation/screens/offer_details_screen_for_tourist.dart';
+import 'package:kobeur/feature/offer/presentation/screens/tourist/offer_details_screen_for_tourist.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../chat/presentation/screens/chat_screen.dart';

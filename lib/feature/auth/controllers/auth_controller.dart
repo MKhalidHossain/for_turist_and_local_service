@@ -14,7 +14,7 @@ import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
 import '../../../helpers/remote/data/api_client.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
-import '../../offer/presentation/screens/create_first_service_screen.dart';
+import '../../offer/presentation/screens/common/create_first_service_screen.dart';
 import '../../profile/controllers/profile_controller.dart';
 import '../domain/common/model/login_response_model.dart';
 import '../domain/common/model/registration_response_model.dart';

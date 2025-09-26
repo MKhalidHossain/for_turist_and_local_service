@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import 'package:kobeur/feature/offer/domain/model/service_data.dart';
-import '../../domain/model/offers_item.dart';
-import '../details_offer_local.dart';
+import '../../../domain/model/offers_item.dart';
+import '../../details_offer_local.dart';
 
 class OfferPricingScreen extends StatefulWidget {
   final OfferItem offer;

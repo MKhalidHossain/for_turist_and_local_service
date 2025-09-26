@@ -8,7 +8,7 @@ import 'package:kobeur/utils/display_helper.dart';
 
 import 'package:shimmer/shimmer.dart';
 
-import '../../../home/domain/tourist/get_offer_details_response_model.dart';
+import '../../../../home/domain/tourist/get_offer_details_response_model.dart';
 
 // ignore: must_be_immutable
 class OfferDetailsScreenForTouristScreen extends StatefulWidget {
