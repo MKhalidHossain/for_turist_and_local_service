@@ -143,9 +143,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       .text16Grey(),
                                   const SizedBox(height: 8),
                                   NormalCustomButton(
-                                    fontSize: size.width* 0.035,
+                                    fontSize: size.width * 0.032,
                                     weight: size.width * 0.4,
-                                    
+
                                     text:
                                         widget.userRole.toLowerCase() == 'local'
                                             ? "Switch to Tourist"
@@ -183,7 +183,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: Icons.wallet_giftcard_outlined,
                             text: "My Offer",
                             onTap: () {
-                              Get.to((MyOffersListScreen(localId: profileController.getProfileResponseModel?.data?.sId ?? '' ,)));
+                              Get.to(
+                                (MyOffersListScreen(
+                                  localId:
+                                      profileController
+                                          .getProfileResponseModel
+                                          ?.data
+                                          ?.sId ??
+                                      '',
+                                )),
+                              );
                             },
                           )
                           : SizedBox(height: 0),

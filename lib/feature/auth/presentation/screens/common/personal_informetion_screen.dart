@@ -317,7 +317,7 @@ class UserSignupScreenState extends State<PersonalInformetionScreen> {
             Icons.keyboard_arrow_down,
             color: AppColors.secondaryColor,
           ),
-          dropdownColor: const Color(0xffC4C4C4).withOpacity(0.8),
+          dropdownColor: Colors.white.withOpacity(0.9),
           style: const TextStyle(color: AppColors.secondayText, fontSize: 16),
           items:
               items

@@ -1,8 +1,8 @@
 class Urls {
   // ................................Auth...............................with local or server
 
-  static const String baseUrl = 'http://10.0.2.2:5001/api/v1';
-  //  static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
+  // static const String baseUrl = 'http://10.0.2.2:5001/api/v1';
+  static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
   // static const String baseUrl = 'https://api.hatchr.app/api/v1';
 
   // Auth Module
@@ -17,10 +17,8 @@ class Urls {
   static const String logOut = '/auth/logout';
 
   static const String chooseRole = '/auth/choose-role';
-  
+
   static const String roleSwitch = '/auth/role-switch';
-
-
 
   // ................................Profile Module...............................
 
@@ -112,8 +110,6 @@ class Urls {
   static const String confirmPayment = '/payment/confirm';
 
   static const String resendOnboarding = '/payment/resend-onboarding';
-
-
 
   //
 

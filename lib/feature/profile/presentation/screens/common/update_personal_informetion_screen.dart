@@ -88,14 +88,44 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     setState(() {});
   }
 
-  // void savePersonalUpdatedInformetion() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     await profileController.updateSpacificFieldUserProfile(
-  //       firstName:
-  //     );
-  //     Get.to(() => UpdatePersonalInformetionScreen(userRole: widget.userRole));
-  //   }
-  // }
+
+  bool get isFormValid {
+    final profileData = profileController.getProfileResponseModel?.data;
+    if (profileData == null) return false;
+
+    // Current values
+    final firstName = _firstNameController.text.trim();
+    final lastName = _lastNameController.text.trim();
+    final age = _ageController.text.trim();
+    final gender = selectedGender ?? profileData.gender;
+    final nationality = selectedNationality ?? profileData.nationality;
+
+    // 1. Validate required fields (not null/empty + pass validator)
+    final isFirstNameValid =
+        firstName.isNotEmpty && Validators.name(firstName) == null;
+    final isLastNameValid =
+        lastName.isNotEmpty && Validators.name(lastName) == null;
+    final isAgeValid = age.isNotEmpty && Validators.age(age) == null;
+    final isGenderValid = gender != null && gender.isNotEmpty;
+    final isNationalityValid = nationality != null && nationality.isNotEmpty;
+
+    final allValid =
+        isFirstNameValid &&
+        isLastNameValid &&
+        isAgeValid &&
+        isGenderValid &&
+        isNationalityValid;
+
+    // 2. Check if any field is changed compared to profile
+    final hasChanges =
+        firstName != (profileData.firstName ?? '') ||
+        lastName != (profileData.lastName ?? '') ||
+        age != (profileData.age?.toString() ?? '') ||
+        gender != profileData.gender ||
+        nationality != profileData.nationality;
+
+    return allValid && hasChanges;
+  }
 
   void savePersonalUpdatedInformetion() async {
     if (_formKey.currentState!.validate()) {
@@ -146,87 +176,48 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
 
   // bool get isFormValid {
   //   final profileData = profileController.getProfileResponseModel?.data;
-  //   return Validators.name(_firstNameController.text) == null &&
-  //           Validators.name(_lastNameController.text) == null &&
-  //           Validators.age(_ageController.text) == null &&
-  //           selectedGender != null &&
-  //           selectedNationality != null ||
-  //       _firstNameController.text.trim() != (profileData?.firstName ?? '') ||
-  //       _lastNameController.text.trim() != (profileData?.lastName ?? '') ||
-  //       _ageController.text.trim() != (profileData?.age.toString() ?? '') ||
-  //       selectedGender != profileData?.gender ||
-  //       selectedNationality != profileData?.nationality;
-  // }
-  bool get isFormValid {
-    final profileData = profileController.getProfileResponseModel?.data;
-    if (profileData == null) return false;
-
-    // Detect changes
-    final firstNameChanged =
-        _firstNameController.text.trim() != (profileData.firstName ?? '');
-    final lastNameChanged =
-        _lastNameController.text.trim() != (profileData.lastName ?? '');
-    final ageChanged =
-        _ageController.text.trim() != (profileData.age?.toString() ?? '');
-    final genderChanged = selectedGender != profileData.gender;
-    final nationalityChanged = selectedNationality != profileData.nationality;
-
-    final hasChanges =
-        firstNameChanged ||
-        lastNameChanged ||
-        ageChanged ||
-        genderChanged ||
-        nationalityChanged;
-
-    if (!hasChanges) return false; // nothing changed → no save
-
-    // ✅ Validate only if field is changed
-    if (firstNameChanged &&
-        Validators.name(_firstNameController.text) != null) {
-      return false;
-    }
-    if (lastNameChanged && Validators.name(_lastNameController.text) != null) {
-      return false;
-    }
-    if (ageChanged && Validators.age(_ageController.text) != null) {
-      return false;
-    }
-    if (genderChanged && selectedGender == null) {
-      return false;
-    }
-    if (nationalityChanged && selectedNationality == null) {
-      return false;
-    }
-
-    return true; // at least one field changed, and all changed fields are valid
-  }
-
-  // bool get isFormValid {
-  //   final profileData = profileController.getProfileResponseModel?.data;
   //   if (profileData == null) return false;
 
-  //   // ✅ Step 1: check validity
-  //   final isFirstNameValid = Validators.name(_firstNameController.text) == null;
-  //   final isLastNameValid = Validators.name(_lastNameController.text) == null;
-  //   final isAgeValid = Validators.age(_ageController.text) == null;
-  //   final isGenderValid = selectedGender != null;
-  //   final isNationalityValid = selectedNationality != null;
+  //   // Detect changes
+  //   final firstNameChanged =
+  //       _firstNameController.text.trim() != (profileData.firstName ?? '');
+  //   final lastNameChanged =
+  //       _lastNameController.text.trim() != (profileData.lastName ?? '');
+  //   final ageChanged =
+  //       _ageController.text.trim() != (profileData.age?.toString() ?? '');
+  //   final genderChanged = selectedGender != profileData.gender;
+  //   final nationalityChanged = selectedNationality != profileData.nationality;
 
-  //   final allValid = isFirstNameValid && isLastNameValid && isAgeValid;
-  //   isGenderValid &&
-  //   isNationalityValid;
-
-  //   // ✅ Step 2: check if there are changes
   //   final hasChanges =
-  //       _firstNameController.text.trim() != (profileData.firstName ?? '') ||
-  //       _lastNameController.text.trim() != (profileData.lastName ?? '') ||
-  //       _ageController.text.trim() != (profileData.age?.toString() ?? '') ||
-  //       selectedGender != profileData.gender ||
-  //       selectedNationality != profileData.nationality;
+  //       firstNameChanged ||
+  //       lastNameChanged ||
+  //       ageChanged ||
+  //       genderChanged ||
+  //       nationalityChanged;
 
-  //   // ✅ Step 3: only enable if BOTH are true
-  //   return allValid && hasChanges;
+  //   if (!hasChanges) return false; // nothing changed → no save
+
+  //   // ✅ Validate only if field is changed
+  //   if (firstNameChanged &&
+  //       Validators.name(_firstNameController.text) != null) {
+  //     return false;
+  //   }
+  //   if (lastNameChanged && Validators.name(_lastNameController.text) != null) {
+  //     return false;
+  //   }
+  //   if (ageChanged && Validators.age(_ageController.text) != null) {
+  //     return false;
+  //   }
+  //   // if (genderChanged && selectedGender == null) {
+  //   //   return false;
+  //   // }
+  //   // if (nationalityChanged && selectedNationality == null) {
+  //   //   return false;
+  //   // }
+
+  //   return true; // at least one field changed, and all changed fields are valid
   // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -301,7 +292,12 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                             _buildDropdown(
                               label: 'Gender',
                               initialValue: gender,
-                              value: selectedGender,
+                              value:
+                                  selectedGender ??
+                                  profileController
+                                      .getProfileResponseModel
+                                      ?.data
+                                      ?.gender,
                               items: ['male', 'female', 'other'],
                               onChanged:
                                   (val) => setState(() => selectedGender = val),
@@ -367,6 +363,23 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                                 }
                                 return null;
                               },
+                              // validator: (value) {
+                              //   final profileNationality =
+                              //       profileController
+                              //           .getProfileResponseModel
+                              //           ?.data
+                              //           ?.nationality;
+
+                              //   hasChanged =
+                              //       value != profileNationality ? true : false;
+
+                              //   // ✅ Only validate if changed
+                              //   if (hasChanged &&
+                              //       (value == null || value.isEmpty)) {
+                              //     return 'Please select nationality';
+                              //   }
+                              //   return null;
+                              // },
                             ),
                             const SizedBox(height: 12),
                           ],
@@ -491,7 +504,10 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
         DropdownButtonFormField<String>(
           initialValue: initialValue,
           value: value,
-          onChanged: onChanged,
+          onChanged: (val) {
+            onChanged(val);
+            _onFieldChanged();
+          },
           validator: validator,
           decoration: InputDecoration(
             filled: true,
