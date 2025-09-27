@@ -150,15 +150,15 @@ class HomeRepository implements HomeRepositoryInterface {
 
   @override
   Future<Response> searchOffer(
-    String country,
-    String date,
+      String country,
+    List<String> date,
     String participants,
-    String languages,
+    List<String> languages,
     String offerType,
   ) async {
     return await apiClient.patchData(Urls.searchOffer, {
       "country": country,
-      "date": date,
+      "dates": date,
       "participants": participants,
       "languages": languages,
       "offerType": offerType,

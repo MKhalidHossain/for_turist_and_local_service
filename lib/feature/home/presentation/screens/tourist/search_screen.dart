@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 import '../../../../../core/widgets/choose_country/model/country.dart';
@@ -38,9 +39,11 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> formatSelectedDates(List<DateTime> selectedDates) {
     formattedDates =
         selectedDates.map((d) {
-          return "${d.year.toString().padLeft(4, '0')}-"
+          final formatted =
+              "${d.year.toString().padLeft(4, '0')}-"
               "${d.month.toString().padLeft(2, '0')}-"
               "${d.day.toString().padLeft(2, '0')}";
+          return '"$formatted"'; // wrap in quotes
         }).toList();
     return formattedDates;
   }
@@ -193,30 +196,32 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     if (widget.initialSearchQuery != null) {
-      // 
+      //
       searchController.text = widget.initialSearchQuery!;
       _onSearchChanged(widget.initialSearchQuery!);
-
     }
   }
 
-   void _onSearchChanged(String query) {
+  void _onSearchChanged(String query) {
     if (query.isEmpty) {
       setState(() => suggestionResults = []);
       return;
     }
 
     setState(() {
-      suggestionResults = countries
-          .where((country) =>
-              country.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      suggestionResults =
+          countries
+              .where(
+                (country) =>
+                    country.country.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
     });
   }
 
   void _onSuggestionTap(Country country) {
     setState(() {
-      searchController.text = country.name;
+      searchController.text = country.country;
       suggestionResults = [];
     });
     FocusScope.of(context).unfocus(); // close keyboard
@@ -392,23 +397,23 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void _navigateToResults() {
-    Map<String, dynamic> searchParams = {
-      'query': searchController.text,
-      // 'date': 'December $selectedDate, 2024',
-      // 'date': selectedDate,
-      'guests': guestCount,
-      'languages': selectedLanguages.toList(),
-      'service': selectedService,
-    };
+  // void _navigateToResults() {
+  //   Map<String, dynamic> searchParams = {
+  //     'query': searchController.text,
+  //     // 'date': 'December $selectedDate, 2024',
+  //     // 'date': selectedDate,
+  //     'guests': guestCount,
+  //     'languages': selectedLanguages.toList(),
+  //     'service': selectedService,
+  //   };
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchResultsScreen(searchParams: searchParams),
-      ),
-    );
-  }
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => SearchResultsScreen(searchParams: searchParams),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +424,6 @@ class _SearchScreenState extends State<SearchScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header with back button and search bar
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -430,17 +434,26 @@ class _SearchScreenState extends State<SearchScreen> {
                     padding: EdgeInsets.zero,
                   ),
                   SizedBox(width: 8),
+
                   Expanded(
                     child: TextField(
                       controller: searchController,
+                      onChanged: _onSearchChanged,
                       decoration: InputDecoration(
                         hintText: 'Search destinations, hotels...',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                            width: 1.2,
+                          ),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
+
                           borderSide: BorderSide(color: Colors.grey[300]!),
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
@@ -448,6 +461,63 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
 
+            // Suggestions
+            if (suggestionResults.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: suggestionResults.length,
+                  itemBuilder: (context, index) {
+                    final country = suggestionResults[index];
+                    return ListTile(
+                      leading: Text(
+                        country.flagEmoji,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      title: Text(country.country),
+                      onTap: () => _onSuggestionTap(country),
+                    );
+                  },
+                ),
+              ),
+
+            // // If no results
+            // if (suggestionResults.isEmpty && searchController.text.isNotEmpty)
+            //   Padding(
+            //     padding: const EdgeInsets.all(16.0),
+            //     child: Text(
+            //       "No results found",
+            //       style: TextStyle(color: Colors.grey),
+            //     ),
+            //   ),
+
+            // Header with back button and search bar
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            //   child: Row(
+            //     children: [
+            //       IconButton(
+            //         onPressed: () => Navigator.pop(context),
+            //         icon: Icon(Icons.arrow_back),
+            //         padding: EdgeInsets.zero,
+            //       ),
+            //       SizedBox(width: 8),
+            //       Expanded(
+            //         child: TextField(
+            //           controller: searchController,
+            //           decoration: InputDecoration(
+            //             hintText: 'Search destinations, hotels...',
+            //             prefixIcon: Icon(Icons.search, color: Colors.grey),
+            //             border: OutlineInputBorder(
+            //               borderRadius: BorderRadius.circular(8),
+            //               borderSide: BorderSide(color: Colors.grey[300]!),
+            //             ),
+            //             contentPadding: EdgeInsets.symmetric(vertical: 12),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
@@ -1071,10 +1141,23 @@ class _SearchScreenState extends State<SearchScreen> {
                       onPressed: () {
                         // formatSelectedDates(selectedDates);
                         // formatSelectedLanguages(selectedLanguages);
-                        print(
-                          "selected date ${formatSelectedDates(selectedDates)} \nSelected languages: ${formatSelectedLanguages(selectedLanguages)} \n Guest count: $guestCount \n Service: $selectedService",
+                        formattedDates = formatSelectedDates(selectedDates);
+                        formattedSelectedLanguages = formatSelectedLanguages(
+                          selectedLanguages,
                         );
-                        _navigateToResults;
+
+                        print(
+                          "selected date $formattedDates \nSelected languages: $formattedSelectedLanguages \n Guest count: $guestCount \n Service: $selectedService \n Search Bar Item: ${searchController.text}",
+                        );
+                        Get.to(
+                          () => SearchResultsScreen(
+                            searchCountry: searchController.text,
+                            selectedDates: formattedDates,
+                            selectedPerticipants: guestCount.toString(),
+                            selectedLanguages: formattedSelectedLanguages,
+                            selectedOfferType: selectedService ?? '',
+                          ),
+                        );
                       },
 
                       // () {

@@ -28,7 +28,6 @@ abstract class HomeRepositoryInterface {
   Future<Response> getAllOwnOffer();
   Future<Response> getOwnOfferById(String offerId);
 
-
   Future<Response> getHome();
   Future<Response> getTripsDetails(String tripId);
   Future<Response> getBookings(String status);
@@ -41,9 +40,9 @@ abstract class HomeRepositoryInterface {
   Future<Response> getFavoriteHatch();
   Future<Response> searchOffer(
     String country,
-    String date,
+    List<String> date,
     String participants,
-    String languages,
+    List<String> languages,
     String offerType,
   );
   Future<Response> getOfferDetails(String localId, String offerId);
@@ -53,41 +52,32 @@ abstract class HomeRepositoryInterface {
   Future<Response> rateALocal(String localId, String comment, String rating);
 
   Future<Response> cancelTrip(String localId);
-//chat 
+  //chat
   Future<Response> sendMessage(String receiverId, String message);
   Future<Response> getMessages(String userId);
   Future<Response> getUserAssociatedWithChat();
   Future<Response> connectAccount();
-  //payment 
+  //payment
   Future<Response> createPayment(
     String bookingCode,
     String amount,
     String localId,
   );
   Future<Response> confirmPayment(
-     String paymentIntentId,
+    String paymentIntentId,
     String paymentMethodId,
   );
-  Future<Response> resendOnboarding(
-    String localId,
-  );
+  Future<Response> resendOnboarding(String localId);
 
-
-  
   //bookings
-   Future<Response> createBooking(
+  Future<Response> createBooking(
     String localId,
     String offerId,
     String date,
     String participants,
   );
-   Future<Response> confirmBooking(
-    String bookingId,
-  );
-   Future<Response> updateBooking(
-    String bookingId,
-    String participants
-  );
-   Future<Response> getBookingDetails(String bookingId);
-   Future<Response> getBookingByStatus(String status);
+  Future<Response> confirmBooking(String bookingId);
+  Future<Response> updateBooking(String bookingId, String participants);
+  Future<Response> getBookingDetails(String bookingId);
+  Future<Response> getBookingByStatus(String status);
 }
