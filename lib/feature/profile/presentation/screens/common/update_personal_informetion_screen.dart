@@ -26,53 +26,46 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
   final FocusNode _lastNameNameFocus = FocusNode();
   final FocusNode _ageFocus = FocusNode();
   late ProfileController profileController;
-  bool hasChanged = false;
-
   String? selectedGender;
   String? selectedNationality;
-  bool isEditing = true;
-
   final _formKey = GlobalKey<FormState>();
-  // cheak  for data update or not
   final Map<String, dynamic> updatedFields = {};
-
   final uniqueCountryNames = countries.map((c) => c.country).toSet().toList();
 
   String? _findMatchingCountry(String? nationality) {
     if (nationality == null || nationality.isEmpty) return null;
-
-    // Case-insensitive partial match
     final match = uniqueCountryNames.firstWhere(
       (country) =>
           country.toLowerCase().contains(nationality.toLowerCase()) ||
           nationality.toLowerCase().contains(country.toLowerCase()),
       orElse: () => '',
     );
-
     return match.isNotEmpty ? match : null;
   }
 
   @override
   void initState() {
     super.initState();
-
     profileController = Get.find<ProfileController>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      profileController.getUserProfile();
+      await profileController.getUserProfile();
       final profileData = profileController.getProfileResponseModel?.data;
-      _firstNameController = TextEditingController(text: profileData?.firstName)
-        ..addListener(_onFieldChanged);
-      _lastNameController = TextEditingController(text: profileData?.lastName)
-        ..addListener(_onFieldChanged);
-      _ageController = TextEditingController(
-        text: (profileData?.age.toString()),
-      )..addListener(_onFieldChanged);
-
-      setState(() {});
-      print(
-        "fristName (initState): ${profileData?.firstName}\n LastName (initState): ${profileData?.lastName}\n Age (initState): ${profileData?.age}\n",
-      );
+      setState(() {
+        _firstNameController = TextEditingController(text: profileData?.firstName ?? '')
+          ..addListener(_onFieldChanged);
+        _lastNameController = TextEditingController(text: profileData?.lastName ?? '')
+          ..addListener(_onFieldChanged);
+        _ageController = TextEditingController(text: profileData?.age?.toString() ?? '')
+          ..addListener(_onFieldChanged);
+        selectedGender = profileData?.gender?.isNotEmpty == true ? profileData!.gender : null;
+        selectedNationality = profileData?.nationality?.isNotEmpty == true
+            ? _findMatchingCountry(profileData!.nationality)
+            : null;
+      });
+      print('Initial Values: firstName=${_firstNameController.text}, '
+          'lastName=${_lastNameController.text}, age=${_ageController.text}, '
+          'gender=$selectedGender, nationality=$selectedNationality');
     });
   }
 
@@ -88,19 +81,21 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     setState(() {});
   }
 
-
   bool get isFormValid {
     final profileData = profileController.getProfileResponseModel?.data;
-    if (profileData == null) return false;
+    if (profileData == null) {
+      print('isFormValid: profileData is null');
+      return false;
+    }
 
     // Current values
     final firstName = _firstNameController.text.trim();
     final lastName = _lastNameController.text.trim();
     final age = _ageController.text.trim();
-    final gender = selectedGender ?? profileData.gender;
-    final nationality = selectedNationality ?? profileData.nationality;
+    final gender = selectedGender;
+    final nationality = selectedNationality;
 
-    // 1. Validate required fields (not null/empty + pass validator)
+    // Validate required fields (not null/empty + pass validator)
     final isFirstNameValid =
         firstName.isNotEmpty && Validators.name(firstName) == null;
     final isLastNameValid =
@@ -109,28 +104,34 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     final isGenderValid = gender != null && gender.isNotEmpty;
     final isNationalityValid = nationality != null && nationality.isNotEmpty;
 
-    final allValid =
-        isFirstNameValid &&
+    // Check if all fields are valid
+    final allValid = isFirstNameValid &&
         isLastNameValid &&
         isAgeValid &&
         isGenderValid &&
         isNationalityValid;
 
-    // 2. Check if any field is changed compared to profile
-    final hasChanges =
-        firstName != (profileData.firstName ?? '') ||
+    // Check if any field has changed
+    final hasChanges = firstName != (profileData.firstName ?? '') ||
         lastName != (profileData.lastName ?? '') ||
         age != (profileData.age?.toString() ?? '') ||
-        gender != profileData.gender ||
-        nationality != profileData.nationality;
+        gender != (profileData.gender ?? '') ||
+        nationality != (profileData.nationality ?? '');
+
+    print('isFormValid: allValid=$allValid, hasChanges=$hasChanges');
+    print('Field Values: firstName=$firstName (original: ${profileData.firstName}), '
+        'lastName=$lastName (original: ${profileData.lastName}), '
+        'age=$age (original: ${profileData.age}), '
+        'gender=$gender (original: ${profileData.gender}), '
+        'nationality=$nationality (original: ${profileData.nationality})');
 
     return allValid && hasChanges;
   }
 
   void savePersonalUpdatedInformetion() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && isFormValid) {
       final profileData = profileController.getProfileResponseModel?.data;
-
+      updatedFields.clear();
       if (_firstNameController.text.trim() != (profileData?.firstName ?? '')) {
         updatedFields['firstName'] = _firstNameController.text.trim();
       }
@@ -140,20 +141,11 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
       if (_ageController.text.trim() != (profileData?.age?.toString() ?? '')) {
         updatedFields['age'] = int.tryParse(_ageController.text.trim());
       }
-      if (selectedGender != null &&
-          selectedGender != (profileData?.gender ?? '')) {
+      if (selectedGender != (profileData?.gender ?? '')) {
         updatedFields['gender'] = selectedGender;
       }
-      if (selectedNationality != null &&
-          selectedNationality != (profileData?.nationality ?? '')) {
+      if (selectedNationality != (profileData?.nationality ?? '')) {
         updatedFields['nationality'] = selectedNationality;
-      }
-
-      // 🟢 Print updated fields
-      if (updatedFields.isNotEmpty) {
-        print("✅ Updated fields: $updatedFields");
-      } else {
-        print("ℹ️ No fields updated");
       }
 
       if (updatedFields.isEmpty) {
@@ -161,7 +153,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
         return;
       }
 
-      // Call controller with spread operator
+      print("✅ Updated fields: $updatedFields");
       await profileController.updateSpacificFieldUserProfile(
         firstName: updatedFields['firstName'],
         lastName: updatedFields['lastName'],
@@ -170,59 +162,13 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
         nationality: updatedFields['nationality'],
       );
 
-      Get.to(() => UpdatePersonalInformetionScreen(userRole: widget.userRole));
+      Get.off(() => UpdatePersonalInformetionScreen(userRole: widget.userRole));
     }
   }
-
-  // bool get isFormValid {
-  //   final profileData = profileController.getProfileResponseModel?.data;
-  //   if (profileData == null) return false;
-
-  //   // Detect changes
-  //   final firstNameChanged =
-  //       _firstNameController.text.trim() != (profileData.firstName ?? '');
-  //   final lastNameChanged =
-  //       _lastNameController.text.trim() != (profileData.lastName ?? '');
-  //   final ageChanged =
-  //       _ageController.text.trim() != (profileData.age?.toString() ?? '');
-  //   final genderChanged = selectedGender != profileData.gender;
-  //   final nationalityChanged = selectedNationality != profileData.nationality;
-
-  //   final hasChanges =
-  //       firstNameChanged ||
-  //       lastNameChanged ||
-  //       ageChanged ||
-  //       genderChanged ||
-  //       nationalityChanged;
-
-  //   if (!hasChanges) return false; // nothing changed → no save
-
-  //   // ✅ Validate only if field is changed
-  //   if (firstNameChanged &&
-  //       Validators.name(_firstNameController.text) != null) {
-  //     return false;
-  //   }
-  //   if (lastNameChanged && Validators.name(_lastNameController.text) != null) {
-  //     return false;
-  //   }
-  //   if (ageChanged && Validators.age(_ageController.text) != null) {
-  //     return false;
-  //   }
-  //   // if (genderChanged && selectedGender == null) {
-  //   //   return false;
-  //   // }
-  //   // if (nationalityChanged && selectedNationality == null) {
-  //   //   return false;
-  //   // }
-
-  //   return true; // at least one field changed, and all changed fields are valid
-  // }
-
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final gender = profileController.getProfileResponseModel?.data?.gender;
 
     return GetBuilder<ProfileController>(
       builder: (profileController) {
@@ -231,9 +177,7 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
           appBar: AppBar(
             leading: BackButton(
               color: Colors.black,
-              onPressed: () {
-                Get.back();
-              },
+              onPressed: () => Get.back(),
             ),
             title: const Text(
               'Update Personal Information',
@@ -288,98 +232,28 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                               validator: Validators.age,
                               keyboardType: TextInputType.number,
                             ),
-
                             _buildDropdown(
                               label: 'Gender',
-                              initialValue: gender,
-                              value:
-                                  selectedGender ??
-                                  profileController
-                                      .getProfileResponseModel
-                                      ?.data
-                                      ?.gender,
+                              value: selectedGender,
                               items: ['male', 'female', 'other'],
-                              onChanged:
-                                  (val) => setState(() => selectedGender = val),
-                              validator: (value) {
-                                final profileGender =
-                                    profileController
-                                        .getProfileResponseModel
-                                        ?.data
-                                        ?.gender;
-
-                                hasChanged = value != profileGender;
-
-                                // ✅ Only validate if changed
-                                if (hasChanged && value == null) {
-                                  return 'Please select gender';
-                                }
-                                return null;
-                              },
+                              onChanged: (val) =>
+                                  setState(() => selectedGender = val),
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Please select gender'
+                                      : null,
                             ),
                             const SizedBox(height: 12),
                             _buildDropdown(
                               label: 'Nationality',
-                              // initialValue:
-                              //     uniqueCountryNames.contains(
-                              //           profileController
-                              //               .getProfileResponseModel
-                              //               ?.data
-                              //               ?.nationality,
-                              //         )
-                              //         ? _findMatchingCountry(
-                              //           profileController
-                              //               .getProfileResponseModel
-                              //               ?.data
-                              //               ?.nationality,
-                              //         )
-                              //         : null,
-                              value:
-                                  selectedNationality ??
-                                  _findMatchingCountry(
-                                    profileController
-                                        .getProfileResponseModel
-                                        ?.data
-                                        ?.nationality,
-                                  ),
+                              value: selectedNationality,
                               items: uniqueCountryNames,
-                              onChanged:
-                                  (val) =>
-                                      setState(() => selectedNationality = val),
-                              validator: (value) {
-                                final profileNationality =
-                                    profileController
-                                        .getProfileResponseModel
-                                        ?.data
-                                        ?.nationality;
-
-                                hasChanged =
-                                    value != profileNationality ? true : false;
-
-                                // ✅ Only validate if changed
-                                if (hasChanged &&
-                                    (value == null || value.isEmpty)) {
-                                  return 'Please select nationality';
-                                }
-                                return null;
-                              },
-                              // validator: (value) {
-                              //   final profileNationality =
-                              //       profileController
-                              //           .getProfileResponseModel
-                              //           ?.data
-                              //           ?.nationality;
-
-                              //   hasChanged =
-                              //       value != profileNationality ? true : false;
-
-                              //   // ✅ Only validate if changed
-                              //   if (hasChanged &&
-                              //       (value == null || value.isEmpty)) {
-                              //     return 'Please select nationality';
-                              //   }
-                              //   return null;
-                              // },
+                              onChanged: (val) =>
+                                  setState(() => selectedNationality = val),
+                              validator: (value) =>
+                                  value == null || value.isEmpty
+                                      ? 'Please select nationality'
+                                      : null,
                             ),
                             const SizedBox(height: 12),
                           ],
@@ -390,16 +264,11 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
                 ),
               ),
               context.primaryButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate() && isFormValid) {
-                    savePersonalUpdatedInformetion();
-                  }
-                },
+                onPressed: isFormValid ? savePersonalUpdatedInformetion : () {},
                 text: "Save",
-                backgroundColor:
-                    isFormValid
-                        ? AppColors.context(context).primaryColor
-                        : AppColors.secondaryColor,
+                backgroundColor: isFormValid
+                    ? AppColors.context(context).primaryColor
+                    : AppColors.secondaryColor,
               ),
               const SizedBox(height: 36),
             ],
@@ -474,7 +343,6 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
     required List<String> items,
     required void Function(String?) onChanged,
     required String? Function(String?) validator,
-    String? initialValue,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -502,12 +370,8 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          initialValue: initialValue,
           value: value,
-          onChanged: (val) {
-            onChanged(val);
-            _onFieldChanged();
-          },
+          onChanged: onChanged,
           validator: validator,
           decoration: InputDecoration(
             filled: true,
@@ -526,24 +390,22 @@ class UserSignupScreenState extends State<UpdatePersonalInformetionScreen> {
             Icons.keyboard_arrow_down,
             color: AppColors.secondaryColor,
           ),
-          // dropdownColor: const Color(0xffC4C4C4).withOpacity(0.8),
           dropdownColor: Colors.white.withOpacity(0.9),
           style: const TextStyle(color: AppColors.secondayText, fontSize: 16),
-          items:
-              items
-                  .map(
-                    (item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Text(
-                          item,
-                          style: const TextStyle(color: AppColors.secondayText),
-                        ),
-                      ),
+          items: items
+              .map(
+                (item) => DropdownMenuItem<String>(
+                  value: item,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      item,
+                      style: const TextStyle(color: AppColors.secondayText),
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+              )
+              .toList(),
         ),
       ],
     );
