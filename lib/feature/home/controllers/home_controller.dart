@@ -520,8 +520,8 @@ class HomeController extends GetxController implements GetxService {
 
   Future<void> searchOffer(
     String country,
-    List<String> date,
-    String participants,
+    List<String> dates,
+    int participantsCount,
     List<String> languages,
     String offerType,
   ) async {
@@ -531,8 +531,8 @@ class HomeController extends GetxController implements GetxService {
 
       final response = await homeServiceInterface.searchOffer(
         country,
-        date,
-        participants,
+        dates,
+        participantsCount,
         languages,
         offerType,
       );

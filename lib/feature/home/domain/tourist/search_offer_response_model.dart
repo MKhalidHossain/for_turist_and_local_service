@@ -2,7 +2,7 @@ class SearchOfferResponseModel {
   final int? statusCode;
   final bool? success;
   final String? message;
-  final List<Data>? data;
+  final List<UserData>? data;
 
   SearchOfferResponseModel({
     this.statusCode,
@@ -12,13 +12,15 @@ class SearchOfferResponseModel {
   });
 
   factory SearchOfferResponseModel.fromJson(Map<String, dynamic> json) {
+    print("json mame print $json");
     return SearchOfferResponseModel(
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: json['data'] != null
-          ? List<Data>.from(json['data'].map((x) => Data.fromJson(x)))
-          : [],
+      data:
+          (json['data'] as List<dynamic>?)
+              ?.map((e) => UserData.fromJson(e))
+              .toList(),
     );
   }
 
@@ -27,19 +29,19 @@ class SearchOfferResponseModel {
       'statusCode': statusCode,
       'success': success,
       'message': message,
-      'data': data?.map((x) => x.toJson()).toList(),
+      'data': data?.map((e) => e.toJson()).toList(),
     };
   }
 }
 
-class Data {
+class UserData {
   final String? id;
   final String? firstName;
   final String? lastName;
   final String? profileImage;
   final List<Offer>? offers;
 
-  Data({
+  UserData({
     this.id,
     this.firstName,
     this.lastName,
@@ -47,15 +49,16 @@ class Data {
     this.offers,
   });
 
-  factory Data.fromJson(Map<String, dynamic> json) {
-    return Data(
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       id: json['_id'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       profileImage: json['profileImage'],
-      offers: json['offers'] != null
-          ? List<Offer>.from(json['offers'].map((x) => Offer.fromJson(x)))
-          : [],
+      offers:
+          (json['offers'] as List<dynamic>?)
+              ?.map((e) => Offer.fromJson(e))
+              .toList(),
     );
   }
 
@@ -65,7 +68,7 @@ class Data {
       'firstName': firstName,
       'lastName': lastName,
       'profileImage': profileImage,
-      'offers': offers?.map((x) => x.toJson()).toList(),
+      'offers': offers?.map((e) => e.toJson()).toList(),
     };
   }
 }
@@ -74,7 +77,7 @@ class Offer {
   final String? id;
   final String? category;
   final String? offerType;
-  final num? pricePerPerson;
+  final double? pricePerPerson;
   final int? maxParticipants;
   final String? description;
   final String? title;
@@ -100,18 +103,23 @@ class Offer {
       id: json['_id'],
       category: json['category'],
       offerType: json['offerType'],
-      pricePerPerson: json['pricePerPerson'],
+      pricePerPerson:
+          (json['pricePerPerson'] is int)
+              ? (json['pricePerPerson'] as int).toDouble()
+              : json['pricePerPerson'],
       maxParticipants: json['maxParticipants'],
       description: json['description'],
       title: json['title'],
-      languages: json['languages'] != null
-          ? List<String>.from(json['languages'])
-          : [],
-      photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
-      availability: json['availability'] != null
-          ? List<Availability>.from(
-              json['availability'].map((x) => Availability.fromJson(x)))
-          : [],
+      languages:
+          (json['languages'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList(),
+      photos:
+          (json['photos'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
+      availability:
+          (json['availability'] as List<dynamic>?)
+              ?.map((e) => Availability.fromJson(e))
+              .toList(),
     );
   }
 
@@ -126,37 +134,30 @@ class Offer {
       'title': title,
       'languages': languages,
       'photos': photos,
-      'availability': availability?.map((x) => x.toJson()).toList(),
+      'availability': availability?.map((e) => e.toJson()).toList(),
     };
   }
 }
 
 class Availability {
-  final String? date;
-  final List<String>? timeSlots;
   final String? id;
+  final DateTime? date;
+  final List<String>? timeSlots;
 
-  Availability({
-    this.date,
-    this.timeSlots,
-    this.id,
-  });
+  Availability({this.id, this.date, this.timeSlots});
 
   factory Availability.fromJson(Map<String, dynamic> json) {
     return Availability(
-      date: json['date'],
-      timeSlots: json['timeSlots'] != null
-          ? List<String>.from(json['timeSlots'])
-          : [],
       id: json['_id'],
+      date: json['date'] != null ? DateTime.parse(json['date']) : null,
+      timeSlots:
+          (json['timeSlots'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList(),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'timeSlots': timeSlots,
-      '_id': id,
-    };
+    return {'_id': id, 'date': date?.toIso8601String(), 'timeSlots': timeSlots};
   }
 }

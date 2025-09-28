@@ -43,7 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
               "${d.year.toString().padLeft(4, '0')}-"
               "${d.month.toString().padLeft(2, '0')}-"
               "${d.day.toString().padLeft(2, '0')}";
-          return '"$formatted"'; // wrap in quotes
+          return "$formatted"; // wrap in quotes
         }).toList();
     return formattedDates;
   }
@@ -1139,30 +1139,34 @@ class _SearchScreenState extends State<SearchScreen> {
                     WideCustomButton(
                       text: 'Continue',
                       onPressed: () {
-                        // formatSelectedDates(selectedDates);
-                        // formatSelectedLanguages(selectedLanguages);
                         formattedDates = formatSelectedDates(selectedDates);
                         formattedSelectedLanguages = formatSelectedLanguages(
                           selectedLanguages,
                         );
 
                         print(
-                          "selected date $formattedDates \nSelected languages: $formattedSelectedLanguages \n Guest count: $guestCount \n Service: $selectedService \n Search Bar Item: ${searchController.text}",
+                          "Selected dates: $formattedDates\n"
+                          "Selected languages: $formattedSelectedLanguages\n"
+                          "Guest count: $guestCount\n"
+                          "Service: $selectedService\n"
+                          "Search Country: ${searchController.text}",
                         );
+
+                        if (searchController.text.isEmpty) {
+                          Get.snackbar("Error", "Please select a country");
+                          return;
+                        }
+
                         Get.to(
                           () => SearchResultsScreen(
                             searchCountry: searchController.text,
                             selectedDates: formattedDates,
-                            selectedPerticipants: guestCount.toString(),
-                            selectedLanguages: formattedSelectedLanguages,
+                            selectedPerticipants: guestCount,
+                            selectedLanguages: selectedLanguages.toList(),
                             selectedOfferType: selectedService ?? '',
                           ),
                         );
                       },
-
-                      // () {
-                      //   Get.to(SearchResultsScreen());
-                      // },
                     ),
 
                     // Continue Button

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/home/presentation/widgets/favorite_button.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final String searchCountry;
   final List<String> selectedDates;
-  final String selectedPerticipants;
+  final int selectedPerticipants;
   final List<String> selectedLanguages;
   final String selectedOfferType;
   const SearchResultsScreen({
@@ -115,16 +116,17 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   @override
   void initState() {
     super.initState();
-
-    homeController = Get.find<HomeController>();
-    homeController.searchOffer(
-      widget.searchCountry,
-      widget.selectedDates,
-      widget.selectedPerticipants,
-      widget.selectedLanguages,
-      widget.selectedOfferType,
-    );
-    filteredResults = List.from(allResults);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      homeController = Get.find<HomeController>();
+      homeController.searchOffer(
+        widget.searchCountry,
+        widget.selectedDates,
+        widget.selectedPerticipants,
+        widget.selectedLanguages,
+        widget.selectedOfferType,
+      );
+      filteredResults = List.from(allResults);
+    });
 
     // Set search query from parameters
     // if (widget.searchParams != null) {
@@ -172,183 +174,183 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     });
   }
 
-  void _onResultTapped(Map<String, dynamic> result) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.7,
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(4),
-                        // shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Text(
-                          result['image'],
-                          style: TextStyle(fontSize: 40),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            result['name'],
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          Text(
-                            result['location'],
-                            style: TextStyle(color: Colors.grey, fontSize: 14),
-                          ),
-                          Text(
-                            result['description'],
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    Icon(Icons.star, color: Colors.amber, size: 20),
-                    SizedBox(width: 8),
-                    Text(
-                      '${result['rating']}',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      '(${result['reviews']})',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Price: \$${result['price']} per session',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.red,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 20),
+  // void _onResultTapped(Map<UserData> result) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder:
+  //         (context) => Container(
+  //           height: MediaQuery.of(context).size.height * 0.7,
+  //           padding: EdgeInsets.all(20),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Row(
+  //                 children: [
+  //                   Container(
+  //                     width: 80,
+  //                     height: 80,
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.grey[100],
+  //                       borderRadius: BorderRadius.circular(4),
+  //                       // shape: BoxShape.circle,
+  //                     ),
+  //                     child: Center(
+  //                       child: Text(
+  //                         result['image'],
+  //                         style: TextStyle(fontSize: 40),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   SizedBox(width: 16),
+  //                   Expanded(
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text(
+  //                           result['name'],
+  //                           style: TextStyle(
+  //                             fontSize: 20,
+  //                             fontWeight: FontWeight.w600,
+  //                           ),
+  //                         ),
+  //                         Text(
+  //                           result['location'],
+  //                           style: TextStyle(color: Colors.grey, fontSize: 14),
+  //                         ),
+  //                         Text(
+  //                           result['description'],
+  //                           style: TextStyle(
+  //                             color: Colors.grey[600],
+  //                             fontSize: 14,
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //               SizedBox(height: 20),
+  //               Row(
+  //                 children: [
+  //                   Icon(Icons.star, color: Colors.amber, size: 20),
+  //                   SizedBox(width: 8),
+  //                   Text(
+  //                     '${result['rating']}',
+  //                     style: TextStyle(
+  //                       fontSize: 16,
+  //                       fontWeight: FontWeight.w500,
+  //                     ),
+  //                   ),
+  //                   SizedBox(width: 8),
+  //                   Text(
+  //                     '(${result['reviews']})',
+  //                     style: TextStyle(color: Colors.grey),
+  //                   ),
+  //                 ],
+  //               ),
+  //               SizedBox(height: 16),
+  //               Text(
+  //                 'Price: \$${result['price']} per session',
+  //                 style: TextStyle(
+  //                   fontSize: 18,
+  //                   color: Colors.red,
+  //                   fontWeight: FontWeight.w600,
+  //                 ),
+  //               ),
+  //               SizedBox(height: 20),
 
-                // Show search parameters if available
-                // if (widget.searchParams != null) ...[
-                //   Text(
-                //     'Booking Details',
-                //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                //   ),
-                //   SizedBox(height: 8),
-                //   Container(
-                //     padding: EdgeInsets.all(12),
-                //     decoration: BoxDecoration(
-                //       color: Colors.grey[50],
-                //       borderRadius: BorderRadius.circular(8),
-                //     ),
-                //     child: Column(
-                //       crossAxisAlignment: CrossAxisAlignment.start,
-                //       children: [
-                //         if (widget.searchParams!['date'] != null)
-                //           Text(
-                //             'Date: ${widget.searchParams!['date']}',
-                //             style: TextStyle(fontSize: 14),
-                //           ),
-                //         if (widget.searchParams!['guests'] != null)
-                //           Text(
-                //             'Guests: ${widget.searchParams!['guests']}',
-                //             style: TextStyle(fontSize: 14),
-                //           ),
-                //         if (widget.searchParams!['language'] != null)
-                //           Text(
-                //             'Language: ${widget.searchParams!['language']}',
-                //             style: TextStyle(fontSize: 14),
-                //           ),
-                //         if (widget.searchParams!['service'] != null)
-                //           Text(
-                //             'Service: ${widget.searchParams!['service']}',
-                //             style: TextStyle(fontSize: 14),
-                //           ),
-                //       ],
-                //     ),
-                //   ),
-                //   SizedBox(height: 16),
-                // ],
-                Text(
-                  'About',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  'Experienced ${result['description'].toLowerCase()} with over 5 years of experience in Bali. Specializing in capturing beautiful moments with professional quality.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                ),
-                Spacer(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Added ${result['name']} to favorites',
-                              ),
-                            ),
-                          );
-                        },
-                        child: Text('Add to Favorites'),
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // _showBookingDialog(result);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                        ),
-                        child: Text(
-                          'Book Now',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-    );
-  }
+  //               // Show search parameters if available
+  //               // if (widget.searchParams != null) ...[
+  //               //   Text(
+  //               //     'Booking Details',
+  //               //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+  //               //   ),
+  //               //   SizedBox(height: 8),
+  //               //   Container(
+  //               //     padding: EdgeInsets.all(12),
+  //               //     decoration: BoxDecoration(
+  //               //       color: Colors.grey[50],
+  //               //       borderRadius: BorderRadius.circular(8),
+  //               //     ),
+  //               //     child: Column(
+  //               //       crossAxisAlignment: CrossAxisAlignment.start,
+  //               //       children: [
+  //               //         if (widget.searchParams!['date'] != null)
+  //               //           Text(
+  //               //             'Date: ${widget.searchParams!['date']}',
+  //               //             style: TextStyle(fontSize: 14),
+  //               //           ),
+  //               //         if (widget.searchParams!['guests'] != null)
+  //               //           Text(
+  //               //             'Guests: ${widget.searchParams!['guests']}',
+  //               //             style: TextStyle(fontSize: 14),
+  //               //           ),
+  //               //         if (widget.searchParams!['language'] != null)
+  //               //           Text(
+  //               //             'Language: ${widget.searchParams!['language']}',
+  //               //             style: TextStyle(fontSize: 14),
+  //               //           ),
+  //               //         if (widget.searchParams!['service'] != null)
+  //               //           Text(
+  //               //             'Service: ${widget.searchParams!['service']}',
+  //               //             style: TextStyle(fontSize: 14),
+  //               //           ),
+  //               //       ],
+  //               //     ),
+  //               //   ),
+  //               //   SizedBox(height: 16),
+  //               // ],
+  //               Text(
+  //                 'About',
+  //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+  //               ),
+  //               SizedBox(height: 8),
+  //               Text(
+  //                 'Experienced ${result['description'].toLowerCase()} with over 5 years of experience in Bali. Specializing in capturing beautiful moments with professional quality.',
+  //                 style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+  //               ),
+  //               Spacer(),
+  //               Row(
+  //                 children: [
+  //                   Expanded(
+  //                     child: OutlinedButton(
+  //                       onPressed: () {
+  //                         Navigator.pop(context);
+  //                         ScaffoldMessenger.of(context).showSnackBar(
+  //                           SnackBar(
+  //                             content: Text(
+  //                               'Added ${result['name']} to favorites',
+  //                             ),
+  //                           ),
+  //                         );
+  //                       },
+  //                       child: Text('Add to Favorites'),
+  //                     ),
+  //                   ),
+  //                   SizedBox(width: 12),
+  //                   Expanded(
+  //                     child: ElevatedButton(
+  //                       onPressed: () {
+  //                         Navigator.pop(context);
+  //                         // _showBookingDialog(result);
+  //                       },
+  //                       style: ElevatedButton.styleFrom(
+  //                         backgroundColor: Colors.red,
+  //                       ),
+  //                       child: Text(
+  //                         'Book Now',
+  //                         style: TextStyle(color: Colors.white),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //   );
+  // }
 
   // void _showBookingDialog(Map<String, dynamic> result) {
   //   showDialog(
@@ -432,7 +434,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               body: SafeArea(
                 child: Column(
                   children: [
-                    Text('Search Results ${filteredOffers?.first.firstName}'),
+                    // Text(
+                    //   'Search Results ${filteredOffers?.first.firstName} ?? "No offers"}',
+                    // ),
                     // Status Bar
                     // Container(
                     //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -557,7 +561,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       child: Row(
                         children: [
                           Text(
-                            '${filteredResults.length} results found',
+                            '${filteredOffers?.length} results found',
                             style: TextStyle(color: Colors.grey),
                           ),
                         ],
@@ -598,11 +602,14 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                 separatorBuilder:
                                     (_, __) => SizedBox(height: 16),
                                 padding: EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: filteredResults.length,
+                                itemCount: filteredOffers!.length,
                                 itemBuilder: (context, index) {
-                                  final result = filteredResults[index];
+                                  final result = filteredOffers[index];
+                                  final hatchName =
+                                      "${result.firstName} ${result.lastName}";
+
                                   return GestureDetector(
-                                    onTap: () => _onResultTapped(result),
+                                    onTap: () {},
                                     child: Container(
                                       // margin: EdgeInsets.only(bottom: 16),
                                       // padding: EdgeInsets.all(16),
@@ -619,26 +626,80 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                       ),
                                       child: Row(
                                         children: [
+                                          // Inside your widget
                                           Container(
-                                            // width: 120,
                                             height: 120,
                                             decoration: BoxDecoration(
                                               color: Colors.grey[100],
-                                              // shape: BoxShape.circle,
                                               borderRadius:
                                                   BorderRadius.circular(4),
                                             ),
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(4),
-                                              child: Image.asset(
-                                                result['image'],
+                                              child: Builder(
+                                                builder: (context) {
+                                                  final photoUrl =
+                                                      (result
+                                                                  .offers?[index]
+                                                                  .photos
+                                                                  ?.isNotEmpty ??
+                                                              false)
+                                                          ? result
+                                                              .offers![index]
+                                                              .photos!
+                                                              .first
+                                                          : 'assets/images/bannerPlaceholder.jpg'; // local placeholder
 
-                                                //'assets/images/local1.png',
-                                                fit: BoxFit.cover,
+                                                  if (photoUrl.startsWith(
+                                                    'http',
+                                                  )) {
+                                                    return Image.network(
+                                                      photoUrl,
+                                                      fit: BoxFit.cover,
+                                                      loadingBuilder: (
+                                                        context,
+                                                        child,
+                                                        loadingProgress,
+                                                      ) {
+                                                        if (loadingProgress ==
+                                                            null)
+                                                          return child;
+                                                        return Shimmer.fromColors(
+                                                          baseColor:
+                                                              Colors.grey[300]!,
+                                                          highlightColor:
+                                                              Colors.grey[100]!,
+                                                          child: Container(
+                                                            color:
+                                                                Colors
+                                                                    .grey[300],
+                                                          ),
+                                                        );
+                                                      },
+                                                      errorBuilder: (
+                                                        context,
+                                                        error,
+                                                        stackTrace,
+                                                      ) {
+                                                        return Image.asset(
+                                                          'assets/images/bannerPlaceholder.jpg',
+                                                          fit: BoxFit.cover,
+                                                        );
+                                                      },
+                                                    );
+                                                  } else {
+                                                    // If photoUrl is local
+                                                    return Image.asset(
+                                                      photoUrl,
+                                                      fit: BoxFit.cover,
+                                                    );
+                                                  }
+                                                },
                                               ),
                                             ),
                                           ),
+
                                           SizedBox(width: 12),
                                           Expanded(
                                             child: Column(
@@ -651,7 +712,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                           .spaceBetween,
                                                   children: [
                                                     Text(
-                                                      result['name'],
+                                                      hatchName,
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -672,13 +733,103 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                           MainAxisAlignment
                                                               .center,
                                                       children: [
-                                                        Image.asset(
-                                                          'assets/images/takeaway.png',
+                                                        Container(
                                                           height: 40,
-                                                          fit: BoxFit.contain,
+                                                          width: 40,
+                                                          decoration: BoxDecoration(
+                                                            color:
+                                                                Colors
+                                                                    .grey[100],
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  4,
+                                                                ),
+                                                          ),
+                                                          child: ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  4,
+                                                                ),
+                                                            child: Builder(
+                                                              builder: (
+                                                                context,
+                                                              ) {
+                                                                final photoUrl =
+                                                                    (result.offers !=
+                                                                                null &&
+                                                                            result.offers!.isNotEmpty &&
+                                                                            result.offers!.first.photos !=
+                                                                                null &&
+                                                                            result.offers!.first.photos!.isNotEmpty)
+                                                                        ? result
+                                                                            .offers!
+                                                                            .first
+                                                                            .photos!
+                                                                            .first
+                                                                        : null;
+
+                                                                if (photoUrl ==
+                                                                        null ||
+                                                                    photoUrl
+                                                                        .isEmpty) {
+                                                                  return Image.asset(
+                                                                    'assets/images/bannerPlaceholder.jpg',
+                                                                    fit:
+                                                                        BoxFit
+                                                                            .cover,
+                                                                  );
+                                                                }
+
+                                                                return Image.network(
+                                                                  photoUrl,
+                                                                  fit:
+                                                                      BoxFit
+                                                                          .cover,
+                                                                  loadingBuilder: (
+                                                                    context,
+                                                                    child,
+                                                                    loadingProgress,
+                                                                  ) {
+                                                                    if (loadingProgress ==
+                                                                        null)
+                                                                      return child;
+                                                                    return Shimmer.fromColors(
+                                                                      baseColor:
+                                                                          Colors
+                                                                              .grey[300]!,
+                                                                      highlightColor:
+                                                                          Colors
+                                                                              .grey[100]!,
+                                                                      child: Container(
+                                                                        color:
+                                                                            Colors.grey[300],
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                  errorBuilder: (
+                                                                    context,
+                                                                    error,
+                                                                    stackTrace,
+                                                                  ) {
+                                                                    return Image.asset(
+                                                                      'assets/images/bannerPlaceholder.jpg',
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .cover,
+                                                                    );
+                                                                  },
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
                                                         ),
+
                                                         Text(
-                                                          "Takeaway",
+                                                          result
+                                                                  .offers
+                                                                  ?.first
+                                                                  .offerType ??
+                                                              'No Offer Type',
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 10,
@@ -696,7 +847,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            result['location'],
+                                                            result
+                                                                    .offers
+                                                                    ?.first
+                                                                    .category ??
+                                                                'No Category',
                                                             style: TextStyle(
                                                               color: Colors.red,
                                                               fontWeight:
@@ -706,7 +861,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            result['description'],
+                                                            result
+                                                                    .offers
+                                                                    ?.first
+                                                                    .description ??
+                                                                'No Description',
                                                             maxLines: 5,
                                                             //overflow: TextOverflow.ellipsis,
                                                             style: TextStyle(
@@ -739,7 +898,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                         ),
                                                         SizedBox(width: 4),
                                                         Text(
-                                                          '${result['rating']}',
+                                                          // '${result['rating']}',
+                                                          '5',
                                                           style: TextStyle(
                                                             fontSize: 12,
                                                           ),
@@ -759,7 +919,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          '${result['price']}\€',
+                                                          '${result.offers?.first.pricePerPerson}\€' ??
+                                                              '0.00€',
                                                           style: TextStyle(
                                                             color: Colors.red,
                                                             fontWeight:

@@ -123,16 +123,16 @@ class HomeService implements HomeServiceInterface {
 
   @override
   Future<Response> searchOffer(
-     String country,
-    List<String> date,
-    String participants,
+    String country,
+    List<String> dates,
+    int participantsCount,
     List<String> languages,
     String offerType,
   ) async {
     return await homeRepositoryInterface.searchOffer(
       country,
-      date,
-      participants,
+      dates,
+      participantsCount,
       languages,
       offerType,
     );

@@ -40,8 +40,8 @@ abstract class HomeServiceInterface {
   Future<Response> getFavoriteHatch();
   Future<Response> searchOffer(
     String country,
-    List<String> date,
-    String participants,
+    List<String> dates,
+    int participantsCount,
     List<String> languages,
     String offerType,
   );

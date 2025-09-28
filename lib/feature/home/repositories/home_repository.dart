@@ -150,16 +150,16 @@ class HomeRepository implements HomeRepositoryInterface {
 
   @override
   Future<Response> searchOffer(
-      String country,
-    List<String> date,
-    String participants,
+    String country,
+    List<String> dates,
+    int participantsCount,
     List<String> languages,
     String offerType,
   ) async {
-    return await apiClient.patchData(Urls.searchOffer, {
+    return await apiClient.postData(Urls.searchOffer, {
       "country": country,
-      "dates": date,
-      "participants": participants,
+      "dates": dates,
+      "participants": participantsCount,
       "languages": languages,
       "offerType": offerType,
     });
@@ -266,7 +266,7 @@ class HomeRepository implements HomeRepositoryInterface {
 
   @override
   Future<Response> getBookingByStatus(String status) async {
-    return await apiClient.getData(Urls.getBookingsByStatus+status);
+    return await apiClient.getData(Urls.getBookingsByStatus + status);
   }
 
   @override
