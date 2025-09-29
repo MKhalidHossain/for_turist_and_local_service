@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/home/presentation/widgets/favorite_button.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../../../profile/presentation/screens/local/locals_profile_for_tourist_show.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final String searchCountry;
@@ -10,6 +12,7 @@ class SearchResultsScreen extends StatefulWidget {
   final int selectedPerticipants;
   final List<String> selectedLanguages;
   final String selectedOfferType;
+
   const SearchResultsScreen({
     super.key,
     required this.searchCountry,
@@ -25,398 +28,88 @@ class SearchResultsScreen extends StatefulWidget {
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   TextEditingController searchController = TextEditingController();
-  List<Map<String, dynamic>> filteredResults = [];
-
-  final List<Map<String, dynamic>> allResults = [
-    {
-      'id': 1,
-      'name': 'Jasmine Bell',
-      'location': 'Tacos at home',
-      'rating': 4.8,
-      'price': 120,
-      'image': 'assets/images/local1.png',
-      'reviews': 'Very Good',
-      'description':
-          "Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ",
-      'category': 'photographer',
-    },
-    {
-      'id': 2,
-      'name': 'Marcus Chen',
-      'location': 'Bali, Indonesia',
-      'rating': 4.9,
-      'price': 150,
-      'image': 'assets/images/local2.png',
-      'reviews': 'Excellent',
-      'description': 'Wedding photographer',
-      'category': 'photographer',
-    },
-    {
-      'id': 3,
-      'name': 'Sarah Wilson',
-      'location': 'Tacos at home',
-      'rating': 4.7,
-      'price': 100,
-      'image': 'assets/images/local4.png',
-      'reviews': 'Very Good',
-      'description':
-          'Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ',
-      'category': 'photographer',
-    },
-    {
-      'id': 4,
-      'name': 'David Kumar',
-      'location': 'Bali, Indonesia',
-      'rating': 4.8,
-      'price': 130,
-      'image': 'assets/images/local3.png',
-      'reviews': 'Very Good',
-      'description': 'Travel photographer',
-      'category': 'photographer',
-    },
-    {
-      'id': 5,
-      'name': 'Emma Rodriguez',
-      'location': 'Tacos at home',
-      'rating': 4.9,
-      'price': 140,
-      'image': 'assets/images/local1.png',
-      'reviews': 'Excellent',
-      'description':
-          'Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ',
-      'category': 'photographer',
-    },
-    {
-      'id': 6,
-      'name': 'John Doe',
-      'location': 'Bali, Indonesia',
-      'rating': 4.7,
-      'price': 110,
-      'image': 'assets/images/local2.png',
-      'reviews': 'Very Good',
-      'description': 'Wedding photographer',
-      'category': 'photographer',
-    },
-    {
-      'id': 7,
-      'name': 'Jane Smith',
-      'location': 'Tacos at home',
-      'rating': 4.8,
-      'price': 120,
-      'image': 'assets/images/local3.png',
-      'reviews': 'Excellent',
-      'description':
-          'Let’s eat tacos & burritos with locals beers. Always great to share around a BBQ',
-      'category': 'photographer',
-    },
-  ];
+  List<dynamic> filteredResults = [];
+  List<dynamic> originalResults = [];
 
   late HomeController homeController;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       homeController = Get.find<HomeController>();
-      homeController.searchOffer(
+      await homeController.searchOffer(
         widget.searchCountry,
         widget.selectedDates,
         widget.selectedPerticipants,
         widget.selectedLanguages,
         widget.selectedOfferType,
       );
-      filteredResults = List.from(allResults);
+      if (homeController.searchOfferResponseModel.data != null) {
+        setState(() {
+          originalResults = List.from(
+            homeController.searchOfferResponseModel.data!,
+          );
+          filteredResults = List.from(originalResults);
+        });
+      }
     });
-
-    // Set search query from parameters
-    // if (widget.searchParams != null) {
-    //   String searchQuery = '';
-    //   final params = widget.searchParams!;
-
-    //   if (params['query'] != null && params['query'].isNotEmpty) {
-    //     searchQuery += params['query'];
-    //   }
-
-    //   if (params['service'] != null) {
-    //     searchQuery += ' ${params['service']}';
-    //   }
-
-    //   if (params['date'] != null) {
-    //     searchQuery += ' ${params['date']}';
-    //   }
-
-    //   if (params['guests'] != null) {
-    //     searchQuery += ' ${params['guests']} guests';
-    //   }
-
-    //   searchController.text = searchQuery.trim();
-    // }
   }
 
+  /// 🔍 Search filter
   void _onSearchChanged(String value) {
     setState(() {
       if (value.isEmpty) {
-        filteredResults = List.from(allResults);
+        filteredResults = List.from(originalResults);
       } else {
         filteredResults =
-            allResults.where((result) {
-              return result['name'].toLowerCase().contains(
-                    value.toLowerCase(),
-                  ) ||
-                  result['location'].toLowerCase().contains(
-                    value.toLowerCase(),
-                  ) ||
-                  result['description'].toLowerCase().contains(
-                    value.toLowerCase(),
-                  );
+            originalResults.where((result) {
+              final fullName =
+                  "${result.firstName ?? ''} ${result.lastName ?? ''}"
+                      .toLowerCase();
+              final offerTitle =
+                  result.offers?.first.title?.toLowerCase() ?? '';
+              final offerDesc =
+                  result.offers?.first.description?.toLowerCase() ?? '';
+              return fullName.contains(value.toLowerCase()) ||
+                  offerTitle.contains(value.toLowerCase()) ||
+                  offerDesc.contains(value.toLowerCase());
             }).toList();
       }
     });
   }
 
-  // void _onResultTapped(Map<UserData> result) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder:
-  //         (context) => Container(
-  //           height: MediaQuery.of(context).size.height * 0.7,
-  //           padding: EdgeInsets.all(20),
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Row(
-  //                 children: [
-  //                   Container(
-  //                     width: 80,
-  //                     height: 80,
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.grey[100],
-  //                       borderRadius: BorderRadius.circular(4),
-  //                       // shape: BoxShape.circle,
-  //                     ),
-  //                     child: Center(
-  //                       child: Text(
-  //                         result['image'],
-  //                         style: TextStyle(fontSize: 40),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   SizedBox(width: 16),
-  //                   Expanded(
-  //                     child: Column(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Text(
-  //                           result['name'],
-  //                           style: TextStyle(
-  //                             fontSize: 20,
-  //                             fontWeight: FontWeight.w600,
-  //                           ),
-  //                         ),
-  //                         Text(
-  //                           result['location'],
-  //                           style: TextStyle(color: Colors.grey, fontSize: 14),
-  //                         ),
-  //                         Text(
-  //                           result['description'],
-  //                           style: TextStyle(
-  //                             color: Colors.grey[600],
-  //                             fontSize: 14,
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //               SizedBox(height: 20),
-  //               Row(
-  //                 children: [
-  //                   Icon(Icons.star, color: Colors.amber, size: 20),
-  //                   SizedBox(width: 8),
-  //                   Text(
-  //                     '${result['rating']}',
-  //                     style: TextStyle(
-  //                       fontSize: 16,
-  //                       fontWeight: FontWeight.w500,
-  //                     ),
-  //                   ),
-  //                   SizedBox(width: 8),
-  //                   Text(
-  //                     '(${result['reviews']})',
-  //                     style: TextStyle(color: Colors.grey),
-  //                   ),
-  //                 ],
-  //               ),
-  //               SizedBox(height: 16),
-  //               Text(
-  //                 'Price: \$${result['price']} per session',
-  //                 style: TextStyle(
-  //                   fontSize: 18,
-  //                   color: Colors.red,
-  //                   fontWeight: FontWeight.w600,
-  //                 ),
-  //               ),
-  //               SizedBox(height: 20),
-
-  //               // Show search parameters if available
-  //               // if (widget.searchParams != null) ...[
-  //               //   Text(
-  //               //     'Booking Details',
-  //               //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-  //               //   ),
-  //               //   SizedBox(height: 8),
-  //               //   Container(
-  //               //     padding: EdgeInsets.all(12),
-  //               //     decoration: BoxDecoration(
-  //               //       color: Colors.grey[50],
-  //               //       borderRadius: BorderRadius.circular(8),
-  //               //     ),
-  //               //     child: Column(
-  //               //       crossAxisAlignment: CrossAxisAlignment.start,
-  //               //       children: [
-  //               //         if (widget.searchParams!['date'] != null)
-  //               //           Text(
-  //               //             'Date: ${widget.searchParams!['date']}',
-  //               //             style: TextStyle(fontSize: 14),
-  //               //           ),
-  //               //         if (widget.searchParams!['guests'] != null)
-  //               //           Text(
-  //               //             'Guests: ${widget.searchParams!['guests']}',
-  //               //             style: TextStyle(fontSize: 14),
-  //               //           ),
-  //               //         if (widget.searchParams!['language'] != null)
-  //               //           Text(
-  //               //             'Language: ${widget.searchParams!['language']}',
-  //               //             style: TextStyle(fontSize: 14),
-  //               //           ),
-  //               //         if (widget.searchParams!['service'] != null)
-  //               //           Text(
-  //               //             'Service: ${widget.searchParams!['service']}',
-  //               //             style: TextStyle(fontSize: 14),
-  //               //           ),
-  //               //       ],
-  //               //     ),
-  //               //   ),
-  //               //   SizedBox(height: 16),
-  //               // ],
-  //               Text(
-  //                 'About',
-  //                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-  //               ),
-  //               SizedBox(height: 8),
-  //               Text(
-  //                 'Experienced ${result['description'].toLowerCase()} with over 5 years of experience in Bali. Specializing in capturing beautiful moments with professional quality.',
-  //                 style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-  //               ),
-  //               Spacer(),
-  //               Row(
-  //                 children: [
-  //                   Expanded(
-  //                     child: OutlinedButton(
-  //                       onPressed: () {
-  //                         Navigator.pop(context);
-  //                         ScaffoldMessenger.of(context).showSnackBar(
-  //                           SnackBar(
-  //                             content: Text(
-  //                               'Added ${result['name']} to favorites',
-  //                             ),
-  //                           ),
-  //                         );
-  //                       },
-  //                       child: Text('Add to Favorites'),
-  //                     ),
-  //                   ),
-  //                   SizedBox(width: 12),
-  //                   Expanded(
-  //                     child: ElevatedButton(
-  //                       onPressed: () {
-  //                         Navigator.pop(context);
-  //                         // _showBookingDialog(result);
-  //                       },
-  //                       style: ElevatedButton.styleFrom(
-  //                         backgroundColor: Colors.red,
-  //                       ),
-  //                       child: Text(
-  //                         'Book Now',
-  //                         style: TextStyle(color: Colors.white),
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //   );
-  // }
-
-  // void _showBookingDialog(Map<String, dynamic> result) {
-  //   showDialog(
-  //     context: context,
-  //     builder:
-  //         (context) => AlertDialog(
-  //           title: Text('Book ${result['name']}'),
-  //           content: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text('Service: ${result['description']}'),
-  //               Text('Location: ${result['location']}'),
-  //               Text('Price: \$${result['price']} per session'),
-  //               if (widget.searchParams != null) ...[
-  //                 SizedBox(height: 16),
-  //                 Text('Your booking details:'),
-  //                 if (widget.searchParams!['date'] != null)
-  //                   Text('Date: ${widget.searchParams!['date']}'),
-  //                 if (widget.searchParams!['guests'] != null)
-  //                   Text('Guests: ${widget.searchParams!['guests']}'),
-  //               ],
-  //             ],
-  //           ),
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () => Navigator.pop(context),
-  //               child: Text('Cancel'),
-  //             ),
-  //             ElevatedButton(
-  //               onPressed: () {
-  //                 Navigator.pop(context);
-  //                 ScaffoldMessenger.of(context).showSnackBar(
-  //                   SnackBar(
-  //                     content: Text(
-  //                       'Booking confirmed with ${result['name']}!',
-  //                     ),
-  //                     backgroundColor: Colors.green,
-  //                   ),
-  //                 );
-  //               },
-  //               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-  //               child: Text(
-  //                 'Confirm Booking',
-  //                 style: TextStyle(color: Colors.white),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //   );
-  // }
-
+  /// 🔽 Sorting
   void _sortResults(String criteria) {
     setState(() {
       switch (criteria) {
         case 'price_low':
-          filteredResults.sort((a, b) => a['price'].compareTo(b['price']));
+          filteredResults.sort(
+            (a, b) => (a.offers?.first.pricePerPerson ?? 0).compareTo(
+              b.offers?.first.pricePerPerson ?? 0,
+            ),
+          );
           break;
         case 'price_high':
-          filteredResults.sort((a, b) => b['price'].compareTo(a['price']));
+          filteredResults.sort(
+            (a, b) => (b.offers?.first.pricePerPerson ?? 0).compareTo(
+              a.offers?.first.pricePerPerson ?? 0,
+            ),
+          );
           break;
         case 'rating':
-          filteredResults.sort((a, b) => b['rating'].compareTo(a['rating']));
+          filteredResults.sort(
+            (a, b) => (b.offers?.first.rating ?? 0).compareTo(
+              a.offers?.first.rating ?? 0,
+            ),
+          );
           break;
         case 'name':
-          filteredResults.sort((a, b) => a['name'].compareTo(b['name']));
+          filteredResults.sort(
+            (a, b) => ("${a.firstName} ${a.lastName}").compareTo(
+              "${b.firstName} ${b.lastName}",
+            ),
+          );
           break;
       }
     });
@@ -424,94 +117,34 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size; // 📱 responsive size
+
     return GetBuilder<HomeController>(
       builder: (homeController) {
-        final filteredOffers = homeController.searchOfferResponseModel.data;
         return homeController.isLoading
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : Scaffold(
-              backgroundColor: Colors.white,
               body: SafeArea(
                 child: Column(
                   children: [
-                    // Text(
-                    //   'Search Results ${filteredOffers?.first.firstName} ?? "No offers"}',
-                    // ),
-                    // Status Bar
-                    // Container(
-                    //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Text('9:41', style: TextStyle(fontWeight: FontWeight.w600)),
-                    //       Row(
-                    //         children: [
-                    //           Container(
-                    //             width: 16,
-                    //             height: 8,
-                    //             decoration: BoxDecoration(
-                    //               color: Colors.black,
-                    //               borderRadius: BorderRadius.circular(2),
-                    //             ),
-                    //           ),
-                    //           SizedBox(width: 2),
-                    //           Container(
-                    //             width: 16,
-                    //             height: 8,
-                    //             decoration: BoxDecoration(
-                    //               color: Colors.black,
-                    //               borderRadius: BorderRadius.circular(2),
-                    //             ),
-                    //           ),
-                    //           SizedBox(width: 2),
-                    //           Container(
-                    //             width: 16,
-                    //             height: 8,
-                    //             decoration: BoxDecoration(
-                    //               color: Colors.black,
-                    //               borderRadius: BorderRadius.circular(2),
-                    //             ),
-                    //           ),
-                    //           SizedBox(width: 2),
-                    //           Container(
-                    //             width: 24,
-                    //             height: 12,
-                    //             decoration: BoxDecoration(
-                    //               border: Border.all(color: Colors.black),
-                    //               borderRadius: BorderRadius.circular(2),
-                    //             ),
-                    //             child: Container(
-                    //               margin: EdgeInsets.all(1),
-                    //               decoration: BoxDecoration(
-                    //                 color: Colors.black,
-                    //                 borderRadius: BorderRadius.circular(1),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-
-                    // Back button and search bar
+                    // Back button + Search bar + Filter
                     Padding(
-                      padding: EdgeInsets.all(16),
+                      padding: EdgeInsets.all(size.width * 0.04),
                       child: Row(
                         children: [
                           IconButton(
                             onPressed: () => Navigator.pop(context),
-                            icon: Icon(Icons.arrow_back),
+                            icon: const Icon(Icons.arrow_back),
                             padding: EdgeInsets.zero,
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: size.width * 0.02),
                           Expanded(
                             child: TextField(
                               controller: searchController,
                               onChanged: _onSearchChanged,
                               decoration: InputDecoration(
                                 hintText: 'Search...',
-                                prefixIcon: Icon(
+                                prefixIcon: const Icon(
                                   Icons.search,
                                   color: Colors.grey,
                                 ),
@@ -521,18 +154,18 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                     color: Colors.grey[300]!,
                                   ),
                                 ),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                   vertical: 12,
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: size.width * 0.02),
                           PopupMenuButton<String>(
                             onSelected: _sortResults,
-                            icon: Icon(Icons.sort),
+                            icon: const Icon(Icons.sort),
                             itemBuilder:
-                                (context) => [
+                                (context) => const [
                                   PopupMenuItem(
                                     value: 'price_low',
                                     child: Text('Price: Low to High'),
@@ -555,29 +188,30 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                       ),
                     ),
 
-                    // Results Count
+                    // Results count
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: size.width * 0.04,
+                      ),
                       child: Row(
                         children: [
                           Text(
-                            '${filteredOffers?.length} results found',
-                            style: TextStyle(color: Colors.grey),
+                            '${filteredResults.length} results found',
+                            style: const TextStyle(color: Colors.grey),
                           ),
                         ],
                       ),
                     ),
+                    SizedBox(height: size.height * 0.01),
 
-                    SizedBox(height: 8),
-
-                    // Results List
+                    // Results list
                     Expanded(
                       child:
                           filteredResults.isEmpty
                               ? Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  children: const [
                                     Icon(
                                       Icons.search_off,
                                       size: 64,
@@ -600,19 +234,29 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                               )
                               : ListView.separated(
                                 separatorBuilder:
-                                    (_, __) => SizedBox(height: 16),
-                                padding: EdgeInsets.symmetric(horizontal: 16),
-                                itemCount: filteredOffers!.length,
+                                    (_, __) =>
+                                        SizedBox(height: size.height * 0.015),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: size.width * 0.04,
+                                ),
+                                itemCount: filteredResults.length,
                                 itemBuilder: (context, index) {
-                                  final result = filteredOffers[index];
+                                  final result = filteredResults[index];
                                   final hatchName =
-                                      "${result.firstName} ${result.lastName}";
-
+                                      "${result.firstName ?? ''} ${result.lastName ?? ''}";
+                                  final profileIamge = result.profileImage;
                                   return GestureDetector(
-                                    onTap: () {},
+                                    onTap:
+                                        () => Get.to(
+                                          () => LocalsProfileForTouristScreen(
+                                            localId: result.id ?? "",
+                                          ),
+                                        ),
                                     child: Container(
-                                      // margin: EdgeInsets.only(bottom: 16),
-                                      // padding: EdgeInsets.all(16),
+                                      padding: EdgeInsets.all(
+                                        0,
+                                        // size.width * 0.03,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.circular(8),
@@ -620,87 +264,81 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                           BoxShadow(
                                             color: Colors.grey.withOpacity(0.1),
                                             blurRadius: 4,
-                                            offset: Offset(0, 2),
+                                            offset: const Offset(0, 2),
                                           ),
                                         ],
                                       ),
                                       child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          // Inside your widget
-                                          Container(
-                                            height: 120,
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[100],
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
+                                          // Thumbnail (responsive)
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
                                             ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              child: Builder(
-                                                builder: (context) {
-                                                  final photoUrl =
-                                                      (result
-                                                                  .offers?[index]
+                                            child: SizedBox(
+                                              width: size.width * 0.295,
+                                              height: size.width * 0.295,
+                                              child:
+                                                  (result.offers?.isNotEmpty ??
+                                                              false) &&
+                                                          (result
+                                                                  .offers!
+                                                                  .first
                                                                   .photos
                                                                   ?.isNotEmpty ??
                                                               false)
-                                                          ? result
-                                                              .offers![index]
-                                                              .photos!
-                                                              .first
-                                                          : 'assets/images/bannerPlaceholder.jpg'; // local placeholder
-
-                                                  if (photoUrl.startsWith(
-                                                    'http',
-                                                  )) {
-                                                    return Image.network(
-                                                      photoUrl,
-                                                      fit: BoxFit.cover,
-                                                      loadingBuilder: (
-                                                        context,
-                                                        child,
-                                                        loadingProgress,
-                                                      ) {
-                                                        if (loadingProgress ==
-                                                            null)
-                                                          return child;
-                                                        return Shimmer.fromColors(
-                                                          baseColor:
-                                                              Colors.grey[300]!,
-                                                          highlightColor:
-                                                              Colors.grey[100]!,
-                                                          child: Container(
-                                                            color:
+                                                      ? Image.network(
+                                                        // result
+                                                        //     .offers!
+                                                        //     .first
+                                                        //     .photos!
+                                                        //     .first,
+                                                        profileIamge,
+                                                        fit: BoxFit.cover,
+                                                        loadingBuilder: (
+                                                          context,
+                                                          child,
+                                                          progress,
+                                                        ) {
+                                                          if (progress ==
+                                                              null) {
+                                                            return child;
+                                                          }
+                                                          return Shimmer.fromColors(
+                                                            baseColor:
                                                                 Colors
-                                                                    .grey[300],
-                                                          ),
-                                                        );
-                                                      },
-                                                      errorBuilder: (
-                                                        context,
-                                                        error,
-                                                        stackTrace,
-                                                      ) {
-                                                        return Image.asset(
-                                                          'assets/images/bannerPlaceholder.jpg',
-                                                          fit: BoxFit.cover,
-                                                        );
-                                                      },
-                                                    );
-                                                  } else {
-                                                    // If photoUrl is local
-                                                    return Image.asset(
-                                                      photoUrl,
-                                                      fit: BoxFit.cover,
-                                                    );
-                                                  }
-                                                },
-                                              ),
+                                                                    .grey[300]!,
+                                                            highlightColor:
+                                                                Colors
+                                                                    .grey[100]!,
+                                                            child: Container(
+                                                              color:
+                                                                  Colors
+                                                                      .grey[300],
+                                                            ),
+                                                          );
+                                                        },
+                                                        errorBuilder:
+                                                            (
+                                                              _,
+                                                              __,
+                                                              ___,
+                                                            ) => Image.asset(
+                                                              'assets/images/bannerPlaceholder.jpg',
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                      )
+                                                      : Image.asset(
+                                                        'assets/images/bannerPlaceholder.jpg',
+                                                        fit: BoxFit.cover,
+                                                      ),
                                             ),
                                           ),
+                                          SizedBox(width: size.width * 0.03),
 
-                                          SizedBox(width: 12),
+                                          // Info
                                           Expanded(
                                             child: Column(
                                               crossAxisAlignment:
@@ -711,13 +349,19 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text(
-                                                      hatchName,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 16,
-                                                        color: Colors.black,
+                                                    Flexible(
+                                                      child: Text(
+                                                        hatchName,
+                                                        maxLines: 1,
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 16,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ),
                                                     const FavoriteButton(
@@ -725,7 +369,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                     ),
                                                   ],
                                                 ),
-
                                                 Row(
                                                   children: [
                                                     Column(
@@ -734,8 +377,12 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                               .center,
                                                       children: [
                                                         Container(
-                                                          height: 40,
-                                                          width: 40,
+                                                          height:
+                                                              size.height *
+                                                              0.045,
+                                                          width:
+                                                              size.height *
+                                                              0.045,
                                                           decoration: BoxDecoration(
                                                             color:
                                                                 Colors
@@ -840,6 +487,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                       ],
                                                     ),
                                                     const SizedBox(width: 8),
+
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
@@ -850,15 +498,22 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                             result
                                                                     .offers
                                                                     ?.first
-                                                                    .category ??
+                                                                    .title ??
                                                                 'No Category',
-                                                            style: TextStyle(
-                                                              color: Colors.red,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 14,
-                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style:
+                                                                const TextStyle(
+                                                                  color:
+                                                                      Colors
+                                                                          .red,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontSize: 14,
+                                                                ),
                                                           ),
                                                           Text(
                                                             result
@@ -866,16 +521,15 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                                     ?.first
                                                                     .description ??
                                                                 'No Description',
-                                                            maxLines: 5,
-                                                            //overflow: TextOverflow.ellipsis,
+                                                            maxLines: 3,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             style: TextStyle(
                                                               color:
                                                                   Colors
                                                                       .grey[600],
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w400,
+                                                              fontSize: 12,
                                                             ),
                                                           ),
                                                         ],
@@ -884,6 +538,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                   ],
                                                 ),
 
+                                                SizedBox(
+                                                  height: size.height * 0.005,
+                                                ),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
@@ -891,78 +548,36 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                   children: [
                                                     Row(
                                                       children: [
-                                                        Icon(
+                                                        const Icon(
                                                           Icons.star,
                                                           color: Colors.amber,
-                                                          size: 12,
+                                                          size: 14,
                                                         ),
-                                                        SizedBox(width: 4),
+                                                        const SizedBox(
+                                                          width: 4,
+                                                        ),
                                                         Text(
-                                                          // '${result['rating']}',
-                                                          '5',
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                          ),
+                                                          '${result.averageRating ?? 0.00}',
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 12,
+                                                              ),
                                                         ),
                                                       ],
                                                     ),
-
                                                     Row(
                                                       children: [
-                                                        Text(
-                                                          'from ',
-                                                          style: TextStyle(
-                                                            color: Colors.red,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '${result.offers?.first.pricePerPerson}\€' ??
-                                                              '0.00€',
-                                                          style: TextStyle(
-                                                            color: Colors.red,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '/ ',
-                                                          style: TextStyle(
-                                                            color:
-                                                                Colors.black87,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          'person',
-                                                          style: TextStyle(
-                                                            color:
-                                                                Colors.black87,
-                                                            fontSize: 12,
-                                                          ),
-                                                        ),
+                                                        '${result.offers?.first.pricePerPerson ?? 0}€'
+                                                            .text14Red(),
+
+                                                        '/ person '
+                                                            .text14Black(),
                                                       ],
                                                     ),
-
-                                                    // Text(
-                                                    //   '(${result['reviews']})',
-                                                    //   style: TextStyle(
-                                                    //     color: Colors.grey,
-                                                    //     fontSize: 12,
-                                                    //   ),
-                                                    // ),
                                                   ],
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [],
                                           ),
                                         ],
                                       ),
