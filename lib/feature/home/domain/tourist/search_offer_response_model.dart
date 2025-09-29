@@ -2,7 +2,7 @@ class SearchOfferResponseModel {
   final int? statusCode;
   final bool? success;
   final String? message;
-  final List<UserData>? data;
+  final List<Data>? data;
 
   SearchOfferResponseModel({
     this.statusCode,
@@ -12,14 +12,13 @@ class SearchOfferResponseModel {
   });
 
   factory SearchOfferResponseModel.fromJson(Map<String, dynamic> json) {
-    print("json mame print $json");
     return SearchOfferResponseModel(
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
       data:
           (json['data'] as List<dynamic>?)
-              ?.map((e) => UserData.fromJson(e))
+              ?.map((e) => Data.fromJson(e))
               .toList(),
     );
   }
@@ -34,27 +33,36 @@ class SearchOfferResponseModel {
   }
 }
 
-class UserData {
+class Data {
   final String? id;
   final String? firstName;
   final String? lastName;
   final String? profileImage;
+  final double? averageRating;
+  final int? ratingCount;
   final List<Offer>? offers;
 
-  UserData({
+  Data({
     this.id,
     this.firstName,
     this.lastName,
     this.profileImage,
+    this.averageRating,
+    this.ratingCount,
     this.offers,
   });
 
-  factory UserData.fromJson(Map<String, dynamic> json) {
-    return UserData(
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
       id: json['_id'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       profileImage: json['profileImage'],
+      averageRating:
+          (json['averageRating'] != null)
+              ? (json['averageRating'] as num).toDouble()
+              : null,
+      ratingCount: json['ratingCount'],
       offers:
           (json['offers'] as List<dynamic>?)
               ?.map((e) => Offer.fromJson(e))
@@ -68,6 +76,8 @@ class UserData {
       'firstName': firstName,
       'lastName': lastName,
       'profileImage': profileImage,
+      'averageRating': averageRating,
+      'ratingCount': ratingCount,
       'offers': offers?.map((e) => e.toJson()).toList(),
     };
   }
@@ -84,6 +94,7 @@ class Offer {
   final List<String>? languages;
   final List<String>? photos;
   final List<Availability>? availability;
+  final double? rating; // optional field for sorting if added later
 
   Offer({
     this.id,
@@ -96,6 +107,7 @@ class Offer {
     this.languages,
     this.photos,
     this.availability,
+    this.rating,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
@@ -104,9 +116,9 @@ class Offer {
       category: json['category'],
       offerType: json['offerType'],
       pricePerPerson:
-          (json['pricePerPerson'] is int)
-              ? (json['pricePerPerson'] as int).toDouble()
-              : json['pricePerPerson'],
+          (json['pricePerPerson'] != null)
+              ? (json['pricePerPerson'] as num).toDouble()
+              : null,
       maxParticipants: json['maxParticipants'],
       description: json['description'],
       title: json['title'],
@@ -120,6 +132,8 @@ class Offer {
           (json['availability'] as List<dynamic>?)
               ?.map((e) => Availability.fromJson(e))
               .toList(),
+      rating:
+          (json['rating'] != null) ? (json['rating'] as num).toDouble() : null,
     );
   }
 
@@ -135,29 +149,30 @@ class Offer {
       'languages': languages,
       'photos': photos,
       'availability': availability?.map((e) => e.toJson()).toList(),
+      'rating': rating,
     };
   }
 }
 
 class Availability {
-  final String? id;
-  final DateTime? date;
+  final String? date;
   final List<String>? timeSlots;
+  final String? id;
 
-  Availability({this.id, this.date, this.timeSlots});
+  Availability({this.date, this.timeSlots, this.id});
 
   factory Availability.fromJson(Map<String, dynamic> json) {
     return Availability(
-      id: json['_id'],
-      date: json['date'] != null ? DateTime.parse(json['date']) : null,
+      date: json['date'],
       timeSlots:
           (json['timeSlots'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList(),
+      id: json['_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {'_id': id, 'date': date?.toIso8601String(), 'timeSlots': timeSlots};
+    return {'date': date, 'timeSlots': timeSlots, '_id': id};
   }
 }

@@ -547,18 +547,21 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                                                           .spaceBetween,
                                                   children: [
                                                     Row(
-                                                      children: const [
-                                                        Icon(
+                                                      children: [
+                                                        const Icon(
                                                           Icons.star,
                                                           color: Colors.amber,
                                                           size: 14,
                                                         ),
-                                                        SizedBox(width: 4),
+                                                        const SizedBox(
+                                                          width: 4,
+                                                        ),
                                                         Text(
-                                                          '5.0',
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                          ),
+                                                          '${result.averageRating ?? 0.00}',
+                                                          style:
+                                                              const TextStyle(
+                                                                fontSize: 12,
+                                                              ),
                                                         ),
                                                       ],
                                                     ),
