@@ -27,6 +27,9 @@ class UserSignupScreenState extends State<UserSignupScreen> {
   late TextEditingController _passwordController;
   late TextEditingController _confirmPasswordController;
 
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
+
   @override
   void initState() {
     _emailController = TextEditingController();
@@ -161,7 +164,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                               TextFormField(
                                 controller: _passwordController,
                                 focusNode: _passwordFocus,
-                                obscureText: true,
+                                obscureText: _obscurePassword,
                                 decoration: InputDecoration(
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(12.0),
@@ -182,6 +185,19 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide.none,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
                                   ),
                                 ),
                                 onFieldSubmitted:
@@ -204,7 +220,7 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                               TextFormField(
                                 controller: _confirmPasswordController,
                                 focusNode: _confirmPasswordFocus,
-                                obscureText: true,
+                                obscureText: _obscureConfirmPassword,
                                 decoration: InputDecoration(
                                   prefixIcon: Padding(
                                     padding: const EdgeInsets.all(12.0),
@@ -225,6 +241,20 @@ class UserSignupScreenState extends State<UserSignupScreen> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide.none,
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _obscureConfirmPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureConfirmPassword =
+                                            !_obscureConfirmPassword;
+                                      });
+                                    },
                                   ),
                                 ),
                                 onFieldSubmitted:
