@@ -28,6 +28,8 @@ class UserLoginScreenState extends State<UserLoginScreen> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
 
+  bool _obscurePassword = true;
+
   @override
   void initState() {
     super.initState();
@@ -188,8 +190,22 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide.none,
                                 ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
                               ),
-                              obscureText: true,
+                              obscureText: _obscurePassword,
+
                               onFieldSubmitted:
                                   (_) => FocusScope.of(
                                     context,
