@@ -47,11 +47,8 @@ class BookingData {
     return BookingData(
       bookingId: json['bookingId'],
       bookingCode: json['bookingCode'],
-      summary:
-          json['summary'] != null ? Summary.fromJson(json['summary']) : null,
-      offerDetails: json['offerDetails'] != null
-          ? OfferDetails.fromJson(json['offerDetails'])
-          : null,
+      summary: json['summary'] != null ? Summary.fromJson(json['summary']) : null,
+      offerDetails: json['offerDetails'] != null ? OfferDetails.fromJson(json['offerDetails']) : null,
     );
   }
 
@@ -67,7 +64,7 @@ class BookingData {
 
 class Summary {
   final String? serviceName;
-  final String? schedule;
+  final Schedule? schedule;
   final int? participants;
   final int? pricePerPerson;
   final int? total;
@@ -83,7 +80,7 @@ class Summary {
   factory Summary.fromJson(Map<String, dynamic> json) {
     return Summary(
       serviceName: json['serviceName'],
-      schedule: json['schedule'],
+      schedule: json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null,
       participants: json['participants'],
       pricePerPerson: json['pricePerPerson'],
       total: json['total'],
@@ -93,10 +90,34 @@ class Summary {
   Map<String, dynamic> toJson() {
     return {
       'serviceName': serviceName,
-      'schedule': schedule,
+      'schedule': schedule?.toJson(),
       'participants': participants,
       'pricePerPerson': pricePerPerson,
       'total': total,
+    };
+  }
+}
+
+class Schedule {
+  final String? date;
+  final String? timeSlot;
+
+  Schedule({
+    this.date,
+    this.timeSlot,
+  });
+
+  factory Schedule.fromJson(Map<String, dynamic> json) {
+    return Schedule(
+      date: json['date'],
+      timeSlot: json['timeSlot'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'timeSlot': timeSlot,
     };
   }
 }
@@ -140,14 +161,10 @@ class OfferDetails {
       maxParticipants: json['maxParticipants'],
       description: json['description'],
       title: json['title'],
-      languages: json['languages'] != null
-          ? List<String>.from(json['languages'])
-          : [],
-      photos:
-          json['photos'] != null ? List<String>.from(json['photos']) : [],
+      languages: json['languages'] != null ? List<String>.from(json['languages']) : [],
+      photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
       availability: json['availability'] != null
-          ? List<Availability>.from(
-              json['availability'].map((x) => Availability.fromJson(x)))
+          ? (json['availability'] as List).map((e) => Availability.fromJson(e)).toList()
           : [],
       v: json['__v'],
     );
@@ -165,7 +182,7 @@ class OfferDetails {
       'title': title,
       'languages': languages,
       'photos': photos,
-      'availability': availability?.map((x) => x.toJson()).toList(),
+      'availability': availability?.map((e) => e.toJson()).toList(),
       '__v': v,
     };
   }
@@ -217,9 +234,7 @@ class Availability {
   factory Availability.fromJson(Map<String, dynamic> json) {
     return Availability(
       date: json['date'],
-      timeSlots: json['timeSlots'] != null
-          ? List<String>.from(json['timeSlots'])
-          : [],
+      timeSlots: json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : [],
       id: json['_id'],
     );
   }

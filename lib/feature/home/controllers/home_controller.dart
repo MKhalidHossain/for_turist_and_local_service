@@ -32,7 +32,6 @@ import '../../chat/domain/model/get_messages_previous_response_model.dart';
 import '../../chat/domain/model/get_user_associated_with_chat_response_model.dart';
 import '../../chat/domain/model/send_message_response_model.dart';
 import '../../payment/presentation/screens/common/stripe_connect_full_screen.dart';
-import '../../payment/presentation/screens/local/connect_stripe_screen.dart';
 import '../domain/local/get_trips_details_response_model.dart';
 import '../domain/local/get_trip_response_api_bookings_model.dart';
 
@@ -980,6 +979,7 @@ class HomeController extends GetxController implements GetxService {
     String localId,
     String offerId,
     String date,
+    String selectedTimeSlot,
     String participants,
   ) async {
     try {
@@ -990,6 +990,7 @@ class HomeController extends GetxController implements GetxService {
         localId,
         offerId,
         date,
+        selectedTimeSlot,
         participants,
       );
 
