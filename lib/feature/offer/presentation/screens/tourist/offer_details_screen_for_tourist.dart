@@ -522,12 +522,9 @@ class _OfferDetailsScreenForTouristScreenState
                       sufixIcon: Icons.calendar_today_outlined,
                       text: 'Book Now',
                       onPressed: () {
-                        if (selectedDate == null &&
-                            selectedTime == null &&
-                            selectedDate!.isEmpty &&
-                            selectedTime!.isEmpty) {
-                              
-
+                        print("Selected Date ${selectedDate}");
+                        print("Selected Time ${selectedTime}");
+                        if (selectedDate != null && selectedTime != null) {
                           Get.to(
                             BookingOfferSummaryScreen(
                               offer: offer!,

@@ -70,6 +70,7 @@ abstract class HomeServiceInterface {
     String localId,
     String offerId,
     String date,
+    String selectedTimeSlot,
     String participants,
   );
    Future<Response> confirmBooking(

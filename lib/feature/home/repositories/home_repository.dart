@@ -254,17 +254,23 @@ class HomeRepository implements HomeRepositoryInterface {
     String localId,
     String offerId,
     String date,
+    String selectedTimeSlot,
     String participants,
   ) async {
     return await apiClient.postData(Urls.createBooking, {
       "localId": localId,
       "offerId": offerId,
       "date": date,
+      "timeSlot": selectedTimeSlot,
       "participants": participants,
     });
   }
 
   @override
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /// Get bookings by status.
+  ///
+  /// [status] - status of bookings (e.g. pending, accepted, rejected)
   Future<Response> getBookingByStatus(String status) async {
     return await apiClient.getData(Urls.getBookingsByStatus + status);
   }

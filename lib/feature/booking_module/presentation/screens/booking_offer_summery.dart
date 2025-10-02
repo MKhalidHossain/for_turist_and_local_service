@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
+
+import 'package:kobeur/feature/booking_module/domain/model/create_booking_response_model.dart';
 import 'package:kobeur/feature/booking_module/presentation/screens/booking_confarm.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/helpers/custom_snackbar.dart';
@@ -33,21 +36,22 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
   String formattedDate = '';
   late HomeController homeController;
 
-  String formatDateTime(List<Availability>? availability) {
-    if (availability == null || availability.isEmpty) return "";
+  BookingData? booking;
+  String? createBookingStatusCode;
 
-    final item = availability.first;
-    final rawDate = DateTime.parse(item.date!); // item.date is String
-    final times = (item.timeSlots ?? []).map((t) => t.toString()).join(", ");
-    final formattedDate = DateFormat("MM/dd/yy").format(rawDate);
-    return "$times, $formattedDate";
+  String formatDate(String isoDate) {
+    try {
+      DateTime parsedDate = DateTime.parse(isoDate);
+      return DateFormat('dd-MM-yyyy').format(parsedDate);
+    } catch (e) {
+      return isoDate; // fallback if parsing fails
+    }
   }
 
   @override
   void initState() {
     super.initState();
     homeController = Get.find<HomeController>();
-
   }
 
   @override
@@ -55,293 +59,340 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
     Size size = MediaQuery.of(context).size;
     final String totalPrice =
         "${(widget.offer.pricePerPerson ?? 0) * (widget.offer.maxParticipants ?? 1)}";
-    final fomatedDateForShow = formatDateTime(widget.offer.availability);
-    return Scaffold(
-      //backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: size.height * 0.05),
-            // Custom Header
-            Row(
+    // final fomatedDateForShow = formatDateTime(widget.offer.availability);
+    String formattedDate = formatDate(widget.userSelectedDateForBooking);
+
+    return GetBuilder<AuthController>(
+      builder: (authController) {
+        return Scaffold(
+          //backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BackButton(onPressed: () => Navigator.pop(context)),
-                SizedBox(width: 12),
-                CircleAvatar(
-                  radius: 26,
-                  backgroundImage:
-                      (widget.local.profileImage != null &&
-                              widget.local.profileImage!.isNotEmpty)
-                          ? NetworkImage(widget.local.profileImage!)
-                          : const AssetImage(
-                                'assets/images/profileBlankImage.png',
-                              )
-                              as ImageProvider,
-                ),
-
-                // CircleAvatar(
-                //   radius: 26,
-                //   backgroundImage:
-                //   // AssetImage('assets/images/local3.png'),
-                //   NetworkImage('${widget.local.profileImage}'),
-                // ),
-                SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                SizedBox(height: size.height * 0.05),
+                // Custom Header
+                Row(
                   children: [
-                    "${widget.local.firstName} ${widget.local.lastName}"
-                        .text18Black(),
+                    BackButton(onPressed: () => Navigator.pop(context)),
+                    SizedBox(width: 12),
+                    CircleAvatar(
+                      radius: 26,
+                      backgroundImage:
+                          (widget.local.profileImage != null &&
+                                  widget.local.profileImage!.isNotEmpty)
+                              ? NetworkImage(widget.local.profileImage!)
+                              : const AssetImage(
+                                    'assets/images/profileBlankImage.png',
+                                  )
+                                  as ImageProvider,
+                    ),
 
-                    "${widget.local.location} ".text12DarkGrey(),
+                    // CircleAvatar(
+                    //   radius: 26,
+                    //   backgroundImage:
+                    //   // AssetImage('assets/images/local3.png'),
+                    //   NetworkImage('${widget.local.profileImage}'),
+                    // ),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        "${widget.local.firstName} ${widget.local.lastName}"
+                            .text18Black(),
+
+                        "${widget.local.location} ".text12DarkGrey(),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
 
-            // Offer Section
-            const SizedBox(height: 20),
-            'Offer'.text20Black700(),
-            //const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              //padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: double.infinity,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300, width: 1),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        ClipRRect(
+                // Offer Section
+                const SizedBox(height: 20),
+                'Offer'.text20Black700(),
+                //const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  //padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 12),
+                        width: double.infinity,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
+                          ),
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            widget.offer.photos?.first ?? "",
-                            width: 110,
-                            height: 80,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-
-                              return Shimmer.fromColors(
-                                baseColor: Colors.grey.shade300,
-                                highlightColor: Colors.grey.shade100,
-                                child: Container(
-                                  width: 110,
-                                  height: 80,
-                                  color: Colors.white,
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                "assets/images/nanchanTemple.png", // fallback image
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                widget.offer.photos?.first ?? "",
                                 width: 110,
                                 height: 80,
                                 fit: BoxFit.cover,
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              '${widget.offer.title}'.text14Black600(),
-                              '${widget.offer.offerType}'.text14Grey(),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                loadingBuilder: (
+                                  context,
+                                  child,
+                                  loadingProgress,
+                                ) {
+                                  if (loadingProgress == null) return child;
+
+                                  return Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      width: 110,
+                                      height: 80,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    "assets/images/nanchanTemple.png", // fallback image
+                                    width: 110,
+                                    height: 80,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  '${widget.offer.title}'.text14Black600(),
+                                  '${widget.offer.offerType}'.text14Grey(),
                                   Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Icon(
-                                        Icons.star,
-                                        color: Color(0xffEAB308),
-                                        size: 16,
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            color: Color(0xffEAB308),
+                                            size: 16,
+                                          ),
+                                          '${widget.local.averageRating?.toStringAsFixed(1)}'
+                                              .text12Black(),
+                                        ],
                                       ),
-                                      '${widget.local.averageRating?.toStringAsFixed(1)}'
-                                          .text12Black(),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      '\$${widget.offer.pricePerPerson?.toStringAsFixed(2)}'
-                                          .text16LightRed(),
-                                      '/person'.text12Black(),
-                                      const SizedBox(width: 8),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          '\$${widget.offer.pricePerPerson?.toStringAsFixed(2)}'
+                                              .text16LightRed(),
+                                          '/person'.text12Black(),
+                                          const SizedBox(width: 8),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 20),
+
+                // Summary
+                'Summary'.text20Black700(),
+
+                SizedBox(height: 16),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      _buildSummaryRow('Service', '${widget.offer.category}'),
+                      _buildSummaryRow(
+                        'Schedule',
+                        '${widget.userSelectedTimeForBooking}, ${formattedDate}',
+                      ),
+                      _buildSummaryRow(
+                        'Participants',
+                        '${widget.offer.maxParticipants}',
+                      ),
+                      _buildSummaryRow(
+                        'Price per person',
+                        '\$${widget.offer.pricePerPerson}',
+                      ),
+                      Divider(height: 16),
+                      _buildSummaryRow(
+                        'Total',
+                        '\$ ${totalPrice}',
+                        isTotal: true,
+                      ),
+                      SizedBox(height: 18),
+                    ],
+                  ),
+                ),
+
+                // ************************************************ In Future If Need Uncomment Code and Connect to api  ************************************************
+
+                // SizedBox(height: 8),
+
+                // Promotion Code Section
+                // Container(
+                //   width: double.infinity,
+                //   color: Colors.white,
+                //   padding: EdgeInsets.all(20),
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         'Promotion Code',
+                //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                //       ),
+                //       SizedBox(height: 12),
+                //       Container(
+                //         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                //         decoration: BoxDecoration(
+                //           color: Colors.grey[100],
+                //           borderRadius: BorderRadius.circular(8),
+                //         ),
+                //         child: TextField(
+                //           controller: _promoController,
+                //           decoration: InputDecoration(
+                //             hintText: 'Write promotion code here...',
+                //             hintStyle: TextStyle(
+                //               color: Colors.grey[500],
+                //               fontSize: 14,
+                //             ),
+                //             border: InputBorder.none,
+                //             contentPadding: EdgeInsets.zero,
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                SizedBox(height: 8),
+
+                // Payment Methods Section
+                Container(
+                  width: double.infinity,
+                  color: Colors.white,
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      // _buildPaymentOption(
+                      //   'Pay With Card',
+                      //   Icons.credit_card,
+                      //   'card',
+                      // ),
+                      // SizedBox(height: 12),
+                      // _buildPaymentOption('Pay With Apple', Icons.apple, 'apple'),
+                      // SizedBox(height: 12),
+                      // _buildPaymentOption(
+                      //   'Pay With Google',
+                      //   Icons.g_mobiledata,
+                      //   'google',
+                      //   subtitle: 'Final Copy',
+                      // ),
+                      SizedBox(height: 12),
+                      _buildPaymentOption(
+                        'Pay With Stripe',
+
+                        'assets/icons/stripe_icon.png',
+                        'stripe',
+                        // subtitle: 'Final Copy',
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 20),
-
-            // Summary
-            'Summary'.text20Black700(),
-
-            SizedBox(height: 16),
-            Container(
+          ),
+          bottomNavigationBar: Container(
+            padding: EdgeInsets.only(top: 8, bottom: 36, left: 20, right: 20),
+            child: SizedBox(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  _buildSummaryRow('Service', '${widget.offer.category}'),
-                  _buildSummaryRow('Schedule', '${fomatedDateForShow}'),
-                  _buildSummaryRow(
-                    'Participants',
-                    '${widget.offer.maxParticipants}',
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (selectedPaymentMethod == null ||
+                      selectedPaymentMethod.isEmpty) {
+                    showCustomSnackBar(
+                      'Please select payment method for payment',
+                    );
+                  } else if (selectedPaymentMethod == 'stripe') {
+                    homeController
+                        .createBooking(
+                          widget.local.id!,
+                          widget.offer.id!,
+                          widget.userSelectedDateForBooking,
+                          widget.userSelectedTimeForBooking,
+                          widget.offer.maxParticipants.toString(),
+                        )
+                        .then((_) {
+                          booking =
+                              homeController.createBookingResponseModel.data;
+                          createBookingStatusCode =
+                              homeController
+                                  .createBookingResponseModel
+                                  .statusCode
+                                  .toString();
+                        })
+                        .then((createBookingStatusCode) {
+                          if (createBookingStatusCode == '201') {
+                            print(
+                              "Booking code: ${booking?.bookingCode} ${widget.offer.pricePerPerson.toString() ?? '0.00'} ${widget.local.id.toString() ?? 'no id'}",
+                            );
+
+                            homeController.createPayment(
+                              booking?.bookingCode ?? 'RES-0000-0000',
+                              widget.offer.pricePerPerson.toString() ?? '0.00',
+                              widget.local.id.toString() ?? 'no id',
+                            );
+                          }
+                        });
+                  }
+                  Get.to(BookingConfirmedScreen());
+                },
+                // onPressed: () => Navigator.pushNamed(context, '/payment'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  _buildSummaryRow(
-                    'Price per person',
-                    '\$${widget.offer.pricePerPerson}',
+                ),
+                child: Text(
+                  'Continue',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
-                  Divider(height: 16),
-                  _buildSummaryRow('Total', '\$ ${totalPrice}', isTotal: true),
-                  SizedBox(height: 18),
-                ],
-              ),
-            ),
-
-            // ************************************************ In Future If Need Uncomment Code and Connect to api  ************************************************
-
-            // SizedBox(height: 8),
-
-            // Promotion Code Section
-            // Container(
-            //   width: double.infinity,
-            //   color: Colors.white,
-            //   padding: EdgeInsets.all(20),
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.start,
-            //     children: [
-            //       Text(
-            //         'Promotion Code',
-            //         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            //       ),
-            //       SizedBox(height: 12),
-            //       Container(
-            //         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            //         decoration: BoxDecoration(
-            //           color: Colors.grey[100],
-            //           borderRadius: BorderRadius.circular(8),
-            //         ),
-            //         child: TextField(
-            //           controller: _promoController,
-            //           decoration: InputDecoration(
-            //             hintText: 'Write promotion code here...',
-            //             hintStyle: TextStyle(
-            //               color: Colors.grey[500],
-            //               fontSize: 14,
-            //             ),
-            //             border: InputBorder.none,
-            //             contentPadding: EdgeInsets.zero,
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
-            SizedBox(height: 8),
-
-            // Payment Methods Section
-            Container(
-              width: double.infinity,
-              color: Colors.white,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  // _buildPaymentOption(
-                  //   'Pay With Card',
-                  //   Icons.credit_card,
-                  //   'card',
-                  // ),
-                  // SizedBox(height: 12),
-                  // _buildPaymentOption('Pay With Apple', Icons.apple, 'apple'),
-                  // SizedBox(height: 12),
-                  // _buildPaymentOption(
-                  //   'Pay With Google',
-                  //   Icons.g_mobiledata,
-                  //   'google',
-                  //   subtitle: 'Final Copy',
-                  // ),
-                  SizedBox(height: 12),
-                  _buildPaymentOption(
-                    'Pay With Stripe',
-
-                    'assets/icons/stripe_icon.png',
-                    'stripe',
-                    // subtitle: 'Final Copy',
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.only(top: 8, bottom: 36, left: 20, right: 20),
-        child: SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton(
-            onPressed: () {
-              if (selectedPaymentMethod == null ||
-                  selectedPaymentMethod.isEmpty) {
-                showCustomSnackBar('Please select payment method for payment');
-              } else if (selectedPaymentMethod == 'stripe') {
-                // StripePaymentScreen(
-                //   localProfileDetails: widget.local,
-                //   offer: widget.offer,
-                //   totalPrice: totalPrice,
-                // );
-              }
-              Get.to(BookingConfirmedScreen());
-            },
-            // onPressed: () => Navigator.pushNamed(context, '/payment'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              'Continue',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
