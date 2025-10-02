@@ -359,9 +359,10 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                         })
                         .then((createBookingStatusCode) {
                           if (createBookingStatusCode == '201') {
+                            print(
+                              "Booking code: ${booking?.bookingCode} ${widget.offer.pricePerPerson.toString() ?? '0.00'} ${widget.local.id.toString() ?? 'no id'}",
+                            );
 
-
-                            
                             homeController.createPayment(
                               booking?.bookingCode ?? 'RES-0000-0000',
                               widget.offer.pricePerPerson.toString() ?? '0.00',
