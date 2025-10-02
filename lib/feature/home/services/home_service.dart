@@ -212,8 +212,8 @@ class HomeService implements HomeServiceInterface {
   }
   
   @override
-  Future<Response> createBooking(String localId, String offerId, String date, String participants) async{
-    return await homeRepositoryInterface.createBooking(localId, offerId, date, participants);
+  Future<Response> createBooking(String localId, String offerId, String date, String selectedTimeSlot, String participants) async{
+    return await homeRepositoryInterface.createBooking(localId, offerId, date,selectedTimeSlot, participants);
   }
   
   @override
