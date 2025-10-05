@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/constants/splash_screen.dart';
 import 'package:kobeur/core/constants/splash_screen_without_loading.dart';
@@ -10,6 +11,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey =
+      'pk_live_51S5NDtE1eDwCt5PfajJudYzNvGCCg8pFuOgWl8CCOxmJ8gnVnzMKFDKcsQ6Jgjrn2zUxvyvRzleOr0gEF8UXq4wj00NFN4UooK';
+  await Stripe.instance.applySettings();
   await initDI();
   //final authController = Get.find<AuthController>();
   // final authController = Get.find<AuthController>();
