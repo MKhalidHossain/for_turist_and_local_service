@@ -10,7 +10,6 @@ import '../../../../core/constants/urls.dart';
 import '../../../../utils/app_constants.dart';
 import '../../domain/models/chat_message_model.dart';
 
-
 bool isOnline = false;
 String lastSeen = "5 min ago";
 
@@ -308,30 +307,52 @@ class _ChatScreenState extends State<ChatScreen> {
       color: Colors.white,
       child: Row(
         children: [
-          IconButton(
-            icon: Icon(
-              Icons.attach_file_outlined,
-              color: AppColors.secondaryColor,
-            ),
-            onPressed: () {},
-          ),
+          const SizedBox(width: 16),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.attach_file_outlined,
+          //     color: AppColors.secondaryColor,
+          //   ),
+          //   onPressed: () {},
+          // ),
           Expanded(
             child: TextField(
               controller: _messageController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Type a message...",
-                border: InputBorder.none,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color:
+                        Colors.grey.shade400, // border color when not focused
+                    width: 1.2,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(
+                    color: Color(
+                      0xffFF3951,
+                    ).withOpacity(0.5), // border color when focused
+                    width: 1.5,
+                  ),
+                ),
               ),
               onSubmitted: (_) => sendMessage(),
             ),
           ),
-          IconButton(
-            icon: Icon(
-              Icons.emoji_emotions_outlined,
-              color: AppColors.secondaryColor,
-            ),
-            onPressed: () {},
-          ),
+          const SizedBox(width: 8),
+          // IconButton(
+          //   icon: Icon(
+          //     Icons.emoji_emotions_outlined,
+          //     color: AppColors.secondaryColor,
+          //   ),
+          //   onPressed: () {},
+          // ),
           Container(
             height: 40,
             width: 40,
