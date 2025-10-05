@@ -124,15 +124,15 @@ class HomeService implements HomeServiceInterface {
   @override
   Future<Response> searchOffer(
     String country,
-    String date,
-    String participants,
-    String languages,
+    List<String> dates,
+    int participantsCount,
+    List<String> languages,
     String offerType,
   ) async {
     return await homeRepositoryInterface.searchOffer(
       country,
-      date,
-      participants,
+      dates,
+      participantsCount,
       languages,
       offerType,
     );
@@ -212,8 +212,8 @@ class HomeService implements HomeServiceInterface {
   }
   
   @override
-  Future<Response> createBooking(String localId, String offerId, String date, String participants) async{
-    return await homeRepositoryInterface.createBooking(localId, offerId, date, participants);
+  Future<Response> createBooking(String localId, String offerId, String date, String selectedTimeSlot, String participants) async{
+    return await homeRepositoryInterface.createBooking(localId, offerId, date,selectedTimeSlot, participants);
   }
   
   @override

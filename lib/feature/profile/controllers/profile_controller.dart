@@ -135,6 +135,7 @@ class ProfileController extends GetxController implements GetxService {
         print(
           "⚠️ Unauthorized access. Please log in again. need to check access token\n",
         );
+        Get.offAll(() => UserLoginScreen());
       } else if (response.statusCode == 403) {
         // Handle forbidden access
         print(

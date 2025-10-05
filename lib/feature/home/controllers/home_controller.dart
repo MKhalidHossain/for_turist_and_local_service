@@ -32,7 +32,6 @@ import '../../chat/domain/model/get_messages_previous_response_model.dart';
 import '../../chat/domain/model/get_user_associated_with_chat_response_model.dart';
 import '../../chat/domain/model/send_message_response_model.dart';
 import '../../payment/presentation/screens/common/stripe_connect_full_screen.dart';
-import '../../payment/presentation/screens/local/connect_stripe_screen.dart';
 import '../domain/local/get_trips_details_response_model.dart';
 import '../domain/local/get_trip_response_api_bookings_model.dart';
 
@@ -72,7 +71,7 @@ class HomeController extends GetxController implements GetxService {
       AddFavOrRemoveFavResponseModel();
   GetFavResponseModel getFavResponseModel = GetFavResponseModel();
   RateALocalResponseModel rateALocalResponseModel = RateALocalResponseModel();
-//chat
+  //chat
   SendMessageResponseModel sendMessageResponseModel =
       SendMessageResponseModel();
   GetMessagesPreviousResponseModel getMessagesPreviousResponseModel =
@@ -520,9 +519,9 @@ class HomeController extends GetxController implements GetxService {
 
   Future<void> searchOffer(
     String country,
-    String date,
-    String participants,
-    String languages,
+    List<String> dates,
+    int participantsCount,
+    List<String> languages,
     String offerType,
   ) async {
     try {
@@ -531,8 +530,8 @@ class HomeController extends GetxController implements GetxService {
 
       final response = await homeServiceInterface.searchOffer(
         country,
-        date,
-        participants,
+        dates,
+        participantsCount,
         languages,
         offerType,
       );
@@ -975,17 +974,25 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+
   Future<void> createBooking(
     String localId,
     String offerId,
     String date,
+    String selectedTimeSlot,
     String participants,
-    ) async {
+  ) async {
     try {
       isLoading = true;
       update();
 
-      final response = await homeServiceInterface.createBooking(localId, offerId, date, participants);
+      final response = await homeServiceInterface.createBooking(
+        localId,
+        offerId,
+        date,
+        selectedTimeSlot,
+        participants,
+      );
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -1003,7 +1010,7 @@ class HomeController extends GetxController implements GetxService {
       } else {
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-         createBookingResponseModel = CreateBookingResponseModel.fromJson(
+        createBookingResponseModel = CreateBookingResponseModel.fromJson(
           decoded,
         );
       }
@@ -1014,6 +1021,7 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+
   Future<void> confirmBooking(String bookingId) async {
     try {
       isLoading = true;
@@ -1037,7 +1045,7 @@ class HomeController extends GetxController implements GetxService {
       } else {
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-          confirmBookingResponseModel = ConfirmBookingResponseModel.fromJson(
+        confirmBookingResponseModel = ConfirmBookingResponseModel.fromJson(
           decoded,
         );
       }
@@ -1048,15 +1056,16 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
-  Future<void> updateBooking(
-    String bookingId,
-    String participants
-    ) async {
+
+  Future<void> updateBooking(String bookingId, String participants) async {
     try {
       isLoading = true;
       update();
 
-      final response = await homeServiceInterface.updateBooking(bookingId, participants);
+      final response = await homeServiceInterface.updateBooking(
+        bookingId,
+        participants,
+      );
 
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
@@ -1074,7 +1083,7 @@ class HomeController extends GetxController implements GetxService {
       } else {
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-         updateBookingResponseModel = UpdateBookingResponseModel.fromJson(
+        updateBookingResponseModel = UpdateBookingResponseModel.fromJson(
           decoded,
         );
       }
@@ -1085,6 +1094,7 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+
   Future<void> getBookingDetails(String bookingId) async {
     try {
       isLoading = true;
@@ -1099,18 +1109,16 @@ class HomeController extends GetxController implements GetxService {
         print("✅ getBookingDetails : for Tourist fetched successfully\n");
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        getBookingDetailsResponseModel = GetBookingDetailsResponseModel.fromJson(
-          decoded,
-        );
+        getBookingDetailsResponseModel =
+            GetBookingDetailsResponseModel.fromJson(decoded);
 
         isLoading = false;
         update();
       } else {
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-         getBookingDetailsResponseModel = GetBookingDetailsResponseModel.fromJson(
-          decoded,
-        );
+        getBookingDetailsResponseModel =
+            GetBookingDetailsResponseModel.fromJson(decoded);
       }
     } catch (e) {
       print("⚠️ Error fetching profile : getBookingDetails : $e\n");
@@ -1119,6 +1127,7 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+
   Future<void> getBookingByStatus(String status) async {
     try {
       isLoading = true;
@@ -1133,18 +1142,16 @@ class HomeController extends GetxController implements GetxService {
         print("✅ getBookingByStatus : for Tourist fetched successfully\n");
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        getBookingByStatusResponseModel = GetBookingByStatusResponseModel.fromJson(
-          decoded,
-        );
+        getBookingByStatusResponseModel =
+            GetBookingByStatusResponseModel.fromJson(decoded);
 
         isLoading = false;
         update();
       } else {
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-         getBookingByStatusResponseModel = GetBookingByStatusResponseModel.fromJson(
-          decoded,
-        );
+        getBookingByStatusResponseModel =
+            GetBookingByStatusResponseModel.fromJson(decoded);
       }
     } catch (e) {
       print("⚠️ Error fetching profile : getBookingByStatus : $e\n");

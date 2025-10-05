@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kobeur/core/extensions/text_extensions.dart';
+import 'package:get/get.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 import '../../../../../core/widgets/choose_country/model/country.dart';
-import '../../widgets/date_picker.dart';
 import 'search_results_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -18,19 +17,62 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   // int selectedDate = 1;
   List<DateTime> selectedDates = [];
+  List<String> formattedDates = [];
   int guestCount = 2;
   DateTime currentMonth = DateTime(2025, 12, 1);
-  Set<String> selectedLanguages = {'中文 (Chinese)'};
+  Set<String> selectedLanguages = {'English'};
+  List<String> formattedSelectedLanguages = [];
   String? selectedService;
   TextEditingController searchController = TextEditingController();
+  List<Country> suggestionResults = [];
+  int? crossAxisCount;
 
   String get selectedRange {
     if (selectedDates.isEmpty) return "";
     selectedDates.sort((a, b) => a.compareTo(b));
     final start = selectedDates.first;
     final end = selectedDates.last;
-    return "${start.day} ${_monthName(start.month)} ${start.year} - "
+    return "${start.day} ${_monthName(start.month)} ${start.year} "
         "${end.day} ${_monthName(end.month)} ${end.year}";
+  }
+
+  List<String> formatSelectedDates(List<DateTime> selectedDates) {
+    formattedDates =
+        selectedDates.map((d) {
+          final formatted =
+              "${d.year.toString().padLeft(4, '0')}-"
+              "${d.month.toString().padLeft(2, '0')}-"
+              "${d.day.toString().padLeft(2, '0')}";
+          return "$formatted"; // wrap in quotes
+        }).toList();
+    return formattedDates;
+  }
+
+  // List<String> formatSelectedLanguages(Set<String> selectedLanguages) {
+  //   formattedSelectedLanguages =
+  //       selectedLanguages.map((language) {
+  //         return language.contains('(')
+  //             ? language.split('(')[0].trim()
+  //             : language;
+  //       }).toList();
+
+  //   return formattedSelectedLanguages;
+  // }
+
+  List<String> formatSelectedLanguages(Set<String> selectedLanguages) {
+    formattedSelectedLanguages =
+        selectedLanguages.map((language) {
+          final match = RegExp(r'\((.*?)\)').firstMatch(language);
+          if (match != null) {
+            // Always take the part inside parentheses
+            return '"${match.group(1)!.trim()}"';
+          } else {
+            // No parentheses → keep as is
+            return '"${language.trim()}"';
+          }
+        }).toList();
+
+    return formattedSelectedLanguages;
   }
 
   String _monthName(int month) {
@@ -64,24 +106,125 @@ class _SearchScreenState extends State<SearchScreen> {
   final List<String> weekDays = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
   final List<Map<String, dynamic>> services = [
-    {'icon': '🏨', 'label': 'Hotel', 'color': Colors.blue[100]},
-    {'icon': '🏠', 'label': 'At Home', 'color': Colors.green[100]},
-    {'icon': '🏖️', 'label': 'Resort', 'color': Colors.yellow[100]},
-    {'icon': '✈️', 'label': 'Flight', 'color': Colors.purple[100]},
-    {'icon': '🚗', 'label': 'Car rental', 'color': Colors.orange[100]},
-    {'icon': '🎯', 'label': 'Tour', 'color': Colors.pink[100]},
-    {'icon': '🌍', 'label': 'World', 'color': Colors.teal[100]},
-    {'icon': '📸', 'label': 'Photo', 'color': Colors.indigo[100]},
-    {'icon': '🎪', 'label': 'Event', 'color': Colors.red[100]},
-    {'icon': '🎁', 'label': 'Other', 'color': Colors.brown[100]},
+    {
+      'image': 'assets/icons/home.png',
+      'label': 'At Home',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/restaurant.png',
+      'label': 'Restaurant',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/takeAway.png',
+      'label': 'Takeaway',
+      'color': Colors.white,
+    },
+
+    {
+      'image': 'assets/icons/dayTrip.png',
+      'label': 'Day Trip',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/manualActivity.png',
+      'label': 'Manual Activity',
+      'color': Colors.white,
+    },
+    {'image': 'assets/icons/spa.png', 'label': 'Spa', 'color': Colors.white},
+    {
+      'image': 'assets/icons/journey.png',
+      'label': 'Journey',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/islandHopping.png',
+      'label': 'Island Hopping',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/arrivalDeparture.png',
+      'label': 'Arrival Departure',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/weekTour.png',
+      'label': 'Week Tour',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/dayTour.png',
+      'label': 'Day Tour',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/rental.png',
+      'label': 'Rental',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/droneRental.png',
+      'label': 'Drone Rental',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/photo.png',
+      'label': 'Photo',
+      'color': Colors.white,
+    },
+
+    {
+      'image': 'assets/icons/coach.png',
+      'label': 'Coach',
+      'color': Colors.white,
+    },
+    {'image': 'assets/icons/yoga.png', 'label': 'Yoga', 'color': Colors.white},
+    {
+      'image': 'assets/icons/museums.png',
+      'label': 'Museums',
+      'color': Colors.white,
+    },
+    {
+      'image': 'assets/icons/monuments.png',
+      'label': 'Monuments',
+      'color': Colors.white,
+    },
   ];
 
   @override
   void initState() {
     super.initState();
     if (widget.initialSearchQuery != null) {
+      //
       searchController.text = widget.initialSearchQuery!;
+      _onSearchChanged(widget.initialSearchQuery!);
     }
+  }
+
+  void _onSearchChanged(String query) {
+    if (query.isEmpty) {
+      setState(() => suggestionResults = []);
+      return;
+    }
+
+    setState(() {
+      suggestionResults =
+          countries
+              .where(
+                (country) =>
+                    country.country.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
+    });
+  }
+
+  void _onSuggestionTap(Country country) {
+    setState(() {
+      searchController.text = country.country;
+      suggestionResults = [];
+    });
+    FocusScope.of(context).unfocus(); // close keyboard
   }
 
   // void _selectDate(int date) {
@@ -254,33 +397,33 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  void _navigateToResults() {
-    Map<String, dynamic> searchParams = {
-      'query': searchController.text,
-      // 'date': 'December $selectedDate, 2024',
-      // 'date': selectedDate,
-      'guests': guestCount,
-      'languages': selectedLanguages.toList(),
-      'service': selectedService,
-    };
+  // void _navigateToResults() {
+  //   Map<String, dynamic> searchParams = {
+  //     'query': searchController.text,
+  //     // 'date': 'December $selectedDate, 2024',
+  //     // 'date': selectedDate,
+  //     'guests': guestCount,
+  //     'languages': selectedLanguages.toList(),
+  //     'service': selectedService,
+  //   };
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => SearchResultsScreen(searchParams: searchParams),
-      ),
-    );
-  }
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => SearchResultsScreen(searchParams: searchParams),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       // backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            // Header with back button and search bar
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -291,17 +434,26 @@ class _SearchScreenState extends State<SearchScreen> {
                     padding: EdgeInsets.zero,
                   ),
                   SizedBox(width: 8),
+
                   Expanded(
                     child: TextField(
                       controller: searchController,
+                      onChanged: _onSearchChanged,
                       decoration: InputDecoration(
                         hintText: 'Search destinations, hotels...',
                         prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                            width: 1.2,
+                          ),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
+
                           borderSide: BorderSide(color: Colors.grey[300]!),
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),
                   ),
@@ -309,6 +461,63 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
 
+            // Suggestions
+            if (suggestionResults.isNotEmpty)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: suggestionResults.length,
+                  itemBuilder: (context, index) {
+                    final country = suggestionResults[index];
+                    return ListTile(
+                      leading: Text(
+                        country.flagEmoji,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      title: Text(country.country),
+                      onTap: () => _onSuggestionTap(country),
+                    );
+                  },
+                ),
+              ),
+
+            // // If no results
+            // if (suggestionResults.isEmpty && searchController.text.isNotEmpty)
+            //   Padding(
+            //     padding: const EdgeInsets.all(16.0),
+            //     child: Text(
+            //       "No results found",
+            //       style: TextStyle(color: Colors.grey),
+            //     ),
+            //   ),
+
+            // Header with back button and search bar
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            //   child: Row(
+            //     children: [
+            //       IconButton(
+            //         onPressed: () => Navigator.pop(context),
+            //         icon: Icon(Icons.arrow_back),
+            //         padding: EdgeInsets.zero,
+            //       ),
+            //       SizedBox(width: 8),
+            //       Expanded(
+            //         child: TextField(
+            //           controller: searchController,
+            //           decoration: InputDecoration(
+            //             hintText: 'Search destinations, hotels...',
+            //             prefixIcon: Icon(Icons.search, color: Colors.grey),
+            //             border: OutlineInputBorder(
+            //               borderRadius: BorderRadius.circular(8),
+            //               borderSide: BorderSide(color: Colors.grey[300]!),
+            //             ),
+            //             contentPadding: EdgeInsets.symmetric(vertical: 12),
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
@@ -646,24 +855,143 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                     ),
                     SizedBox(height: 16),
+
+                    // GridView.builder(
+                    //   shrinkWrap: true,
+                    //   physics: NeverScrollableScrollPhysics(),
+                    //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //     crossAxisCount:
+                    //         MediaQuery.of(context).size.width < 600
+                    //             ? 3
+                    //             : 4, // 3 items on small screens, 4 on larger
+                    //     crossAxisSpacing: 8,
+                    //     mainAxisSpacing: 8,
+                    //     childAspectRatio: 1.0,
+                    //   ),
+                    //   itemCount: services.length,
+                    //   itemBuilder: (context, index) {
+                    //     final service = services[index];
+                    //     final isSelected = selectedService == service['label'];
+
+                    //     final screenWidth = MediaQuery.of(context).size.width;
+                    //     final crossAxisCount = screenWidth < 300 ? 3 : 4;
+                    //     final spacing = 8.0;
+                    //     final itemWidth =
+                    //         (screenWidth - (crossAxisCount + 1) * spacing) /
+                    //         crossAxisCount;
+
+                    //     // Responsive sizes
+                    //     final imageSize = itemWidth * 0.6;
+                    //     final fontSize = (itemWidth * 0.12).clamp(
+                    //       10.0,
+                    //       14.0,
+                    //     ); // min 10, max 16
+
+                    //     return GestureDetector(
+                    //       onTap: () => _selectService(service['label']),
+                    //       child: Container(
+                    //         padding: EdgeInsets.symmetric(
+                    //           vertical: 8,
+                    //           horizontal: 4,
+                    //         ),
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //           border: Border.all(
+                    //             color:
+                    //                 isSelected ? Colors.red : Colors.grey[200]!,
+                    //             width: isSelected ? 2 : 1,
+                    //           ),
+                    //           boxShadow: [
+                    //             BoxShadow(
+                    //               color: Colors.grey.withOpacity(0.1),
+                    //               blurRadius: 4,
+                    //               offset: Offset(0, 2),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         child: Column(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           children: [
+                    //             Container(
+                    //               width: imageSize,
+                    //               height: imageSize,
+                    //               decoration: BoxDecoration(
+                    //                 color:
+                    //                     isSelected
+                    //                         ? Colors.red[100]
+                    //                         : Colors.white,
+                    //                 borderRadius: BorderRadius.circular(8),
+                    //               ),
+                    //               alignment: Alignment.center,
+                    //               child: Image.asset(
+                    //                 service['image'],
+                    //                 width: imageSize * 0.9,
+                    //                 height: imageSize * 0.9,
+                    //                 fit: BoxFit.contain,
+                    //               ),
+                    //             ),
+                    //             SizedBox(height: itemWidth * 0.08),
+                    //             Flexible(
+                    //               child: FittedBox(
+                    //                 fit: BoxFit.scaleDown,
+                    //                 child: Text(
+                    //                   service['label'],
+                    //                   textAlign: TextAlign.center,
+                    //                   style: TextStyle(
+                    //                     fontSize: fontSize,
+                    //                     fontWeight: FontWeight.w500,
+                    //                     color:
+                    //                         isSelected
+                    //                             ? Colors.red
+                    //                             : Colors.black,
+                    //                   ),
+                    //                   maxLines: 2,
+                    //                   overflow: TextOverflow.ellipsis,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
+                    // screenWidth < 600
+                    //     ?
+                    //                     if four item is a row of 4
                     GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 1,
+                        crossAxisCount:
+                            4, // adjust based on screen size if needed
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                        childAspectRatio: 0.9, // slightly taller for text
                       ),
                       itemCount: services.length,
                       itemBuilder: (context, index) {
                         final service = services[index];
                         final isSelected = selectedService == service['label'];
+
+                        // Responsive sizing
+                        final size = MediaQuery.of(context).size;
+                        final itemWidth =
+                            (size.width - (8 * (4 + 1))) /
+                            4; // total width minus spacing
+                        final imageSize =
+                            itemWidth * 0.6; // image occupies 60% of item width
+                        final fontSize =
+                            itemWidth * 0.12; // font scales with width
+
                         return GestureDetector(
                           onTap: () => _selectService(service['label']),
                           child: Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: Colors.white,
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(
                                 color:
@@ -682,29 +1010,38 @@ class _SearchScreenState extends State<SearchScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  width: 48,
-                                  height: 48,
+                                  width: imageSize,
+                                  height: imageSize,
                                   decoration: BoxDecoration(
                                     color:
                                         isSelected
                                             ? Colors.red[100]
-                                            : service['color'],
+                                            : Colors.white,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   alignment: Alignment.center,
-                                  child: Text(
-                                    service['icon'],
-                                    style: TextStyle(fontSize: 24),
+                                  child: Image.asset(
+                                    service['image'],
+                                    width: imageSize * 0.9,
+                                    height: imageSize * 0.9,
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  service['label'],
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color:
-                                        isSelected ? Colors.red : Colors.black,
+                                SizedBox(height: itemWidth * 0.08),
+                                Flexible(
+                                  child: Text(
+                                    service['label'],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: fontSize,
+                                      fontWeight: FontWeight.w500,
+                                      color:
+                                          isSelected
+                                              ? Colors.red
+                                              : Colors.black,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -713,15 +1050,123 @@ class _SearchScreenState extends State<SearchScreen> {
                         );
                       },
                     ),
-
+                    // :
+                    // // // if in a row 3 item in a row
+                    // GridView.builder(
+                    //   shrinkWrap: true,
+                    //   physics: NeverScrollableScrollPhysics(),
+                    //   gridDelegate:
+                    //       SliverGridDelegateWithFixedCrossAxisCount(
+                    //         crossAxisCount: 3,
+                    //         crossAxisSpacing: 16,
+                    //         mainAxisSpacing: 16,
+                    //         childAspectRatio: 1,
+                    //       ),
+                    //   itemCount: services.length,
+                    //   itemBuilder: (context, index) {
+                    //     final service = services[index];
+                    //     final isSelected =
+                    //         selectedService == service['label'];
+                    //     // Get screen size
+                    //     final size = MediaQuery.of(context).size;
+                    //     final imageSize =
+                    //         size.width * 0.18; // 15% of screen width
+                    //     final fontSize =
+                    //         size.width * 0.028; // 3.5% of screen width
+                    //     return GestureDetector(
+                    //       onTap: () => _selectService(service['label']),
+                    //       child: Container(
+                    //         decoration: BoxDecoration(
+                    //           borderRadius: BorderRadius.circular(8),
+                    //           border: Border.all(
+                    //             color:
+                    //                 isSelected
+                    //                     ? Colors.red
+                    //                     : Colors.grey[200]!,
+                    //             width: isSelected ? 2 : 1,
+                    //           ),
+                    //           boxShadow: [
+                    //             BoxShadow(
+                    //               color: Colors.grey.withOpacity(0.1),
+                    //               blurRadius: 4,
+                    //               offset: Offset(0, 2),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //         child: Column(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           children: [
+                    //             Container(
+                    //               width: imageSize,
+                    //               height: imageSize,
+                    //               decoration: BoxDecoration(
+                    //                 color:
+                    //                     isSelected
+                    //                         ? Colors.red[100]
+                    //                         : Colors.white,
+                    //                 borderRadius: BorderRadius.circular(8),
+                    //               ),
+                    //               alignment: Alignment.center,
+                    //               child: Image.asset(
+                    //                 service['image'],
+                    //                 width:
+                    //                     imageSize *
+                    //                     0.9, // image occupies 70% of container
+                    //                 height: imageSize * 0.8,
+                    //                 fit: BoxFit.contain,
+                    //               ),
+                    //             ),
+                    //             SizedBox(height: imageSize * 0.08),
+                    //             Text(
+                    //               service['label'],
+                    //               textAlign: TextAlign.center,
+                    //               style: TextStyle(
+                    //                 fontSize: fontSize,
+                    //                 fontWeight: FontWeight.w500,
+                    //                 color:
+                    //                     isSelected
+                    //                         ? Colors.red
+                    //                         : Colors.black,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                     SizedBox(height: 32),
                     WideCustomButton(
                       text: 'Continue',
-                      onPressed:
-                          // () {
-                          //   Get.to(SearchResultsScreen());
-                          // },
-                          _navigateToResults,
+                      onPressed: () {
+                        formattedDates = formatSelectedDates(selectedDates);
+                        formattedSelectedLanguages = formatSelectedLanguages(
+                          selectedLanguages,
+                        );
+
+                        print(
+                          "Selected dates: $formattedDates\n"
+                          "Selected languages: $formattedSelectedLanguages\n"
+                          "Guest count: $guestCount\n"
+                          "Service: $selectedService\n"
+                          "Search Country: ${searchController.text}",
+                        );
+
+                        if (searchController.text.isEmpty) {
+                          Get.snackbar("Error", "Please select a country");
+                          return;
+                        }
+
+                        Get.to(
+                          () => SearchResultsScreen(
+                            searchCountry: searchController.text,
+                            selectedDates: formattedDates,
+                            selectedPerticipants: guestCount,
+                            selectedLanguages: selectedLanguages.toList(),
+                            selectedOfferType: selectedService ?? '',
+                          ),
+                        );
+                      },
                     ),
 
                     // Continue Button
