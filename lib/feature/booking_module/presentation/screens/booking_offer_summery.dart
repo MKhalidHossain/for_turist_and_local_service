@@ -10,6 +10,7 @@ import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/helpers/custom_snackbar.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../home/domain/tourist/get_offer_details_response_model.dart';
+import '../../../payment/presentation/screens/common/stripe_connect_full_screen.dart';
 
 class BookingOfferSummaryScreen extends StatefulWidget {
   final Offer offer;
@@ -333,46 +334,102 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  if (selectedPaymentMethod == null ||
-                      selectedPaymentMethod.isEmpty) {
-                    showCustomSnackBar(
-                      'Please select payment method for payment',
-                    );
-                  } else if (selectedPaymentMethod == 'stripe') {
-                    homeController
-                        .createBooking(
-                          widget.local.id!,
-                          widget.offer.id!,
-                          widget.userSelectedDateForBooking,
-                          widget.userSelectedTimeForBooking,
-                          widget.offer.maxParticipants.toString(),
-                        )
-                        .then((_) {
-                          booking =
-                              homeController.createBookingResponseModel.data;
-                          createBookingStatusCode =
-                              homeController
-                                  .createBookingResponseModel
-                                  .statusCode
-                                  .toString();
-                        })
-                        .then((createBookingStatusCode) {
-                          if (createBookingStatusCode == '201') {
-                            print(
-                              "Booking code: ${booking?.bookingCode} ${widget.offer.pricePerPerson.toString() ?? '0.00'} ${widget.local.id.toString() ?? 'no id'}",
-                            );
-
-                            homeController.createPayment(
-                              booking?.bookingCode ?? 'RES-0000-0000',
-                              widget.offer.pricePerPerson.toString() ?? '0.00',
-                              widget.local.id.toString() ?? 'no id',
-                            );
-                          }
-                        });
+                onPressed: () async {
+                  if (selectedPaymentMethod.isEmpty) {
+                    showCustomSnackBar('Please select a payment method');
+                    return;
                   }
-                  Get.to(BookingConfirmedScreen());
+
+                  if (selectedPaymentMethod == 'stripe') {
+                    try {
+                      // Step 1: Create booking
+                      await homeController.createBooking(
+                        widget.local.id!,
+                        widget.offer.id!,
+                        widget.userSelectedDateForBooking,
+                        widget.userSelectedTimeForBooking,
+                        widget.offer.maxParticipants.toString(),
+                      );
+
+                      final booking =
+                          homeController.createBookingResponseModel.data;
+                      final statusCode =
+                          homeController.createBookingResponseModel.statusCode;
+
+                      if (statusCode == 201) {
+                        // Step 2: Create payment intent on backend
+                        await homeController.createPayment(
+                          booking?.bookingCode ?? 'RES-0000-0000',
+                          widget.offer.pricePerPerson.toString(),
+                          widget.local.id.toString(),
+                        );
+
+                        // Step 3: Make Stripe payment (using the payment intent client secret)
+                        await homeController.makePayment(
+                          amount: totalPrice,
+                          currency: 'USD',
+                          context: context,
+                        );
+                      } else {
+                        showCustomSnackBar('Booking failed. Please try again.');
+                      }
+                    } catch (e, s) {
+                      print('💥 Error during payment: $e');
+                      print('Stacktrace: $s');
+                      showCustomSnackBar(
+                        'Something went wrong. Please try again.',
+                      );
+                    }
+                  }
                 },
+
+                // onPressed: () {
+                //   if (selectedPaymentMethod == null ||
+                //       selectedPaymentMethod.isEmpty) {
+                //     showCustomSnackBar(
+                //       'Please select payment method for payment',
+                //     );
+                //   } else if (selectedPaymentMethod == 'stripe') {
+                //     homeController
+                //         .createBooking(
+                //           widget.local.id!,
+                //           widget.offer.id!,
+                //           widget.userSelectedDateForBooking,
+                //           widget.userSelectedTimeForBooking,
+                //           widget.offer.maxParticipants.toString(),
+                //         )
+                //         .then((_) {
+                //           booking =
+                //               homeController.createBookingResponseModel.data;
+                //           createBookingStatusCode =
+                //               homeController
+                //                   .createBookingResponseModel
+                //                   .statusCode
+                //                   .toString();
+                //         })
+                //         .then((createBookingStatusCode) {
+                //           if (createBookingStatusCode == '201') {
+                //             print(
+                //               "Booking code: ${booking?.bookingCode} ${widget.offer.pricePerPerson.toString() ?? '0.00'} ${widget.local.id.toString() ?? 'no id'}",
+                //             );
+
+                //             homeController.createPayment(
+                //               booking?.bookingCode ?? 'RES-0000-0000',
+                //               widget.offer.pricePerPerson.toString() ?? '0.00',
+                //               widget.local.id.toString() ?? 'no id',
+                //             );
+                //           }
+                //         })
+                //         .then((_) {
+                //           homeController.makePayment(
+                //             amount: totalPrice,
+                //             currency: 'USD',
+                //             context: context,
+                //           );
+                //         });
+                //   }
+                //   // Get.to(BookingConfirmedScreen());
+                // },
                 // onPressed: () => Navigator.pushNamed(context, '/payment'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
