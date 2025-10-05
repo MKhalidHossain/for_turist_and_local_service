@@ -6,40 +6,9 @@ import 'package:kobeur/feature/profile/controllers/profile_controller.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/constants/urls.dart';
 import '../../../../utils/app_constants.dart';
 import '../../domain/models/chat_message_model.dart';
-
-// class ChatMessage {
-//   final String text;
-//   final bool isSentByMe;
-//   final String time;
-//   final String? messageId;
-//   final String? senderId;
-//   final String? receiverId;
-
-//   ChatMessage({
-//     required this.text,
-//     required this.isSentByMe,
-//     required this.time,
-//     this.messageId,
-//     this.senderId,
-//     this.receiverId,
-//   });
-
-//   factory ChatMessage.fromJson(
-//     Map<String, dynamic> json,
-//     String currentUserId,
-//   ) {
-//     return ChatMessage(
-//       text: json['message'] ?? '',
-//       isSentByMe: json['senderId'] == currentUserId,
-//       time: json['time'] ?? DateTime.now().toIso8601String(),
-//       messageId: json['_id'],
-//       senderId: json['senderId'],
-//       receiverId: json['receiverId'],
-//     );
-//   }
-// }
 
 bool isOnline = false;
 String lastSeen = "5 min ago";
@@ -80,7 +49,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _connectSocket(String currentUserId, String token) {
     _socket = IO.io(
-      'http://10.10.5.85:5001',
+      Urls.socketBaseUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
