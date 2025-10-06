@@ -52,6 +52,7 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
   @override
   void initState() {
     super.initState();
+    // final payC= Get.put(PaymentController(),permanent: true);
     homeController = Get.find<HomeController>();
   }
 
@@ -355,23 +356,30 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                           homeController.createBookingResponseModel.data;
                       final statusCode =
                           homeController.createBookingResponseModel.statusCode;
+                      final message =
+                          homeController.createBookingResponseModel.message;
 
                       if (statusCode == 201) {
                         // Step 2: Create payment intent on backend
-                        await homeController.createPayment(
-                          booking?.bookingCode ?? 'RES-0000-0000',
-                          widget.offer.pricePerPerson.toString(),
-                          widget.local.id.toString(),
-                        );
+                        // await homeController.createPayment(
+                        //   booking?.bookingCode ?? 'RES-0000-0000',
+                        //   widget.offer.pricePerPerson.toString(),
+                        //   widget.local.id.toString(),
+                        // );
 
                         // Step 3: Make Stripe payment (using the payment intent client secret)
                         await homeController.makePayment(
+                          bookingCode: booking?.bookingCode ?? 'RES-0000-0000',
+                          localId: widget.local.id.toString(),
                           amount: totalPrice,
                           currency: 'USD',
                           context: context,
                         );
                       } else {
-                        showCustomSnackBar('Booking failed. Please try again.');
+                        showCustomSnackBar(
+                          '$message',
+                          // subMessage: '$message',
+                        );
                       }
                     } catch (e, s) {
                       print('💥 Error during payment: $e');
