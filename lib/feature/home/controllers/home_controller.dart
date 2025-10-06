@@ -29,6 +29,7 @@ import 'package:kobeur/feature/payment/domain/model/confirm_payment_response_mod
 import 'package:kobeur/feature/payment/domain/model/connect_account_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/create_payment_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/resend_onboarding_response_model.dart';
+import 'package:kobeur/utils/display_helper.dart';
 import '../../../core/constants/urls.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../chat/domain/model/get_messages_previous_response_model.dart';
@@ -1222,18 +1223,31 @@ class HomeController extends GetxController implements GetxService {
     required BuildContext context,
   }) async {
     try {
-      final response = await createPaymentIntent(
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.createPayment(
         bookingCode,
-        localId,
         amount,
-        currency,
+        localId,
       );
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+      if (response.statusCode == 200) {
+        print(
+          "✅ createPayment into makePayment : for Tourist fetched successfully\n",
+        );
+        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+          response.body,
+        );
+        isLoading = false;
+        update();
+      } else {}
       if (response != null) {
+        clientSecret = createPaymentResponseModel.data!.clientSecret.toString();
+        paymentIntentId = createPaymentResponseModel.data!.transactionId;
         print("clientSecret : $clientSecret");
         print("response!.data : $response!.data ");
-        clientSecret = response.body["data"]['clientSecret'];
-        paymentIntentId = response.body["data"]['transactionId'];
-
         await Stripe.instance
             .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
@@ -1246,6 +1260,7 @@ class HomeController extends GetxController implements GetxService {
             });
       }
     } catch (e, s) {
+      showCustomSnackBar('Error of createPayment: ${e}');
       print('exception:$e$s');
     }
   }
@@ -1279,55 +1294,55 @@ class HomeController extends GetxController implements GetxService {
   }
 
   //  Future<Map<String, dynamic>>
-  Future<Response<dynamic>?> createPaymentIntent(
-    String bookingCode,
-    String localId,
-    String amount,
-    String currency,
-  ) async {
-    try {
-      isLoading = true;
-      update();
-      final response = await homeServiceInterface.createPayment(
-        bookingCode,
-        amount,
-        localId,
-      );
+  // Future<Response<dynamic>?> createPaymentIntent(
+  //   String bookingCode,
+  //   String localId,
+  //   String amount,
+  //   String currency,
+  // ) async {
+  //   try {
+  //     isLoading = true;
+  //     update();
+  //     final response = await homeServiceInterface.createPayment(
+  //       bookingCode,
+  //       amount,
+  //       localId,
+  //     );
 
-      debugPrint("Status Code: ${response.statusCode}");
-      debugPrint("Response Body: ${response.body}");
+  //     debugPrint("Status Code: ${response.statusCode}");
+  //     debugPrint("Response Body: ${response.body}");
 
-      // if (response.statusCode == 200) {
-      //   print("✅ getMessage : for Tourist fetched successfully\n");
-      //   getMessagesPreviousResponseModel =
-      //       Create.fromJson(response.body);
+  //     // if (response.statusCode == 200) {
+  //     //   print("✅ getMessage : for Tourist fetched successfully\n");
+  //     //   getMessagesPreviousResponseModel =
+  //     //       Create.fromJson(response.body);
 
-      //   isLoading = false;
-      //   update();
-      // } else {
-      //   getMessagesPreviousResponseModel =
-      //       GetMessagesPreviousResponseModel.fromJson(response.body);
-      // }
+  //     //   isLoading = false;
+  //     //   update();
+  //     // } else {
+  //     //   getMessagesPreviousResponseModel =
+  //     //       GetMessagesPreviousResponseModel.fromJson(response.body);
+  //     // }
 
-      // Map<String, dynamic> body = {
-      //   'amount': calculateAmount(amount),
-      //   'currency': currency,
-      //   'payment_method_types[]': 'card',
-      // };
-      // var response = await http.post(
-      //   Uri.parse(Urls.baseUrl + '/payment/create'),
-      //   body: body,
-      //   headers: {
-      //     'Authorization':
-      //         'Bearer sk_test_51N9l0sAPC8uTPUuIBJqdHrw8sLoDshXNHOgJy19lvqezwYrZEcL3KlFwf0EbZZB9MqEnFDkn9p7FkILrCbirDfoM00UpRfETME',
-      //     'Content-Type': 'application/x-www-form-urlencoded',
-      //   },
-      // );
-      return response;
-    } catch (err) {
-      print('err charging user: ${err.toString()}');
-    }
-  }
+  //     // Map<String, dynamic> body = {
+  //     //   'amount': calculateAmount(amount),
+  //     //   'currency': currency,
+  //     //   'payment_method_types[]': 'card',
+  //     // };
+  //     // var response = await http.post(
+  //     //   Uri.parse(Urls.baseUrl + '/payment/create'),
+  //     //   body: body,
+  //     //   headers: {
+  //     //     'Authorization':
+  //     //         'Bearer sk_test_51N9l0sAPC8uTPUuIBJqdHrw8sLoDshXNHOgJy19lvqezwYrZEcL3KlFwf0EbZZB9MqEnFDkn9p7FkILrCbirDfoM00UpRfETME',
+  //     //     'Content-Type': 'application/x-www-form-urlencoded',
+  //     //   },
+  //     // );
+  //     return response;
+  //   } catch (err) {
+  //     print('err charging user: ${err.toString()}');
+  //   }
+  // }
 
   calculateAmount(String amount) {
     final a = (int.parse(amount)) * 100;
