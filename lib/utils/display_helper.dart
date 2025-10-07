@@ -11,23 +11,21 @@ void customPrint(String message) {
 void showCustomSnackBar(
   String message, {
   bool isError = true,
-  int seconds = 3,
+  int seconds = 2,
   String? subMessage,
 }) {
   Get.closeCurrentSnackbar();
   Get.showSnackbar(
     GetSnackBar(
       dismissDirection: DismissDirection.horizontal,
-      margin: const EdgeInsets.all(10).copyWith(right: 18),
+      margin: const EdgeInsets.all(10).copyWith(right: 10),
       duration: Duration(seconds: seconds),
-      backgroundColor:
-          Get.isDarkMode
-              ? Colors.white
-              : Theme.of(Get.context!).textTheme.titleMedium!.color!,
+      snackPosition: SnackPosition.TOP,
+      backgroundColor: Colors.white,
       borderRadius: 10,
       messageText: Row(
         children: [
-          const SizedBox(width: 20),
+          const SizedBox(width: 10),
           Expanded(
             child: SizedBox(
               child: Column(
@@ -38,7 +36,7 @@ void showCustomSnackBar(
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                   subMessage != null
@@ -47,7 +45,7 @@ void showCustomSnackBar(
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                       )
                       : const SizedBox(),

@@ -28,9 +28,7 @@ Future<void> initDI() async {
 
   //////////// Auth Service, Repository and Controller ////////////////////////////////
 
-  Get.lazyPut(
-    () => apiClient
-  );
+  Get.lazyPut(() => apiClient);
   // Get.lazyPut(
   //   () => AuthRepository(apiClient: Get.find(), sharedPreferences: prefs),
   // );

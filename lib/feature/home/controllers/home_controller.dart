@@ -29,6 +29,8 @@ import 'package:kobeur/feature/payment/domain/model/confirm_payment_response_mod
 import 'package:kobeur/feature/payment/domain/model/connect_account_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/create_payment_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/resend_onboarding_response_model.dart';
+import 'package:kobeur/utils/display_helper.dart';
+import '../../../core/constants/urls.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
 import '../../chat/domain/model/get_messages_previous_response_model.dart';
 import '../../chat/domain/model/get_user_associated_with_chat_response_model.dart';
@@ -105,6 +107,7 @@ class HomeController extends GetxController implements GetxService {
   bool isLoading = false;
 
   String? clientSecret;
+  String? paymentIntentId;
 
   Future<void> createOffer({
     required String category,
@@ -886,9 +889,11 @@ class HomeController extends GetxController implements GetxService {
           decoded,
         );
         print(
-          'createPayment: stripe client secret : ${createPaymentResponseModel.data!.clientSecret}',
+          'createPayment: stripe client secret : ${createPaymentResponseModel.data!.transactionId}',
         );
+
         clientSecret = createPaymentResponseModel.data!.clientSecret.toString();
+        paymentIntentId = createPaymentResponseModel.data!.transactionId;
         // Get.to(() => CreateFirstServiceScreen());
         // print(' stripe url : ${createPaymentResponseModel.data!.url}');
         // Get.to(
@@ -897,10 +902,6 @@ class HomeController extends GetxController implements GetxService {
         //   ),
         // );
         // StripeConnectFullScreen(connectUrl: connectUrl)
-        await confirmPayment(
-          createPaymentResponseModel.data!.transactionId ?? '',
-          "pm_card_visa",
-        );
 
         isLoading = false;
         update();
@@ -942,6 +943,7 @@ class HomeController extends GetxController implements GetxService {
         confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
           decoded,
         );
+        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
 
         isLoading = false;
         update();
@@ -951,6 +953,7 @@ class HomeController extends GetxController implements GetxService {
         confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
           decoded,
         );
+        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
       }
     } catch (e) {
       print("⚠️ Error fetching profile : confirmPayment : $e\n");
@@ -1215,37 +1218,63 @@ class HomeController extends GetxController implements GetxService {
   Map<String, dynamic>? paymentIntentData;
 
   Future<void> makePayment({
+    required String bookingCode,
+    required String localId,
     required String amount,
     required String currency,
     required BuildContext context,
   }) async {
     try {
-      paymentIntentData = await createPaymentIntent(amount, currency);
-      if (paymentIntentData != null) {
-        print("clientSecret : $clientSecret");
-        print(
-          "paymentIntentData : $paymentIntentData , clientSecret : ${clientSecret}",
-        );
+      isLoading = true;
+      update();
 
-        await Stripe.instance.initPaymentSheet(
-          paymentSheetParameters: SetupPaymentSheetParameters(
-            merchantDisplayName: 'compilefiller',
-            paymentIntentClientSecret: clientSecret,
-            //  ?? paymentIntentData!['client_secret'],
-            customerEphemeralKeySecret: paymentIntentData!['ephemeralKey'],
-          ),
+      final response = await homeServiceInterface.createPayment(
+        bookingCode,
+        amount,
+        localId,
+      );
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+      if (response.statusCode == 200) {
+        print(
+          "✅ createPayment into makePayment : for Tourist fetched successfully\n",
         );
-        displayPaymentSheet();
-        Navigator.pop(context, 'close');
+        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+          response.body,
+        );
+        isLoading = false;
+        update();
+      } else {}
+      if (response != null) {
+        clientSecret = createPaymentResponseModel.data!.clientSecret.toString();
+        paymentIntentId = createPaymentResponseModel.data!.transactionId;
+        print("clientSecret : $clientSecret");
+        print("response!.data : $response!.data ");
+        await Stripe.instance
+            .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                paymentIntentClientSecret: clientSecret,
+                style: ThemeMode.system,
+              ),
+            )
+            .then((_) {
+              displayPaymentSheet();
+            });
       }
     } catch (e, s) {
+      showCustomSnackBar('Error of createPayment: ${e}');
       print('exception:$e$s');
     }
   }
 
   displayPaymentSheet() async {
     try {
-      await Stripe.instance.presentPaymentSheet();
+      await Stripe.instance.presentPaymentSheet().then((data) {
+        confirmPayment(
+          createPaymentResponseModel.data!.transactionId ?? '',
+          "pm_card_visa",
+        );
+      });
       Get.snackbar(
         'Payment',
         'Payment Successful',
@@ -1257,7 +1286,7 @@ class HomeController extends GetxController implements GetxService {
       );
     } on Exception catch (e) {
       if (e is StripeException) {
-        print("Error from Stripe: ${e.error.localizedMessage}");
+        print("Error from Stripe: ${e}");
       } else {
         print("Unforeseen error: ${e}");
       }
@@ -1267,27 +1296,55 @@ class HomeController extends GetxController implements GetxService {
   }
 
   //  Future<Map<String, dynamic>>
-  createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': calculateAmount(amount),
-        'currency': currency,
-        'payment_method_types[]': 'card',
-      };
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        body: body,
-        headers: {
-          'Authorization':
-              'Bearer sk_test_51N9l0sAPC8uTPUuIBJqdHrw8sLoDshXNHOgJy19lvqezwYrZEcL3KlFwf0EbZZB9MqEnFDkn9p7FkILrCbirDfoM00UpRfETME',
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-      );
-      return jsonDecode(response.body);
-    } catch (err) {
-      print('err charging user: ${err.toString()}');
-    }
-  }
+  // Future<Response<dynamic>?> createPaymentIntent(
+  //   String bookingCode,
+  //   String localId,
+  //   String amount,
+  //   String currency,
+  // ) async {
+  //   try {
+  //     isLoading = true;
+  //     update();
+  //     final response = await homeServiceInterface.createPayment(
+  //       bookingCode,
+  //       amount,
+  //       localId,
+  //     );
+
+  //     debugPrint("Status Code: ${response.statusCode}");
+  //     debugPrint("Response Body: ${response.body}");
+
+  //     // if (response.statusCode == 200) {
+  //     //   print("✅ getMessage : for Tourist fetched successfully\n");
+  //     //   getMessagesPreviousResponseModel =
+  //     //       Create.fromJson(response.body);
+
+  //     //   isLoading = false;
+  //     //   update();
+  //     // } else {
+  //     //   getMessagesPreviousResponseModel =
+  //     //       GetMessagesPreviousResponseModel.fromJson(response.body);
+  //     // }
+
+  //     // Map<String, dynamic> body = {
+  //     //   'amount': calculateAmount(amount),
+  //     //   'currency': currency,
+  //     //   'payment_method_types[]': 'card',
+  //     // };
+  //     // var response = await http.post(
+  //     //   Uri.parse(Urls.baseUrl + '/payment/create'),
+  //     //   body: body,
+  //     //   headers: {
+  //     //     'Authorization':
+  //     //         'Bearer sk_test_51N9l0sAPC8uTPUuIBJqdHrw8sLoDshXNHOgJy19lvqezwYrZEcL3KlFwf0EbZZB9MqEnFDkn9p7FkILrCbirDfoM00UpRfETME',
+  //     //     'Content-Type': 'application/x-www-form-urlencoded',
+  //     //   },
+  //     // );
+  //     return response;
+  //   } catch (err) {
+  //     print('err charging user: ${err.toString()}');
+  //   }
+  // }
 
   calculateAmount(String amount) {
     final a = (int.parse(amount)) * 100;

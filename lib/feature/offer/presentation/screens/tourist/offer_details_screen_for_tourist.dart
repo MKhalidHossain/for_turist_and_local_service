@@ -41,6 +41,7 @@ class _OfferDetailsScreenForTouristScreenState
     homeController = Get.find<HomeController>();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Future.delayed(const Duration(seconds: 2)).then((_) {
       homeController.getOfferDetails(widget.localID, widget.offerId);
     });
   }
@@ -49,13 +50,12 @@ class _OfferDetailsScreenForTouristScreenState
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    final local = homeController.getOfferDetailsResponseModel.data?.local;
-    final offer = homeController.getOfferDetailsResponseModel.data?.offer;
-    final avgRatting = local?.averageRating;
-    availableDates = offer?.availability;
-
     return GetBuilder<HomeController>(
       builder: (homeController) {
+        final local = homeController.getOfferDetailsResponseModel.data?.local;
+        final offer = homeController.getOfferDetailsResponseModel.data?.offer;
+        final avgRatting = local?.averageRating;
+        availableDates = offer?.availability;
         return homeController.isLoading
             ? buildShimmer(context)
             : Scaffold(
