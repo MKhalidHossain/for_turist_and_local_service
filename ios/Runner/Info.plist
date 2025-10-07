@@ -70,10 +70,10 @@
 		<!-- 👇 Add here -->
 		<key>NSAppTransportSecurity</key>
 		<dict>
-		<key>NSAllowsArbitraryLoads</key><true/>
-		<key>NSExceptionDomains</key>
+			<key>NSAllowsArbitraryLoads</key><true/>
+			<key>NSExceptionDomains</key>
 		<dict>
-			<key>connect.stripe.com</key>
+		<key>connect.stripe.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key><true/>
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key><true/>

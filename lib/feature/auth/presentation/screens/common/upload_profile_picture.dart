@@ -6,6 +6,7 @@ import 'package:kobeur/core/common/button/button_widget.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/auth/domain/common/singleton/user_profile_service.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
+import 'package:kobeur/utils/display_helper.dart';
 import '../../../../../core/constants/app_colors.dart';
 import '../../../../../core/validation/validators.dart';
 import '../../../../../core/widgets/app_scaffold.dart';
@@ -219,7 +220,7 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                 onPressed: () {
                                   if (userRole == 'Tourist') {
                                     Get.to(
-                                      () => BottomNavbar(userRole: userRole,),
+                                      () => BottomNavbar(userRole: userRole),
                                     ); // replace with your tourist screen
                                   } else if (userRole == 'Local') {
                                     Get.to(
@@ -291,6 +292,11 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
 
                                 // Call updateProfile with both API data + new image
                                 try {
+                                  showCustomSnackBar(
+                                    'Be patient',
+                                    subMessage:
+                                        'Your account information and profile picture is uploading.',
+                                  );
                                   await profileController.updateUserProfile(
                                     firstName: model.firstName ?? '',
                                     lastName: model.lastName ?? '',
