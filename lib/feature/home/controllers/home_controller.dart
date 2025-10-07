@@ -838,6 +838,7 @@ class HomeController extends GetxController implements GetxService {
         connectAccountResponseModel = ConnectAccountResponseModel.fromJson(
           decoded,
         );
+        showCustomSnackBar('Sripe connection Page is openning ...');
         // Get.to(() => CreateFirstServiceScreen());
         print(' stripe url : ${connectAccountResponseModel.data!.url}');
         Get.to(
@@ -849,11 +850,8 @@ class HomeController extends GetxController implements GetxService {
         isLoading = false;
         update();
       } else {
-        final rawBody = response.body;
-        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        connectAccountResponseModel = ConnectAccountResponseModel.fromJson(
-          decoded,
-        );
+        debugPrint("Error: ${response.body['message']}");
+        showCustomSnackBar('${response.body['message']}');
       }
     } catch (e) {
       print("⚠️ Error fetching profile : connectAccount : $e\n");
@@ -863,62 +861,62 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> createPayment(
-    String bookingCode,
-    String amount,
-    String localId,
-  ) async {
-    try {
-      isLoading = true;
-      update();
+  // Future<void> createPayment(
+  //   String bookingCode,
+  //   String amount,
+  //   String localId,
+  // ) async {
+  //   try {
+  //     isLoading = true;
+  //     update();
 
-      final response = await homeServiceInterface.createPayment(
-        bookingCode,
-        amount,
-        localId,
-      );
+  //     final response = await homeServiceInterface.createPayment(
+  //       bookingCode,
+  //       amount,
+  //       localId,
+  //     );
 
-      debugPrint("Status Code: ${response.statusCode}");
-      debugPrint("Response Body: ${response.body}");
+  //     debugPrint("Status Code: ${response.statusCode}");
+  //     debugPrint("Response Body: ${response.body}");
 
-      if (response.statusCode == 200) {
-        print("✅ createPayment : for Tourist fetched successfully\n");
-        final rawBody = response.body;
-        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
-          decoded,
-        );
-        print(
-          'createPayment: stripe client secret : ${createPaymentResponseModel.data!.transactionId}',
-        );
+  //     if (response.statusCode == 200) {
+  //       print("✅ createPayment : for Tourist fetched successfully\n");
+  //       final rawBody = response.body;
+  //       final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+  //       createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+  //         decoded,
+  //       );
+  //       print(
+  //         'createPayment: stripe client secret : ${createPaymentResponseModel.data!.transactionId}',
+  //       );
 
-        clientSecret = createPaymentResponseModel.data!.clientSecret.toString();
-        paymentIntentId = createPaymentResponseModel.data!.transactionId;
-        // Get.to(() => CreateFirstServiceScreen());
-        // print(' stripe url : ${createPaymentResponseModel.data!.url}');
-        // Get.to(
-        //   () => StripeConnectFullScreen(
-        //     connectUrl: createPaymentResponseModel.data!.,
-        //   ),
-        // );
-        // StripeConnectFullScreen(connectUrl: connectUrl)
+  //       clientSecret = createPaymentResponseModel.data!.clientSecret.toString();
+  //       paymentIntentId = createPaymentResponseModel.data!.transactionId;
+  //       // Get.to(() => CreateFirstServiceScreen());
+  //       // print(' stripe url : ${createPaymentResponseModel.data!.url}');
+  //       // Get.to(
+  //       //   () => StripeConnectFullScreen(
+  //       //     connectUrl: createPaymentResponseModel.data!.,
+  //       //   ),
+  //       // );
+  //       // StripeConnectFullScreen(connectUrl: connectUrl)
 
-        isLoading = false;
-        update();
-      } else {
-        final rawBody = response.body;
-        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
-          decoded,
-        );
-      }
-    } catch (e) {
-      print("⚠️ Error fetching profile : createPayment : $e\n");
-    } finally {
-      isLoading = false;
-      update();
-    }
-  }
+  //       isLoading = false;
+  //       update();
+  //     } else {
+  //       final rawBody = response.body;
+  //       final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+  //       createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+  //         decoded,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print("⚠️ Error fetching profile : createPayment : $e\n");
+  //   } finally {
+  //     isLoading = false;
+  //     update();
+  //   }
+  // }
 
   Future<void> confirmPayment(
     String paymentIntentId,
@@ -1236,18 +1234,47 @@ class HomeController extends GetxController implements GetxService {
       debugPrint("Status Code: ${response.statusCode}");
       debugPrint("Response Body: ${response.body}");
       if (response.statusCode == 200) {
-        print(
-          "✅ createPayment into makePayment : for Tourist fetched successfully\n",
+        debugPrint(
+          "\n✅ createPayment into makePayment : for Tourist fetched successfully\n",
         );
+
+        showCustomSnackBar("Payment has been successful");
         createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
           response.body,
         );
+        debugPrint("\n ✅ Payment Success :${response.body['message']}\n");
+        showCustomSnackBar(
+          "Success",
+          subMessage: "${response.body['message'].toString()}",
+          isError: false,
+        );
+
         isLoading = false;
         update();
-      } else {}
+      } else {
+        if (response.statusCode == 500) {
+          debugPrint(
+            "\n⚠️ Problem of payment: ${response.body['message']}\n 500",
+          );
+          showCustomSnackBar(
+            "Failure",
+            subMessage: "${response.body['message']}",
+            isError: true,
+          );
+        } else {
+          debugPrint(
+            "\n ⚠️ Problem of payment: ${createPaymentResponseModel.message}\n",
+          );
+          showCustomSnackBar(
+            'Error',
+            subMessage: "${response.body['message']}",
+            isError: true,
+          );
+        }
+      }
       if (response != null) {
-        clientSecret = createPaymentResponseModel.data!.clientSecret.toString();
-        paymentIntentId = createPaymentResponseModel.data!.transactionId;
+        clientSecret = createPaymentResponseModel.data?.clientSecret.toString();
+        paymentIntentId = createPaymentResponseModel.data?.transactionId;
         print("clientSecret : $clientSecret");
         print("response!.data : $response!.data ");
         await Stripe.instance
@@ -1262,7 +1289,7 @@ class HomeController extends GetxController implements GetxService {
             });
       }
     } catch (e, s) {
-      showCustomSnackBar('Error of createPayment: ${e}');
+      showCustomSnackBar('Error of create Payment:', subMessage: ' ${e}');
       print('exception:$e$s');
     }
   }
@@ -1279,18 +1306,21 @@ class HomeController extends GetxController implements GetxService {
         'Payment',
         'Payment Successful',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xffFF3951),
         colorText: Colors.white,
         margin: const EdgeInsets.all(10),
         duration: const Duration(seconds: 2),
       );
     } on Exception catch (e) {
       if (e is StripeException) {
+        showCustomSnackBar("Error from Stripe: ", subMessage: "${e}");
         print("Error from Stripe: ${e}");
       } else {
+        showCustomSnackBar("Unforeseen error: ", subMessage: "${e}");
         print("Unforeseen error: ${e}");
       }
     } catch (e) {
+      showCustomSnackBar("Error: ", subMessage: "${e}");
       print("exception:$e");
     }
   }

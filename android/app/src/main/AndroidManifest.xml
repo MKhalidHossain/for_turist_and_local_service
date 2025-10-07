@@ -30,12 +30,12 @@
     </queries>
 
     <application
-        android:usesCleartextTraffic="true"
         android:hardwareAccelerated="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:label="hatchr"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
 
         <!-- ✅ File Provider -->
         <provider
