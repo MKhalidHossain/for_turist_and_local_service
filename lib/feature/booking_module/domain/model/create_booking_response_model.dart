@@ -47,8 +47,12 @@ class BookingData {
     return BookingData(
       bookingId: json['bookingId'],
       bookingCode: json['bookingCode'],
-      summary: json['summary'] != null ? Summary.fromJson(json['summary']) : null,
-      offerDetails: json['offerDetails'] != null ? OfferDetails.fromJson(json['offerDetails']) : null,
+      summary:
+          json['summary'] != null ? Summary.fromJson(json['summary']) : null,
+      offerDetails:
+          json['offerDetails'] != null
+              ? OfferDetails.fromJson(json['offerDetails'])
+              : null,
     );
   }
 
@@ -66,7 +70,7 @@ class Summary {
   final String? serviceName;
   final Schedule? schedule;
   final int? participants;
-  final int? pricePerPerson;
+  final double? pricePerPerson;
   final int? total;
 
   Summary({
@@ -80,10 +84,20 @@ class Summary {
   factory Summary.fromJson(Map<String, dynamic> json) {
     return Summary(
       serviceName: json['serviceName'],
-      schedule: json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null,
-      participants: json['participants'],
-      pricePerPerson: json['pricePerPerson'],
-      total: json['total'],
+      schedule:
+          json['schedule'] != null ? Schedule.fromJson(json['schedule']) : null,
+      participants:
+          json['participants'] is int
+              ? json['participants']
+              : int.tryParse(json['participants']?.toString() ?? '0'),
+      pricePerPerson:
+          json['pricePerPerson'] != null
+              ? double.tryParse(json['pricePerPerson'].toString())
+              : null,
+      total:
+          json['total'] is num
+              ? (json['total'] as num).toInt()
+              : int.tryParse(json['total']?.toString() ?? '0'),
     );
   }
 
@@ -102,23 +116,14 @@ class Schedule {
   final String? date;
   final String? timeSlot;
 
-  Schedule({
-    this.date,
-    this.timeSlot,
-  });
+  Schedule({this.date, this.timeSlot});
 
   factory Schedule.fromJson(Map<String, dynamic> json) {
-    return Schedule(
-      date: json['date'],
-      timeSlot: json['timeSlot'],
-    );
+    return Schedule(date: json['date'], timeSlot: json['timeSlot']);
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'timeSlot': timeSlot,
-    };
+    return {'date': date, 'timeSlot': timeSlot};
   }
 }
 
@@ -127,7 +132,7 @@ class OfferDetails {
   final UserId? userId;
   final String? category;
   final String? offerType;
-  final int? pricePerPerson;
+  final double? pricePerPerson;
   final int? maxParticipants;
   final String? description;
   final String? title;
@@ -157,15 +162,22 @@ class OfferDetails {
       userId: json['userId'] != null ? UserId.fromJson(json['userId']) : null,
       category: json['category'],
       offerType: json['offerType'],
-      pricePerPerson: json['pricePerPerson'],
+      pricePerPerson:
+          json['pricePerPerson'] != null
+              ? double.tryParse(json['pricePerPerson'].toString())
+              : null,
       maxParticipants: json['maxParticipants'],
       description: json['description'],
       title: json['title'],
-      languages: json['languages'] != null ? List<String>.from(json['languages']) : [],
+      languages:
+          json['languages'] != null ? List<String>.from(json['languages']) : [],
       photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
-      availability: json['availability'] != null
-          ? (json['availability'] as List).map((e) => Availability.fromJson(e)).toList()
-          : [],
+      availability:
+          json['availability'] != null
+              ? (json['availability'] as List)
+                  .map((e) => Availability.fromJson(e))
+                  .toList()
+              : [],
       v: json['__v'],
     );
   }
@@ -194,12 +206,7 @@ class UserId {
   final String? lastName;
   final String? profileImage;
 
-  UserId({
-    this.id,
-    this.firstName,
-    this.lastName,
-    this.profileImage,
-  });
+  UserId({this.id, this.firstName, this.lastName, this.profileImage});
 
   factory UserId.fromJson(Map<String, dynamic> json) {
     return UserId(
@@ -225,25 +232,18 @@ class Availability {
   final List<String>? timeSlots;
   final String? id;
 
-  Availability({
-    this.date,
-    this.timeSlots,
-    this.id,
-  });
+  Availability({this.date, this.timeSlots, this.id});
 
   factory Availability.fromJson(Map<String, dynamic> json) {
     return Availability(
       date: json['date'],
-      timeSlots: json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : [],
+      timeSlots:
+          json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : [],
       id: json['_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'timeSlots': timeSlots,
-      '_id': id,
-    };
+    return {'date': date, 'timeSlots': timeSlots, '_id': id};
   }
 }

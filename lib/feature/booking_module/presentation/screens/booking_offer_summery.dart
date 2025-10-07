@@ -59,13 +59,13 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final String totalPrice =
-        "${(widget.offer.pricePerPerson ?? 0) * (widget.offer.maxParticipants ?? 1)}";
-    // final fomatedDateForShow = formatDateTime(widget.offer.availability);
-    String formattedDate = formatDate(widget.userSelectedDateForBooking);
 
     return GetBuilder<AuthController>(
       builder: (authController) {
+        final String totalPrice =
+            "${((widget.offer.pricePerPerson ?? 0) * (widget.offer.maxParticipants ?? 1)).toStringAsFixed(2)}";
+        // final fomatedDateForShow = formatDateTime(widget.offer.availability);
+        String formattedDate = formatDate(widget.userSelectedDateForBooking);
         return Scaffold(
           //backgroundColor: Colors.white,
           body: SingleChildScrollView(

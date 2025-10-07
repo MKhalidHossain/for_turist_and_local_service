@@ -943,6 +943,7 @@ class HomeController extends GetxController implements GetxService {
         confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
           decoded,
         );
+        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
 
         isLoading = false;
         update();
@@ -952,6 +953,7 @@ class HomeController extends GetxController implements GetxService {
         confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
           decoded,
         );
+        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
       }
     } catch (e) {
       print("⚠️ Error fetching profile : confirmPayment : $e\n");
