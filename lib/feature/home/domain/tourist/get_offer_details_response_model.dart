@@ -16,7 +16,8 @@ class GetOfferDetailsResponseModel {
       statusCode: json['statusCode'],
       success: json['success'],
       message: json['message'],
-      data: json['data'] != null ? OfferDetailsData.fromJson(json['data']) : null,
+      data:
+          json['data'] != null ? OfferDetailsData.fromJson(json['data']) : null,
     );
   }
 
@@ -44,10 +45,7 @@ class OfferDetailsData {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'local': local?.toJson(),
-      'offer': offer?.toJson(),
-    };
+    return {'local': local?.toJson(), 'offer': offer?.toJson()};
   }
 }
 
@@ -60,7 +58,7 @@ class Local {
   final String? gender;
   final String? lastName;
   final double? averageRating;
-  final int? ratingCount;
+  final double? ratingCount;
   final String? location;
   final String? profileImage;
   final List<dynamic>? ratings;
@@ -83,19 +81,25 @@ class Local {
   factory Local.fromJson(Map<String, dynamic> json) {
     return Local(
       id: json['_id'],
-      languages: json['languages'] != null ? List<String>.from(json['languages']) : [],
+      languages:
+          json['languages'] != null ? List<String>.from(json['languages']) : [],
       age: json['age'],
       description: json['description'],
       firstName: json['firstName'],
       gender: json['gender'],
       lastName: json['lastName'],
-      averageRating: (json['averageRating'] != null)
-          ? json['averageRating'].toDouble()
-          : null,
-      ratingCount: json['ratingCount'],
+      averageRating:
+          json['averageRating'] != null
+              ? (json['averageRating'] as num).toDouble()
+              : null,
+      ratingCount:
+          json['ratingCount'] != null
+              ? (json['ratingCount'] as num).toDouble()
+              : null,
       location: json['location'],
       profileImage: json['profileImage'],
-      ratings: json['ratings'] != null ? List<dynamic>.from(json['ratings']) : [],
+      ratings:
+          json['ratings'] != null ? List<dynamic>.from(json['ratings']) : [],
     );
   }
 
@@ -122,7 +126,7 @@ class Offer {
   final String? userId;
   final String? category;
   final String? offerType;
-  final int? pricePerPerson;
+  final double? pricePerPerson;
   final int? maxParticipants;
   final String? description;
   final String? title;
@@ -152,16 +156,21 @@ class Offer {
       userId: json['userId'],
       category: json['category'],
       offerType: json['offerType'],
-      pricePerPerson: json['pricePerPerson'],
+      pricePerPerson: json['pricePerPerson'] != null
+    ? (json['pricePerPerson'] as num).toDouble()
+    : null,
       maxParticipants: json['maxParticipants'],
       description: json['description'],
       title: json['title'],
-      languages: json['languages'] != null ? List<String>.from(json['languages']) : [],
+      languages:
+          json['languages'] != null ? List<String>.from(json['languages']) : [],
       photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
-      availability: json['availability'] != null
-          ? List<Availability>.from(
-              json['availability'].map((x) => Availability.fromJson(x)))
-          : [],
+      availability:
+          json['availability'] != null
+              ? List<Availability>.from(
+                json['availability'].map((x) => Availability.fromJson(x)),
+              )
+              : [],
       v: json['__v'],
     );
   }
@@ -194,16 +203,13 @@ class Availability {
   factory Availability.fromJson(Map<String, dynamic> json) {
     return Availability(
       date: json['date'],
-      timeSlots: json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : [],
+      timeSlots:
+          json['timeSlots'] != null ? List<String>.from(json['timeSlots']) : [],
       id: json['_id'],
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'date': date,
-      'timeSlots': timeSlots,
-      '_id': id,
-    };
+    return {'date': date, 'timeSlots': timeSlots, '_id': id};
   }
 }
