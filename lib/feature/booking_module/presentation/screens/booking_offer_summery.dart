@@ -52,19 +52,20 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
   @override
   void initState() {
     super.initState();
+    // final payC= Get.put(PaymentController(),permanent: true);
     homeController = Get.find<HomeController>();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final String totalPrice =
-        "${(widget.offer.pricePerPerson ?? 0) * (widget.offer.maxParticipants ?? 1)}";
-    // final fomatedDateForShow = formatDateTime(widget.offer.availability);
-    String formattedDate = formatDate(widget.userSelectedDateForBooking);
 
     return GetBuilder<AuthController>(
       builder: (authController) {
+        final String totalPrice =
+            "${((widget.offer.pricePerPerson ?? 0) * (widget.offer.maxParticipants ?? 1)).toStringAsFixed(2)}";
+        // final fomatedDateForShow = formatDateTime(widget.offer.availability);
+        String formattedDate = formatDate(widget.userSelectedDateForBooking);
         return Scaffold(
           //backgroundColor: Colors.white,
           body: SingleChildScrollView(
@@ -355,23 +356,30 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                           homeController.createBookingResponseModel.data;
                       final statusCode =
                           homeController.createBookingResponseModel.statusCode;
+                      final message =
+                          homeController.createBookingResponseModel.message;
 
                       if (statusCode == 201) {
                         // Step 2: Create payment intent on backend
-                        await homeController.createPayment(
-                          booking?.bookingCode ?? 'RES-0000-0000',
-                          widget.offer.pricePerPerson.toString(),
-                          widget.local.id.toString(),
-                        );
+                        // await homeController.createPayment(
+                        //   booking?.bookingCode ?? 'RES-0000-0000',
+                        //   widget.offer.pricePerPerson.toString(),
+                        //   widget.local.id.toString(),
+                        // );
 
                         // Step 3: Make Stripe payment (using the payment intent client secret)
                         await homeController.makePayment(
+                          bookingCode: booking?.bookingCode ?? 'RES-0000-0000',
+                          localId: widget.local.id.toString(),
                           amount: totalPrice,
                           currency: 'USD',
                           context: context,
                         );
                       } else {
-                        showCustomSnackBar('Booking failed. Please try again.');
+                        showCustomSnackBar(
+                          '$message',
+                          // subMessage: '$message',
+                        );
                       }
                     } catch (e, s) {
                       print('💥 Error during payment: $e');

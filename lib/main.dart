@@ -5,15 +5,24 @@ import 'package:kobeur/core/constants/splash_screen.dart';
 import 'package:kobeur/core/constants/splash_screen_without_loading.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   Stripe.publishableKey =
-      'pk_live_51S5NDtE1eDwCt5PfajJudYzNvGCCg8pFuOgWl8CCOxmJ8gnVnzMKFDKcsQ6Jgjrn2zUxvyvRzleOr0gEF8UXq4wj00NFN4UooK';
+      'pk_test_51S6pMbRZVOYD6qjBukBi2VyPiTtIhzAyYzmfyAo4izzIwemOo7I3fUYELhxmTJeNln7zMiztFA4CKihsybqrJlo800nWzvIXZY';
+
+  // Stripe.merchantIdentifier = 'merchant.kobeur.app';
+  // Stripe.urlScheme = 'flutterstripe';
+
   await Stripe.instance.applySettings();
+
+  /// ✅ Apply full Stripe settings
+
   await initDI();
   //final authController = Get.find<AuthController>();
   // final authController = Get.find<AuthController>();
