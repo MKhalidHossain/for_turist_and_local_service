@@ -5,7 +5,6 @@ import 'package:kobeur/core/constants/splash_screen.dart';
 import 'package:kobeur/core/constants/splash_screen_without_loading.dart';
 import 'package:kobeur/feature/auth/controllers/auth_controller.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/user_login_screen.dart';
-import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
