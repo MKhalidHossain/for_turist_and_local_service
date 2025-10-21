@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:get/get.dart';
+// import 'package:google_places_autocomplete/google_places_autocomplete.dart';
 import 'package:kobeur/core/widgets/wide_custom_button.dart';
 import '../../../../../core/widgets/choose_country/data/countries.dart';
 import '../../../../../core/widgets/choose_country/model/country.dart';
@@ -24,7 +28,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<String> formattedSelectedLanguages = [];
   String? selectedService;
   TextEditingController searchController = TextEditingController();
-  List<Country> suggestionResults = [];
+  List<Map<String, dynamic>> suggestionResults = [];
   int? crossAxisCount;
 
   String get selectedRange {
@@ -191,6 +195,10 @@ class _SearchScreenState extends State<SearchScreen> {
       'color': Colors.white,
     },
   ];
+  // final String _apiKey = 'YOUR_API_KEY';
+  // late GooglePlacesAutocomplete _placesService;
+  // List<Prediction> _predictions = [];
+  // bool _isLoading = false;
 
   @override
   void initState() {
@@ -202,22 +210,51 @@ class _SearchScreenState extends State<SearchScreen> {
     }
   }
 
-  void _onSearchChanged(String query) {
+  void _onSearchChanged(String query) async {
     if (query.isEmpty) {
       setState(() => suggestionResults = []);
       return;
     }
 
-    setState(() {
-      suggestionResults =
-          countries
-              .where(
-                (country) =>
-                    country.country.toLowerCase().contains(query.toLowerCase()),
-              )
-              .toList();
-    });
+    final url = Uri.parse(
+      'https://nominatim.openstreetmap.org/search?q=$query&format=json&addressdetails=1&limit=10',
+    );
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'User-Agent': 'FlutterApp/1.0 (youremail@example.com)'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          suggestionResults = List<Map<String, dynamic>>.from(data);
+        });
+      } else {
+        print('Failed: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching places: $e');
+    }
   }
+
+  // void _onSearchChanged(String query) {
+  //   if (query.isEmpty) {
+  //     setState(() => suggestionResults = []);
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     suggestionResults =
+  //         countries
+  //             .where(
+  //               (country) =>
+  //                   country.country.toLowerCase().contains(query.toLowerCase()),
+  //             )
+  //             .toList();
+  //   });
+  // }
 
   void _onSuggestionTap(Country country) {
     setState(() {
@@ -441,7 +478,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       onChanged: _onSearchChanged,
                       decoration: InputDecoration(
                         hintText: 'Search destinations, hotels...',
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        // prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        suffixIcon: Icon(Icons.search, color: Colors.grey),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide(
@@ -462,19 +500,39 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
 
             // Suggestions
+            // if (suggestionResults.isNotEmpty)
+            //   Expanded(
+            //     child: ListView.builder(
+            //       itemCount: suggestionResults.length,
+            //       itemBuilder: (context, index) {
+            //         final country = suggestionResults[index];
+            //         return ListTile(
+            //           leading: Text(
+            //             country.flagEmoji,
+            //             style: TextStyle(fontSize: 20),
+            //           ),
+            //           title: Text(country.country),
+            //           onTap: () => _onSuggestionTap(country),
+            //         );
+            //       },
+            //     ),
+            //   ),
             if (suggestionResults.isNotEmpty)
               Expanded(
                 child: ListView.builder(
                   itemCount: suggestionResults.length,
                   itemBuilder: (context, index) {
-                    final country = suggestionResults[index];
+                    final place = suggestionResults[index];
                     return ListTile(
-                      leading: Text(
-                        country.flagEmoji,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      title: Text(country.country),
-                      onTap: () => _onSuggestionTap(country),
+                      leading: Icon(Icons.location_on, color: Colors.grey),
+                      title: Text(place['display_name']),
+                      onTap: () {
+                        setState(() {
+                          searchController.text = place['display_name'];
+                          suggestionResults = [];
+                        });
+                        FocusScope.of(context).unfocus();
+                      },
                     );
                   },
                 ),
