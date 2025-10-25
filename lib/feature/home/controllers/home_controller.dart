@@ -1254,7 +1254,7 @@ class HomeController extends GetxController implements GetxService {
       } else {
         if (response.statusCode == 500) {
           debugPrint(
-            "\n⚠️ Problem of payment: ${response.body['message']}\n 500",
+            "\n⚠️ Problem of payment: ${response.body['message']}\n form status 500",
           );
           showCustomSnackBar(
             "Failure",

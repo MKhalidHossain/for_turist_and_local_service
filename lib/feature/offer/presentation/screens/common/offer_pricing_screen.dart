@@ -22,7 +22,7 @@ class _OfferPricingScreenState extends State<OfferPricingScreen> {
 
   void _changeGuestCountPrice(int change) {
     setState(() {
-      pricePerPerson = (pricePerPerson + change).clamp(1, 20);
+      pricePerPerson = (pricePerPerson + change).clamp(1, 1000);
     });
   }
 

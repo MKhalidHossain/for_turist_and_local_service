@@ -358,6 +358,8 @@ class _OfferDetailsScreenForTouristScreenState
                                                     formattedDate,
                                                     style: TextStyle(
                                                       color: Colors.black,
+                                                      fontSize:
+                                                          size.width * 0.033,
                                                       fontWeight:
                                                           isSelected
                                                               ? FontWeight.bold
