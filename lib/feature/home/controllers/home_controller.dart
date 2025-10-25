@@ -29,6 +29,7 @@ import 'package:kobeur/feature/payment/domain/model/confirm_payment_response_mod
 import 'package:kobeur/feature/payment/domain/model/connect_account_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/create_payment_response_model.dart';
 import 'package:kobeur/feature/payment/domain/model/resend_onboarding_response_model.dart';
+import 'package:kobeur/feature/payment/domain/model/validate_account_response_model.dart';
 import 'package:kobeur/utils/display_helper.dart';
 import '../../../core/constants/urls.dart';
 import '../../../navigation/bottom_navigationber_screen.dart';
@@ -86,6 +87,8 @@ class HomeController extends GetxController implements GetxService {
   //payment
   ConnectAccountResponseModel connectAccountResponseModel =
       ConnectAccountResponseModel();
+  ValidateAccountResponseModel validateAccountResponseModel =
+      ValidateAccountResponseModel();
   CreatePaymentResponseModel createPaymentResponseModel =
       CreatePaymentResponseModel();
   ConfirmPaymentResponseModel confirmPaymentResponseModel =
@@ -841,9 +844,12 @@ class HomeController extends GetxController implements GetxService {
         showCustomSnackBar('Sripe connection Page is openning ...');
         // Get.to(() => CreateFirstServiceScreen());
         print(' stripe url : ${connectAccountResponseModel.data!.url}');
+
+
+        // await validateAccount(connectAccountResponseModel.data!.accountId.toString());
         Get.to(
           () => StripeConnectFullScreen(
-            connectUrl: connectAccountResponseModel.data!.url,
+            connectUrl: connectAccountResponseModel.data!.url.toString(),
           ),
         );
 
@@ -855,6 +861,49 @@ class HomeController extends GetxController implements GetxService {
       }
     } catch (e) {
       print("⚠️ Error fetching profile : connectAccount : $e\n");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  Future<void> validateAccount(String accountId) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.validateAccount(accountId);
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ validateAccount : for Tourist fetched successfully\n");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        validateAccountResponseModel = ValidateAccountResponseModel.fromJson(
+          decoded,
+        );
+        showCustomSnackBar('Sripe connection Page is openning ...');
+        // Get.to(() => CreateFirstServiceScreen());
+        print(
+          ' stripe account Id : ${validateAccountResponseModel.data!.stripeAccountId}',
+        );
+        // Get.to(
+        //   () => StripeConnectFullScreen(
+        //     connectUrl: connectAccountResponseModel.data!.url,
+        //   ),
+        // );
+        Get.offAll(() => CreateFirstServiceScreen());
+
+        isLoading = false;
+        update();
+      } else {
+        debugPrint("Error: ${response.body['message']}");
+        showCustomSnackBar('${response.body['message']}');
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : validateAccount : $e\n");
     } finally {
       isLoading = false;
       update();

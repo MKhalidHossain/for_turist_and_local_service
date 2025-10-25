@@ -288,6 +288,11 @@ class HomeRepository implements HomeRepositoryInterface {
     });
   }
 
+  @override
+  Future<Response> validateAccount(String accountId) async {
+    return await apiClient.getData(Urls.validateAccount + accountId);
+  }
+
   // @override
   // Future<Response> getProfile() async {
   //   return await apiClient.getData(Urls.getProfile);
