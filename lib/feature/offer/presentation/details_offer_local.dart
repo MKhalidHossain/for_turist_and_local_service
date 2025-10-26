@@ -221,7 +221,7 @@ class _DetailsOfferLocalState extends State<DetailsOfferLocal> {
                   serviceData.userGivenOfferDescription =
                       _descriptionController.text;
                   serviceData.printData();
-                  Get.to(PhotoUploadScreen());
+                  Get.to(() => PhotoUploadScreen());
                 }
               },
               text: "Continue",

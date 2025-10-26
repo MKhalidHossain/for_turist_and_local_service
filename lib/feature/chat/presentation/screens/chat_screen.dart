@@ -112,7 +112,7 @@ class _ChatScreenState extends State<ChatScreen> {
           homeController.getMessagesPreviousResponseModel.data?.messages ?? [];
 
       final currentUserId =
-          profileController.getProfileResponseModel?.data?.sId;
+          profileController.getProfileResponseModel?.data?.id;
 
       setState(() {
         _messages =
@@ -147,7 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
       await _loadInitialMessages();
       final token = await getToken();
       final currentUserId =
-          profileController.getProfileResponseModel?.data?.sId;
+          profileController.getProfileResponseModel?.data?.id;
       if (token != null && currentUserId != null) {
         _connectSocket(currentUserId, token);
       }
@@ -156,7 +156,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void sendMessage() {
     if (_messageController.text.isEmpty || _isSending) return;
-    final currentUserId = profileController.getProfileResponseModel?.data?.sId;
+    final currentUserId = profileController.getProfileResponseModel?.data?.id;
     if (currentUserId == null) return;
 
     setState(() => _isSending = true);
@@ -190,7 +190,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     if (_socket.connected) {
       _socket.emit('leave', {
-        'userId': profileController.getProfileResponseModel?.data?.sId,
+        'userId': profileController.getProfileResponseModel?.data?.id,
       });
       _socket.disconnect();
     }
