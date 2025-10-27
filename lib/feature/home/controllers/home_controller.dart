@@ -324,7 +324,7 @@ class HomeController extends GetxController implements GetxService {
         update();
       }
     } catch (e) {
-      print("⚠️ Error fetching profile: $e\n");
+      print("⚠️ Error fetching profile: getHome : $e\n");
     } finally {
       isLoading = false;
       update();
