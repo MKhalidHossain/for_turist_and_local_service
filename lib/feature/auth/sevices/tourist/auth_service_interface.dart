@@ -39,5 +39,6 @@ abstract class AuthServiceInterface {
   Future<dynamic> chooseRole(String role, String token);
   Future<bool?> saveUserRole(String userRole);
   String getUserRole();
-    Future<Response> roleSwitch();
+  Future<Response> roleSwitch();
+  
 }

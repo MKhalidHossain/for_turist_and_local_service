@@ -13,13 +13,12 @@ class ConnectAccountResponseModel {
 
   factory ConnectAccountResponseModel.fromJson(Map<String, dynamic> json) {
     return ConnectAccountResponseModel(
-      statusCode: json['statusCode'] ?? 0,
-      success: json['success'] ?? false,
-      message: json['message'] ?? '',
-      data:
-          json['data'] != null
-              ? ConnectAccountData.fromJson(json['data'])
-              : null,
+      statusCode: json['statusCode'] as int?,
+      success: json['success'] as bool?,
+      message: json['message'] as String?,
+      data: json['data'] != null
+          ? ConnectAccountData.fromJson(json['data'])
+          : null,
     );
   }
 
@@ -34,15 +33,25 @@ class ConnectAccountResponseModel {
 }
 
 class ConnectAccountData {
-  final String url;
+  final String? url;
+  final String? accountId;
 
-  ConnectAccountData({required this.url});
+  ConnectAccountData({
+    this.url,
+    this.accountId,
+  });
 
   factory ConnectAccountData.fromJson(Map<String, dynamic> json) {
-    return ConnectAccountData(url: json['url'] ?? '');
+    return ConnectAccountData(
+      url: json['url'] as String?,
+      accountId: json['accountId'] as String?,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {'url': url};
+    return {
+      'url': url,
+      'accountId': accountId,
+    };
   }
 }
