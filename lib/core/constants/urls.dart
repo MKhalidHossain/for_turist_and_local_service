@@ -2,10 +2,13 @@ class Urls {
   // ................................Auth...............................with local or server
 
   // static const String baseUrl = 'http://10.0.2.2:5001/api/v1';
-  static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
-  // static const String baseUrl = 'https://api.hatchr.app/api/v1';
+  // static const String baseUrl = 'http://10.10.5.85:5001/api/v1';
+  static const String baseUrl = 'https://api.hatchr.app/api/v1';
+  // static const String baseUrl =
+  // 'https://subpeduncular-jed-increasingly.ngrok-free.dev/api/v1';
 
-  static const String socketBaseUrl = 'http://10.10.5.85:5001';
+  //static const String socketBaseUrl = 'http://10.10.5.85:5001';
+  static const String socketBaseUrl = 'https://api.hatchr.app';
 
   // Auth Module
   static const String register = '/auth/signup';
@@ -106,6 +109,8 @@ class Urls {
   // ................................Payment Module...............................
 
   static const String connectAccount = '/payment/connect-account';
+
+  static const String validateAccount = '/payment/verify-onboarding?accountId=';
 
   static const String createPayment = '/payment/create';
 

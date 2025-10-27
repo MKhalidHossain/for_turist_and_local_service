@@ -44,5 +44,6 @@ abstract class AuthRepositoryInterface {
   String getUserRole();
   
   Future<Response> roleSwitch();
+  
 
 }

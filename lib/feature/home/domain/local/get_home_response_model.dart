@@ -46,16 +46,27 @@ class HomeData {
   });
 
   factory HomeData.fromJson(Map<String, dynamic> json) {
+    // ✅ FIXED: Added helper function to handle both Map and List formats safely
+    List<Trip> parseTrips(dynamic data) {
+      if (data == null) return [];
+      if (data is List) {
+        // If it's already a list → parse directly
+        return data.map((e) => Trip.fromJson(e)).toList();
+      } else if (data is Map) {
+        // If it's a map like { "0": {...}, "1": {...} } → take values as list
+        return data.values.map((e) => Trip.fromJson(e)).toList();
+      }
+      return [];
+    }
+
     return HomeData(
       earnings: json['earnings'],
       totalTours: json['totalTours'],
       averageRating: json['averageRating'],
-      liveTrip: json['liveTrip'] != null
-          ? (json['liveTrip'] as List).map((e) => Trip.fromJson(e)).toList()
-          : [],
-      upcomingTrips: json['upcomingTrips'] != null
-          ? (json['upcomingTrips'] as List).map((e) => Trip.fromJson(e)).toList()
-          : [],
+
+      // ✅ FIXED: Replaced direct list cast with safe parsing
+      liveTrip: parseTrips(json['liveTrip']),
+      upcomingTrips: parseTrips(json['upcomingTrips']),
     );
   }
 

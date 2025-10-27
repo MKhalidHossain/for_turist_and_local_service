@@ -205,29 +205,46 @@ class HomeService implements HomeServiceInterface {
   Future<Response> resendOnboarding(String localId) async {
     return await homeRepositoryInterface.resendOnboarding(localId);
   }
-  
+
   @override
-  Future<Response> confirmBooking(String bookingId) async{
+  Future<Response> confirmBooking(String bookingId) async {
     return await homeRepositoryInterface.confirmBooking(bookingId);
   }
-  
+
   @override
-  Future<Response> createBooking(String localId, String offerId, String date, String selectedTimeSlot, String participants) async{
-    return await homeRepositoryInterface.createBooking(localId, offerId, date,selectedTimeSlot, participants);
+  Future<Response> createBooking(
+    String localId,
+    String offerId,
+    String date,
+    String selectedTimeSlot,
+    String participants,
+  ) async {
+    return await homeRepositoryInterface.createBooking(
+      localId,
+      offerId,
+      date,
+      selectedTimeSlot,
+      participants,
+    );
   }
-  
+
   @override
-  Future<Response> getBookingByStatus(String status) async{
+  Future<Response> getBookingByStatus(String status) async {
     return await homeRepositoryInterface.getBookingByStatus(status);
   }
-  
+
   @override
-  Future<Response> getBookingDetails(String bookingId) async{
-    return await homeRepositoryInterface.getBookingDetails( bookingId);
+  Future<Response> getBookingDetails(String bookingId) async {
+    return await homeRepositoryInterface.getBookingDetails(bookingId);
   }
-  
+
   @override
-  Future<Response> updateBooking(String bookingId, String participants) async{
+  Future<Response> updateBooking(String bookingId, String participants) async {
     return await homeRepositoryInterface.updateBooking(bookingId, participants);
+  }
+
+  @override
+  Future<Response> validateAccount(String accountId) async {
+    return await homeRepositoryInterface.validateAccount(accountId);
   }
 }
