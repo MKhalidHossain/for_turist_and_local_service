@@ -80,157 +80,165 @@ class _DetailsOfferLocalState extends State<DetailsOfferLocal> {
         elevation: 0,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // 🔹 Scrollable area for form fields
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.zero, // keep your original padding setup
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 24),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // 🔹 Scrollable area for form fields
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding:
+                        EdgeInsets.zero, // keep your original padding setup
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 24),
 
-                      "Title".text16Black(),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _titleController,
-                        focusNode: _titleFocus,
-                        keyboardType: TextInputType.text,
-                        textCapitalization: TextCapitalization.sentences,
-                        maxLines: 1,
-                        maxLength: 60,
-                        buildCounter:
-                            (
-                              BuildContext context, {
-                              required int currentLength,
-                              required bool isFocused,
-                              required int? maxLength,
-                            }) => null,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Write your title...',
-                          filled: true,
-                          fillColor: const Color(0xffC4C4C4).withOpacity(0.25),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
+                        "Title".text16Black(),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _titleController,
+                          focusNode: _titleFocus,
+                          keyboardType: TextInputType.text,
+                          textCapitalization: TextCapitalization.sentences,
+                          maxLines: 1,
+                          maxLength: 60,
+                          buildCounter:
+                              (
+                                BuildContext context, {
+                                required int currentLength,
+                                required bool isFocused,
+                                required int? maxLength,
+                              }) => null,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
                           ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 12,
-                          ).copyWith(bottom: 32),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Title is required';
-                          }
-                          return null;
-                        },
-                      ),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${60 - _titleController.text.length} characters left',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey.shade600,
+                          decoration: InputDecoration(
+                            hintText: 'Write your title...',
+                            filled: true,
+                            fillColor: const Color(
+                              0xffC4C4C4,
+                            ).withOpacity(0.25),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
                             ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 12,
+                            ).copyWith(bottom: 32),
                           ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      "Description".text16Black(),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _descriptionController,
-                        focusNode: _descriptionFocus,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        minLines: 8,
-                        maxLength: 1000,
-                        buildCounter:
-                            (
-                              BuildContext context, {
-                              required int currentLength,
-                              required bool isFocused,
-                              required int? maxLength,
-                            }) => null,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Title is required';
+                            }
+                            return null;
+                          },
                         ),
-                        decoration: InputDecoration(
-                          hintText: 'Write your description here...',
-                          filled: true,
-                          fillColor: const Color(0xffC4C4C4).withOpacity(0.25),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 16,
-                            horizontal: 12,
-                          ).copyWith(bottom: 32),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Description is required';
-                          }
-                          return null;
-                        },
-                      ),
 
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${1000 - _descriptionController.text.length} characters left',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey.shade600,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              '${60 - _titleController.text.length} characters left',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                              ),
                             ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 24),
+
+                        "Description".text16Black(),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _descriptionController,
+                          focusNode: _descriptionFocus,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          minLines: 8,
+                          maxLength: 1000,
+                          buildCounter:
+                              (
+                                BuildContext context, {
+                                required int currentLength,
+                                required bool isFocused,
+                                required int? maxLength,
+                              }) => null,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w400,
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                    ],
+                          decoration: InputDecoration(
+                            hintText: 'Write your description here...',
+                            filled: true,
+                            fillColor: const Color(
+                              0xffC4C4C4,
+                            ).withOpacity(0.25),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 12,
+                            ).copyWith(bottom: 32),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.trim().isEmpty) {
+                              return 'Description is required';
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              '${1000 - _descriptionController.text.length} characters left',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            // 🔹 Fixed bottom button
-            context.primaryButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  UserProfileService.instance.profile.description =
-                      _descriptionController.text;
-                  serviceData.userGivenOfferTitle = _titleController.text;
-                  serviceData.userGivenOfferDescription =
-                      _descriptionController.text;
-                  serviceData.printData();
-                  Get.to(() => PhotoUploadScreen());
-                }
-              },
-              text: "Continue",
-              backgroundColor:
-                  isFormValid
-                      ? AppColors.context(context).primaryColor
-                      : AppColors.secondaryColor,
-            ),
-          ],
+              // 🔹 Fixed bottom button
+              context.primaryButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    UserProfileService.instance.profile.description =
+                        _descriptionController.text;
+                    serviceData.userGivenOfferTitle = _titleController.text;
+                    serviceData.userGivenOfferDescription =
+                        _descriptionController.text;
+                    serviceData.printData();
+                    Get.to(() => PhotoUploadScreen());
+                  }
+                },
+                text: "Continue",
+                backgroundColor:
+                    isFormValid
+                        ? AppColors.context(context).primaryColor
+                        : AppColors.secondaryColor,
+              ),
+            ],
+          ),
         ),
       ),
     );

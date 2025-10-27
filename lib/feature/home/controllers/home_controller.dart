@@ -1350,6 +1350,9 @@ class HomeController extends GetxController implements GetxService {
           createPaymentResponseModel.data!.transactionId ?? '',
           "pm_card_visa",
         );
+        showCustomSnackBar('Please wait', subMessage: 'confirmimg Payment ...');
+        isLoading = false;
+        update();
       });
       Get.snackbar(
         'Payment',
