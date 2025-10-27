@@ -16,9 +16,10 @@ class CreatePaymentResponseModel {
       statusCode: json['statusCode'] as int?,
       success: json['success'] as bool?,
       message: json['message'] as String?,
-      data: json['data'] != null
-          ? PaymentData.fromJson(json['data'] as Map<String, dynamic>)
-          : null,
+      data:
+          json['data'] != null
+              ? PaymentData.fromJson(json['data'] as Map<String, dynamic>)
+              : null,
     );
   }
 
@@ -46,9 +47,6 @@ class PaymentData {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'transactionId': transactionId,
-      'clientSecret': clientSecret,
-    };
+    return {'transactionId': transactionId, 'clientSecret': clientSecret};
   }
 }
