@@ -1207,6 +1207,7 @@ class HomeController extends GetxController implements GetxService {
 
       if (response.statusCode == 200) {
         print("✅ confirmPayment : for Tourist fetched successfully\n");
+        showCustomSnackBar("Payment confirmed successfully");
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
         confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
@@ -1226,6 +1227,7 @@ class HomeController extends GetxController implements GetxService {
       }
     } catch (e) {
       print("⚠️ Error fetching profile : confirmPayment : $e\n");
+      showCustomSnackBar("Error in confirming payment:", subMessage: "$e");
     } finally {
       isLoading = false;
       update();
