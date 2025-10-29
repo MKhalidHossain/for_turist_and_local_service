@@ -438,6 +438,7 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
         } else {
           showCustomSnackBar(message ?? 'Booking failed');
         }
+        
       }
     } catch (e, s) {
       debugPrint('💥 Error during payment: $e');
