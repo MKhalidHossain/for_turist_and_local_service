@@ -1332,6 +1332,7 @@ class HomeController extends GetxController implements GetxService {
             .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
                 paymentIntentClientSecret: clientSecret,
+                merchantDisplayName: 'hatchr',
                 style: ThemeMode.system,
               ),
             )
