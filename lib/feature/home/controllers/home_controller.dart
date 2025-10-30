@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -1332,7 +1333,8 @@ class HomeController extends GetxController implements GetxService {
             .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
                 paymentIntentClientSecret: clientSecret,
-                style: ThemeMode.system,
+                merchantDisplayName: 'hatchr',
+                style: ThemeMode.light,
               ),
             )
             .then((_) {
@@ -1397,6 +1399,243 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+
+  Future<void> makeGooglePayPayment({
+    required String bookingCode,
+    required String localId,
+    required String amount,
+    required String currency,
+    required BuildContext context,
+  }) async {
+    try {
+       if (Platform.isIOS) {
+      showCustomSnackBar(
+        "Google Pay is not supported on iOS.",
+        subMessage: "Use Apple Pay or Stripe payment instead.",
+      );
+      return;
+    }
+
+
+      isLoading = true;
+      update();
+
+      // 1️⃣ Create payment intent on your backend
+      final response = await homeServiceInterface.createPayment(
+        bookingCode,
+        amount,
+        localId,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body of makeGooglePayPayment: ${response.body}");
+
+      if (response.statusCode == 200) {
+
+          debugPrint(
+          "\n✅ createPayment into makeGooglePayPayment : for Tourist fetched successfully\n",
+        );
+
+        showCustomSnackBar("Payment has been successful with Google Pay");
+        // final decoded = jsonDecode(response.body);
+        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+          response.body,
+        );
+        debugPrint("\n ✅ Payment Success form makeGooglePayPayment :${response.body['message']}\n");
+        showCustomSnackBar(
+                "Success",
+                subMessage: "${response.body['message'].toString()}",
+                isError: false,
+              );
+
+      } else {
+        final decoded = jsonDecode(response.body);
+        final message = decoded['message'] ?? 'Payment failed.';
+        showCustomSnackBar('Error', subMessage: message, isError: true);
+        debugPrint("⚠️ Payment failed with status: makeGooglePayPayment : ${response.statusCode}");
+      }
+
+      if (response != null){
+
+        clientSecret = createPaymentResponseModel.data?.clientSecret;
+        paymentIntentId = createPaymentResponseModel.data?.transactionId;
+        print("clientSecret : $clientSecret");
+        print("response!.data : $response!.data ");
+
+        // 2️⃣ Initialize Google Pay Payment Sheet
+        // await Stripe.instance.initPaymentSheet(
+        //   paymentSheetParameters: SetupPaymentSheetParameters(
+        //     paymentIntentClientSecret: clientSecret,
+        //     merchantDisplayName: 'hatchr',
+        //     style: ThemeMode.light,
+        //     googlePay: const PaymentSheetGooglePay(
+        //       merchantCountryCode: 'US',
+        //       currencyCode: 'USD',
+        //       testEnv: true, // change to false in production
+        //     ),
+        //   ),
+        // );
+        await Stripe.instance.initGooglePay(GooglePayInitParams(
+          merchantName: 'Hatchr',
+          countryCode: 'US',
+          testEnv:  true,
+          ));
+
+          await Stripe.instance.presentGooglePay(
+            PresentGooglePayParams(clientSecret: clientSecret!,
+            currencyCode: 'USD',
+
+            )
+          );
+
+        // 3️⃣ Present Google Pay payment sheet
+        // await Stripe.instance.presentPaymentSheet();
+
+        // 4️⃣ Optional: confirm payment on backend if required
+        // await confirmPayment(clientSecret);
+
+        debugPrint("✅ Google Pay payment completed successfully.");
+        showCustomSnackBar("Payment successful!", isError: false);
+      }
+    } catch (e, s) {
+      debugPrint("💥 Google Pay Payment error: $e\n$s");
+      showCustomSnackBar(
+        "Payment failed",
+        subMessage: e.toString(),
+        isError: true,
+      );
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+
+  //   Future<void> makeGooglePayPayment({
+  //     required String bookingCode,
+  //     required String localId,
+  //     required String amount,
+  //     required String currency,
+  //     required BuildContext context,
+  //   }) async {
+  //     try {
+  //       isLoading = true;
+  //       update();
+
+  //       final response = await homeServiceInterface.createPayment(
+  //         bookingCode,
+  //         amount,
+  //         localId,
+  //       );
+  //       debugPrint("Status Code: ${response.statusCode}");
+  //       debugPrint("Response Body of makeGooglePayPayment: ${response.body}");
+  //       if (response.statusCode == 200) {
+  //         debugPrint(
+  //           "\n✅ makeGooglePayPayment: for Tourist fetched successfully\n",
+  //         );
+
+  //         showCustomSnackBar("G Payment has been successful");
+  //         final decoded = jsonDecode(response.body);
+
+  //         createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+  //           // response.body,
+  //           decoded
+  //         );
+
+  // final data = jsonDecode(response.body);
+  //     final clientSecret = createPaymentResponseModel.data!.clientSecret!;
+  //     // final paymentIntent = data['data']['transactionId'];
+  //     final paymentIntent = await Stripe.instance.retrievePaymentIntent(
+  //       createPaymentResponseModel.data!.clientSecret!,
+  //     );
+
+  //     // 2. Present Google Pay sheet
+  //     await Stripe.instance.initPaymentSheet(
+  //       paymentSheetParameters: SetupPaymentSheetParameters(
+  //         paymentIntentClientSecret: clientSecret,
+  //         merchantDisplayName: 'Your App Name',
+  //         style: ThemeMode.light,
+  //         googlePay: const PaymentSheetGooglePay(
+  //           merchantCountryCode: 'US',
+  //           currencyCode: 'USD',
+  //           testEnv: true, // set to false in production
+  //         ),
+  //       ),
+  //     );
+
+  //     // 3. Present payment sheet
+  //     await Stripe.instance.presentPaymentSheet();
+
+  //     // 4. Confirm payment on backend
+  //     // await confirmPayment(clientSecret);
+
+  //          confirmPayment(
+  //           paymentIntent.id,
+  //           // createPaymentResponseModel.data!.transactionId ?? '',
+  //           "pm_card_visa",
+  //         );
+
+  //         debugPrint("\n ✅ G Payment Success :${response.body['message']}\n");
+  //         showCustomSnackBar(
+  //           "Success",
+  //           subMessage: "${response.body['message'].toString()}",
+  //           isError: false,
+  //         );
+
+  //         isLoading = false;
+  //         update();
+  //       } else {
+  //         if (response.statusCode == 500) {
+  //           debugPrint(
+  //             "\n⚠️ Problem of payment: ${response.body['message']}\n form status 500",
+  //           );
+  //           showCustomSnackBar(
+  //             "Failure",
+  //             subMessage: "${response.body['message']}",
+  //             isError: true,
+  //           );
+  //         } else {
+  //           debugPrint(
+  //             "\n ⚠️ Problem of G payment: ${createPaymentResponseModel.message}\n",
+  //           );
+  //           showCustomSnackBar(
+  //             'Error',
+  //             subMessage: "${response.body['message']}",
+  //             isError: true,
+  //           );
+  //         }
+  //       }
+  // if (response != null) {
+  //   clientSecret = createPaymentResponseModel.data?.clientSecret.toString();
+  //   paymentIntentId = createPaymentResponseModel.data?.transactionId;
+  //   print("clientSecret : $clientSecret");
+  //   print("response!.data : $response!.data ");
+  //   await Stripe.instance
+  //       .initPaymentSheet(
+  //         paymentSheetParameters: SetupPaymentSheetParameters(
+  //           paymentIntentClientSecret: clientSecret,
+  //           merchantDisplayName: 'hatchr',
+  //           style: ThemeMode.system,
+  //         ),
+  //       )
+  //       .then((_) {
+  //         displayPaymentSheet();
+  //       });
+  // }
+  //   } catch (e, s) {
+  //     showCustomSnackBar('Error of makeGooglePayPayment:', subMessage: ' ${e}');
+  //     print('exception:$e$s');
+  //   }
+  // }
+
+  // Future<void> confirmPayment(String clientSecret) async {
+  //   // optionally confirm via backend /confirmPayment
+  //   final paymentIntentId = clientSecret.split('_secret')[0];
+  //   await http.post(
+  //     Uri.parse('https://yourapi.com/api/payments/confirm'),
+  //     headers: {'Authorization': 'Bearer $token'},
+  //     body: {'paymentIntentId': paymentIntentId},
+  //   );
+  // }
 
   // displayPaymentSheet() async {
   //   try {
