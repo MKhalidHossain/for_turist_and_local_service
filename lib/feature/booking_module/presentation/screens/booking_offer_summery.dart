@@ -466,6 +466,7 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                     (widget.offer.maxParticipants ?? 1))
                 .toStringAsFixed(2),
             currency: 'USD',
+            context: context,
           );
         } else {
           showCustomSnackBar(message ?? 'Booking failed');

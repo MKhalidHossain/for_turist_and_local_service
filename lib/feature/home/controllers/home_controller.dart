@@ -1429,7 +1429,11 @@ class HomeController extends GetxController implements GetxService {
         );
 
 final data = jsonDecode(response.body);
-    final clientSecret = data['data']['clientSecret'];
+    final clientSecret = createPaymentResponseModel.data!.clientSecret!;
+    // final paymentIntent = data['data']['transactionId'];
+    final paymentIntent = await Stripe.instance.retrievePaymentIntent(
+      createPaymentResponseModel.data!.clientSecret!,
+    );
 
     // 2. Present Google Pay sheet
     await Stripe.instance.initPaymentSheet(
