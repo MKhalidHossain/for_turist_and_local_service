@@ -1399,6 +1399,133 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
+
+  Future<void> makeGooglePayPayment({
+    required String bookingCode,
+    required String localId,
+    required String amount,
+    required String currency,
+    required BuildContext context,
+  }) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.createPayment(
+        bookingCode,
+        amount,
+        localId,
+      );
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+      if (response.statusCode == 200) {
+        debugPrint(
+          "\n✅ makeGooglePayPayment: for Tourist fetched successfully\n",
+        );
+
+        showCustomSnackBar("G Payment has been successful");
+        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+          response.body,
+        );
+
+final data = jsonDecode(response.body);
+    final clientSecret = data['data']['clientSecret'];
+
+    // 2. Present Google Pay sheet
+    await Stripe.instance.initPaymentSheet(
+      paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: clientSecret,
+        merchantDisplayName: 'Your App Name',
+        style: ThemeMode.light,
+        googlePay: const PaymentSheetGooglePay(
+          merchantCountryCode: 'US',
+          currencyCode: 'USD',
+          testEnv: true, // set to false in production
+        ),
+      ),
+    );
+
+
+
+
+    // 3. Present payment sheet
+    await Stripe.instance.presentPaymentSheet();
+
+    // 4. Confirm payment on backend
+    // await confirmPayment(clientSecret);
+
+         confirmPayment(
+          paymentIntent.id,
+          // createPaymentResponseModel.data!.transactionId ?? '',
+          "pm_card_visa",
+        );
+
+        debugPrint("\n ✅ G Payment Success :${response.body['message']}\n");
+        showCustomSnackBar(
+          "Success",
+          subMessage: "${response.body['message'].toString()}",
+          isError: false,
+        );
+
+        isLoading = false;
+        update();
+      } else {
+        if (response.statusCode == 500) {
+          debugPrint(
+            "\n⚠️ Problem of payment: ${response.body['message']}\n form status 500",
+          );
+          showCustomSnackBar(
+            "Failure",
+            subMessage: "${response.body['message']}",
+            isError: true,
+          );
+        } else {
+          debugPrint(
+            "\n ⚠️ Problem of G payment: ${createPaymentResponseModel.message}\n",
+          );
+          showCustomSnackBar(
+            'Error',
+            subMessage: "${response.body['message']}",
+            isError: true,
+          );
+        }
+      }
+      if (response != null) {
+        clientSecret = createPaymentResponseModel.data?.clientSecret.toString();
+        paymentIntentId = createPaymentResponseModel.data?.transactionId;
+        print("clientSecret : $clientSecret");
+        print("response!.data : $response!.data ");
+        await Stripe.instance
+            .initPaymentSheet(
+              paymentSheetParameters: SetupPaymentSheetParameters(
+                paymentIntentClientSecret: clientSecret,
+                merchantDisplayName: 'hatchr',
+                style: ThemeMode.system,
+              ),
+            )
+            .then((_) {
+              displayPaymentSheet();
+            });
+      }
+    } catch (e, s) {
+      showCustomSnackBar('Error of makeGooglePayPayment:', subMessage: ' ${e}');
+      print('exception:$e$s');
+    }
+  }
+
+
+// Future<void> confirmPayment(String clientSecret) async {
+//   // optionally confirm via backend /confirmPayment
+//   final paymentIntentId = clientSecret.split('_secret')[0];
+//   await http.post(
+//     Uri.parse('https://yourapi.com/api/payments/confirm'),
+//     headers: {'Authorization': 'Bearer $token'},
+//     body: {'paymentIntentId': paymentIntentId},
+//   );
+// }
+
+
+
   // displayPaymentSheet() async {
   //   try {
   //     await Stripe.instance.presentPaymentSheet().then((data) {

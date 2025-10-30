@@ -125,6 +125,12 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                         'assets/icons/stripe_icon.png',
                         'stripe',
                       ),
+                      const SizedBox(height: 12),
+                      _buildPaymentOption(
+                        'Pay With Google Pay',
+                        'assets/images/google.png',
+                        'google',
+                      ),
                     ],
                   ),
                 ),
@@ -396,7 +402,7 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
                 ],
               ),
             ),
-            Image.asset(image, height: 18, width: 40, fit: BoxFit.cover),
+            Image.asset(image, height: 18, width: 40, fit: BoxFit.contain),
           ],
         ),
       ),
@@ -439,6 +445,31 @@ class _BookingOfferSummaryScreenState extends State<BookingOfferSummaryScreen> {
           showCustomSnackBar(message ?? 'Booking failed');
         }
         
+      }else if (selectedPaymentMethod == 'google') {
+        await homeController.createBooking(
+          widget.local.id!,
+          widget.offer.id!,
+          widget.userSelectedDateForBooking,
+          widget.userSelectedTimeForBooking,
+          widget.offer.maxParticipants.toString(),
+        );
+
+        final booking = homeController.createBookingResponseModel.data;
+        final statusCode = homeController.createBookingResponseModel.statusCode;
+        final message = homeController.createBookingResponseModel.message;
+
+        if (statusCode == 201 && booking?.bookingCode != null) {
+          await homeController.makeGooglePayPayment(
+            bookingCode: booking!.bookingCode!,
+            localId: widget.local.id.toString(),
+            amount: ((widget.offer.pricePerPerson ?? 0) *
+                    (widget.offer.maxParticipants ?? 1))
+                .toStringAsFixed(2),
+            currency: 'USD',
+          );
+        } else {
+          showCustomSnackBar(message ?? 'Booking failed');
+        }
       }
     } catch (e, s) {
       debugPrint('💥 Error during payment: $e');
