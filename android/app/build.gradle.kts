@@ -42,3 +42,10 @@ android {
 flutter {
     source = "../.."
 }
+
+
+dependencies {
+    // implementation ("com.google.android.gms:play-services-wallet:19.2.1")
+    // implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
+    implementation ("com.stripe:stripe-android:20.46.0") // Use latest compatible version
+}

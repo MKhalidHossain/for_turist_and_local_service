@@ -37,6 +37,11 @@
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
 
+        <!-- ✅ Google Pay API enable -->
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
+
         <!-- ✅ File Provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
