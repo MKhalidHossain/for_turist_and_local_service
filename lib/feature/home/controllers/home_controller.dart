@@ -1234,6 +1234,8 @@ class HomeController extends GetxController implements GetxService {
       update();
     }
   }
+  
+  
   // Future<void> cancelTrip(String localId, String comment, String rating) async {
   //   try {
   //     isLoading = true;
@@ -1400,140 +1402,92 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
-  Future<void> makeGooglePayPayment({
-    required String bookingCode,
-    required String localId,
-    required String amount,
-    required String currency,
-    required BuildContext context,
-  }) async {
-    try {
-       if (Platform.isIOS) {
-      showCustomSnackBar(
-        "Google Pay is not supported on iOS.",
-        subMessage: "Use Apple Pay or Stripe payment instead.",
-      );
+Future<void> makeGooglePayPayment({
+  required String bookingCode,
+  required String localId,
+  required String amount,
+  required String currency,
+  required BuildContext context,
+}) async {
+  try {
+    if (Platform.isIOS) {
+      showCustomSnackBar("Google Pay not supported on iOS", isError: true);
       return;
     }
 
+    isLoading = true;
+    update();
 
-      isLoading = true;
-      update();
+    // 1. Create PaymentIntent (your backend)
+    final response = await homeServiceInterface.createPayment(
+      bookingCode,
+      amount,
+      localId,
+    );
 
-      // 1️⃣ Create payment intent on your backend
-      final response = await homeServiceInterface.createPayment(
-        bookingCode,
-        amount,
-        localId,
-      );
-
-      debugPrint("Status Code: ${response.statusCode}");
-      debugPrint("Response Body of makeGooglePayPayment: ${response.body}");
-
-      if (response.statusCode == 200) {
-
-        showCustomSnackBar("Payment has been successful with Google Pay");
-        // final decoded = jsonDecode(response.body);
-        createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
-          response.body,
-        );
-        debugPrint("\n ✅ Hitting createPayment into makeGooglePayPayment :${response.body['message']}\n");
-        showCustomSnackBar(
-                "Success",
-                subMessage: "${response.body['message'].toString()}",
-                isError: false,
-              );
-
-      } else {
-        final decoded = jsonDecode(response.body);
-        final message = decoded['message'] ?? 'Payment failed.';
-        showCustomSnackBar('Error', subMessage: message, isError: true);
-        debugPrint("⚠️ Payment failed with status: makeGooglePayPayment : ${response.statusCode}");
-      }
-
-      if (response != null){
-
-        clientSecret = createPaymentResponseModel.data?.clientSecret.toString();
-        paymentIntentId = createPaymentResponseModel.data?.transactionId;
-        print("clientSecret : $clientSecret");
-        print("response!.data : $response!.data ");
-
-
-  // start google 
-
-  final isGooglePaySupported = await Stripe.instance.isPlatformPaySupported(googlePay: IsGooglePaySupportedParams(),);
-  if(isGooglePaySupported) {
-    debugPrint("✅ Google Pay is supported on this device.");
-    await Stripe.instance.confirmPlatformPayPaymentIntent(clientSecret: clientSecret!, confirmParams: PlatformPayConfirmParams.googlePay(googlePay: GooglePayParams(
-      merchantCountryCode: "US",
-       currencyCode: "USD", testEnv: true)));
-  } else {
-    debugPrint("⚠️ Google Pay is NOT supported on this device.");
-  }
-    
-    // paymentSheetParameters: SetupPaymentSheetParameters(
-    //   paymentIntentClientSecret: clientSecret,
-    //   merchantDisplayName: 'hatchr',
-    //   style: ThemeMode.light,
-    //   googlePay: const PaymentSheetGooglePay(
-    //     merchantCountryCode: 'US',
-    //     currencyCode: 'USD',
-    //     testEnv: true, // set to false in production
-    //   ),
-    // ),
-    // GooglePayInitParams(
-    //   merchantName: 'Hatchr',
-    //   countryCode: 'US',
-    //   testEnv: true,
-      
-    // ),
-  // );
-  if (clientSecret != null) {
-      await Stripe.instance.presentGooglePay(
-    PresentGooglePayParams(
-   
-      clientSecret: clientSecret!,
-      currencyCode: currency
-     
-    ),
-  );
-  }
-  //  debugPrint("clientSecret in presentGooglePay: $clientSecret");
-
-   
-        // await Stripe.instance.initGooglePay(
-        //   GooglePayInitParams(
-        //   merchantName: 'Hatchr',
-        //   countryCode: 'US',
-        //   testEnv:  true,
-        //   ));
-
-        //   await Stripe.instance.presentGooglePay(
-        //     PresentGooglePayParams(clientSecret: clientSecret!,
-        //     currencyCode: 'USD',
-
-        //     )
-        //   );
-
-        debugPrint("✅ Google Pay payment completed successfully.");
-        showCustomSnackBar("Google Pay payment successful!", isError: false);
-      }
-    } catch (e, s) {
-      debugPrint("💥 Google Pay Payment error: $e\n$s");
-      showCustomSnackBar(
-        "Payment failed",
-        subMessage: e.toString(),
-        isError: true,
-      );
-    } finally {
-      isLoading = false;
-      update();
+    if (response.statusCode != 200) {
+      final msg = jsonDecode(response.body)['message'] ?? 'Failed';
+      showCustomSnackBar('Error', subMessage: msg, isError: true);
+      return;
     }
-  }
 
-  
-  
-  
+    createPaymentResponseModel = CreatePaymentResponseModel.fromJson(response.body);
+    final clientSecret = createPaymentResponseModel.data?.clientSecret;
+    final paymentIntentId = createPaymentResponseModel.data?.transactionId;
+    
+    if (clientSecret == null) {
+      showCustomSnackBar('Error', subMessage: 'No client secret', isError: true);
+      return;
+    }
+
+    // 2. Check if Google Pay is supported
+    final isGooglePaySupported = await Stripe.instance.isPlatformPaySupported(
+      googlePay: IsGooglePaySupportedParams(),
+    );
+    
+    if (!isGooglePaySupported) {
+      debugPrint("⚠️ Google Pay is NOT supported on this device.");
+      showCustomSnackBar('Google Pay not supported', isError: true);
+      return;
+    }
+
+    debugPrint("✅ Google Pay is supported on this device.");
+
+    // 3. Directly confirm payment with Google Pay (no PaymentSheet)
+    await Stripe.instance.confirmPlatformPayPaymentIntent(
+      clientSecret: clientSecret,
+      confirmParams: PlatformPayConfirmParams.googlePay(
+        googlePay: GooglePayParams(
+          merchantCountryCode: "US",
+          currencyCode: currency.toUpperCase(),
+          testEnv: true,
+        ),
+      ),
+    );
+
+    // 4. Check payment result
+    final intent = await Stripe.instance.retrievePaymentIntent(clientSecret);
+    if (intent.status == PaymentIntentsStatus.Succeeded) {
+      // 5. Call your confirmPayment function with the payment intent ID
+      // Pass a dummy value for paymentMethodId since it's not used in the backend
+      await confirmPayment(paymentIntentId ?? "dummy_payment_method_id", "dummy_payment_method_id");
+      
+      showCustomSnackBar('Payment Successful!', isError: false);
+    } else {
+      showCustomSnackBar('Payment not completed', subMessage: intent.status.toString(), isError: true);
+    }
+
+  } on StripeException catch (e) {
+    showCustomSnackBar('Payment Failed', subMessage: e.error.localizedMessage ?? '', isError: true);
+  } catch (e, s) {
+    debugPrint('Error: $e\n$s');
+    showCustomSnackBar('Error', subMessage: e.toString(), isError: true);
+  } finally {
+    isLoading = false;
+    update();
+  }
+}
+ 
   //   Future<void> makeGooglePayPayment({
   //     required String bookingCode,
   //     required String localId,
