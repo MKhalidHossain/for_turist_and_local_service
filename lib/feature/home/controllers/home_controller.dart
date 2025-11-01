@@ -1432,16 +1432,12 @@ class HomeController extends GetxController implements GetxService {
 
       if (response.statusCode == 200) {
 
-          debugPrint(
-          "\n✅ createPayment into makeGooglePayPayment : for Tourist fetched successfully\n",
-        );
-
         showCustomSnackBar("Payment has been successful with Google Pay");
         // final decoded = jsonDecode(response.body);
         createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
           response.body,
         );
-        debugPrint("\n ✅ Payment Success form makeGooglePayPayment :${response.body['message']}\n");
+        debugPrint("\n ✅ Hitting createPayment into makeGooglePayPayment :${response.body['message']}\n");
         showCustomSnackBar(
                 "Success",
                 subMessage: "${response.body['message'].toString()}",
@@ -1457,45 +1453,70 @@ class HomeController extends GetxController implements GetxService {
 
       if (response != null){
 
-        clientSecret = createPaymentResponseModel.data?.clientSecret;
+        clientSecret = createPaymentResponseModel.data?.clientSecret.toString();
         paymentIntentId = createPaymentResponseModel.data?.transactionId;
         print("clientSecret : $clientSecret");
         print("response!.data : $response!.data ");
 
-        // 2️⃣ Initialize Google Pay Payment Sheet
-        // await Stripe.instance.initPaymentSheet(
-        //   paymentSheetParameters: SetupPaymentSheetParameters(
-        //     paymentIntentClientSecret: clientSecret,
-        //     merchantDisplayName: 'hatchr',
-        //     style: ThemeMode.light,
-        //     googlePay: const PaymentSheetGooglePay(
-        //       merchantCountryCode: 'US',
-        //       currencyCode: 'USD',
-        //       testEnv: true, // change to false in production
-        //     ),
-        //   ),
-        // );
-        await Stripe.instance.initGooglePay(GooglePayInitParams(
-          merchantName: 'Hatchr',
-          countryCode: 'US',
-          testEnv:  true,
-          ));
 
-          await Stripe.instance.presentGooglePay(
-            PresentGooglePayParams(clientSecret: clientSecret!,
-            currencyCode: 'USD',
+  // start google 
 
-            )
-          );
+  final isGooglePaySupported = await Stripe.instance.isPlatformPaySupported(googlePay: IsGooglePaySupportedParams(),);
+  if(isGooglePaySupported) {
+    debugPrint("✅ Google Pay is supported on this device.");
+    await Stripe.instance.confirmPlatformPayPaymentIntent(clientSecret: clientSecret!, confirmParams: PlatformPayConfirmParams.googlePay(googlePay: GooglePayParams(
+      merchantCountryCode: "US",
+       currencyCode: "USD", testEnv: true)));
+  } else {
+    debugPrint("⚠️ Google Pay is NOT supported on this device.");
+  }
+    
+    // paymentSheetParameters: SetupPaymentSheetParameters(
+    //   paymentIntentClientSecret: clientSecret,
+    //   merchantDisplayName: 'hatchr',
+    //   style: ThemeMode.light,
+    //   googlePay: const PaymentSheetGooglePay(
+    //     merchantCountryCode: 'US',
+    //     currencyCode: 'USD',
+    //     testEnv: true, // set to false in production
+    //   ),
+    // ),
+    // GooglePayInitParams(
+    //   merchantName: 'Hatchr',
+    //   countryCode: 'US',
+    //   testEnv: true,
+      
+    // ),
+  // );
+  if (clientSecret != null) {
+      await Stripe.instance.presentGooglePay(
+    PresentGooglePayParams(
+   
+      clientSecret: clientSecret!,
+      currencyCode: currency
+     
+    ),
+  );
+  }
+  //  debugPrint("clientSecret in presentGooglePay: $clientSecret");
 
-        // 3️⃣ Present Google Pay payment sheet
-        // await Stripe.instance.presentPaymentSheet();
+   
+        // await Stripe.instance.initGooglePay(
+        //   GooglePayInitParams(
+        //   merchantName: 'Hatchr',
+        //   countryCode: 'US',
+        //   testEnv:  true,
+        //   ));
 
-        // 4️⃣ Optional: confirm payment on backend if required
-        // await confirmPayment(clientSecret);
+        //   await Stripe.instance.presentGooglePay(
+        //     PresentGooglePayParams(clientSecret: clientSecret!,
+        //     currencyCode: 'USD',
+
+        //     )
+        //   );
 
         debugPrint("✅ Google Pay payment completed successfully.");
-        showCustomSnackBar("Payment successful!", isError: false);
+        showCustomSnackBar("Google Pay payment successful!", isError: false);
       }
     } catch (e, s) {
       debugPrint("💥 Google Pay Payment error: $e\n$s");
@@ -1510,6 +1531,9 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
+  
+  
+  
   //   Future<void> makeGooglePayPayment({
   //     required String bookingCode,
   //     required String localId,
