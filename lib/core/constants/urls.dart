@@ -14,6 +14,7 @@ class Urls {
   static const String register = '/auth/signup';
   static const String login = '/auth/login';
   static const String refreshAccessToken = '/auth/refresh-token';
+  static const String googleLogin = '/auth//google-login';
   // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
   static const String changePassword = '/profile/change-password';
   static const String forgetPassword = '/auth/forgot-password';

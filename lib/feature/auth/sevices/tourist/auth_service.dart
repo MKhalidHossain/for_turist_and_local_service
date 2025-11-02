@@ -152,4 +152,9 @@ class AuthService implements AuthServiceInterface {
   Future<Response> roleSwitch() async{
     return await authRepositoryInterface.roleSwitch();
   }
+  
+  @override
+  Future googleLogin(String token) async{
+    return await authRepositoryInterface.googleLogin(token);
+  }
 }

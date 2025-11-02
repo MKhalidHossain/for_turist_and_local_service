@@ -3,6 +3,7 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services") //for google sign in
 }
 
 android {
@@ -21,7 +22,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.kobeur"
+        applicationId = "com.kobeur.hatchr"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -47,5 +48,10 @@ flutter {
 dependencies {
     // implementation ("com.google.android.gms:play-services-wallet:19.2.1")
     // implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
+
+    // ✅ Google Sign-In dependency
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    // ✅ Stripe (already present)
     implementation ("com.stripe:stripe-android:20.46.0") // Use latest compatible version
 }
