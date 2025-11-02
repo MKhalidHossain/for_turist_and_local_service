@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kobeur/feature/auth/domain/common/model/role_switch_response_model.dart';
 import 'package:kobeur/feature/auth/presentation/screens/common/change_password_screen.dart';
@@ -10,6 +11,7 @@ import 'package:kobeur/feature/auth/presentation/screens/common/verify_otp_scree
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:kobeur/feature/profile/presentation/screens/account_settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../core/constants/app_constants.dart';
 import '../../../helpers/custom_snackbar.dart';
 import '../../../helpers/remote/data/api_checker.dart';
 import '../../../helpers/remote/data/api_client.dart';
@@ -34,8 +36,12 @@ class AuthController extends GetxController implements GetxService {
 
   final AuthServiceInterface authServiceInterface;
 
-  AuthController({required this.authServiceInterface});
+  AuthController({required this.authServiceInterface}){
 
+  }
+
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
   bool changePasswordIsLoading = false;
 
   bool _isLoading = false;
@@ -87,9 +93,21 @@ class AuthController extends GetxController implements GetxService {
 
   onInit() {
     super.onInit();
-    //_loadUserRole()
+    _initializeGoogleSignIn();
   }
 
+
+  Future<void> _initializeGoogleSignIn() async {
+    try {
+      _googleSignIn.initialize(
+        serverClientId: AppConstants.serverClientId,
+        clientId: AppConstants.clientId,
+      );
+      debugPrint("Google Sign-In initialization successful");
+    } catch (e) {
+      debugPrint("Google Sign-In initialization failed: $e");
+    }
+  }
   // VerifyCodeResponseModel? verifyCodeResponseModel;
   // ChangePasswordResponseModel? changePasswordResponseModel;
   // ForgetPasswordResponseModel? forgetPasswordResponseModel;
@@ -422,6 +440,121 @@ class AuthController extends GetxController implements GetxService {
       _isLoading = false;
       ApiChecker.checkApi(response);
     }
+    _isLoading = false;
+    update();
+  }
+
+  Future<void> googleLogin() async {
+    _isLoading = true;
+    update();
+
+
+   try {
+      final GoogleSignInAccount googleAccount = await _googleSignIn
+          .authenticate();
+
+      // Obtain the auth details
+      final GoogleSignInAuthentication googleAuth =
+          googleAccount.authentication;
+
+      final String? idToken = googleAuth.idToken;
+      print("ID Token: $idToken");
+
+       Response? response = await authServiceInterface.googleLogin(idToken?? "Token not found");
+
+       debugPrint("Status Code: ${response?.statusCode}, Body: ${response?.body}");
+
+      // return _apiClient.post<AuthResponseEntity>(
+      //   ApiConstants.auth.google,
+      //   data: {"token": idToken},
+      //   fromJsonT: (json) => AuthResponseData.fromJson(json),
+      // );
+    } catch (e) {
+      debugPrint("Google Auth $e");
+      // return Left(NetworkFailure(message: e.toString(), statusCode: 0));
+    }
+    // Response? response = await authServiceInterface.googleLogin();
+
+    // if (response == null) {
+    //   print("No response found");
+    // }
+    // if (response!.statusCode == 200) {
+      // registrationResponseModel = RegistrationResponseModel.fromJson(response.body);
+
+      // final String refreshToken = registrationResponseModel!.data!.refreshToken!;
+      // final String token = registrationResponseModel!.data!.accessToken!;
+
+    //   print(
+    //     'accessToken ${registrationResponseModel!.data!.accessToken}} NOW for you Kobeur \n ',
+    //   );
+    //   print('refreshToken $refreshToken NOW Kobeur\n');
+    //   print(
+    //     'User Token $token  ================================== from comtroller ',
+    //   );
+    //   await setUserToken(token, refreshToken);
+    //   update();
+
+    //   debugPrint("Login tokens - Access: $token,\n Refresh: $refreshToken");
+
+    //   await _loadUserRole();
+    //   debugPrint("✅ Access Token: $token\n");
+    //   debugPrint("✅ Refresh Token: $refreshToken\n");
+    //   debugPrint("✅ User Role: $userRole\n");
+
+    //   debugPrint(
+    //     'the role of user  $userRole \n\n\n\n\n\n\n\n\n\n\n\nToken $token  ================================== from controller ',
+    //   );
+
+    //   // for Nevigation to Tourist or Local
+    //   if (userRole != null && userRole!.isNotEmpty) {
+    //     final role = userRole!;
+    //     print('User Role after login for store: $role');
+    //     await saveUserRole(role);
+    //     if (userRole.toString().toLowerCase() == 'tourist') {
+    //       debugPrint(
+    //         'User Role: $userRole ================================= from Auth controller after login \n\n\n\n\n\n\n',
+    //       );
+    //       Get.offAll(() => BottomNavbar(userRole: userRole));
+    //     } else if (userRole.toString().toLowerCase() == 'local') {
+    //       _checkIsFirstOffer().then((_) {
+    //         print(
+    //           '\n\nHave Offer from auth Controller for navigation: $haveOffer\n\n',
+    //         );
+    //         haveOffer
+    //             ? Get.offAll(() => BottomNavbar(userRole: userRole))
+    //             : Get.offAll(() => CreateFirstServiceScreen());
+    //       });
+    //     } else {
+    //       showCustomSnackBar(
+    //         'You have not selected your role yet, please select your role',
+    //         isError: true,
+    //       );
+    //     }
+    //   } else {
+    //     showCustomSnackBar(
+    //       'You have not selected your role yet, please select your role',
+    //       isError: true,
+    //     );
+    //     Get.offAll(() => UserLoginScreen());
+    //   }
+
+    //   //Get.offAll(() => TouristORLocalScreen());
+
+    //   //Get.offAll(BottomNavbar());
+
+    //   showCustomSnackBar('Welcome, you have successfully Logged In');
+    //   _isLoading = false;
+    // } else if (response.statusCode == 202) {
+    //   if (response.body['data']['is_phone_verified'] == 0) {}
+    // } else if (response.statusCode == 401) {
+    //   Get.offAll(UserSignupScreen());
+    //   showCustomSnackBar(
+    //     "Sorry you don't have no account, please create a account",
+    //   );
+    // } else {
+    //   _isLoading = false;
+    //   ApiChecker.checkApi(response);
+    // }
     _isLoading = false;
     update();
   }

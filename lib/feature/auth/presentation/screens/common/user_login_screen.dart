@@ -272,7 +272,9 @@ class UserLoginScreenState extends State<UserLoginScreen> {
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton.icon(
-                                onPressed: () {},
+                                onPressed: () async{
+                                  await authController.googleLogin();
+                                },
                                 icon: Image.asset(
                                   'assets/images/google.png',
                                   height: 24,
