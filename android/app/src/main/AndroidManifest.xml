@@ -82,7 +82,9 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme"/>
+
         </activity>
+
 
         <!-- Flutter engine -->
         <meta-data
