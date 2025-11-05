@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -99,10 +100,18 @@ class AuthController extends GetxController implements GetxService {
 
   Future<void> _initializeGoogleSignIn() async {
     try {
-      _googleSignIn.initialize(
-        serverClientId: AppConstants.serverClientId,
-        clientId: AppConstants.clientId,
-      );
+      if(Platform.isIOS) {
+        _googleSignIn.initialize(
+          clientId: AppConstants.iosClientIdForGoogleLogin,
+          serverClientId: AppConstants.serverClientId
+        );
+      } else {
+        _googleSignIn.initialize(
+          clientId: AppConstants.clientId,
+          serverClientId: AppConstants.serverClientId
+        );
+      }
+
       debugPrint("Google Sign-In initialization successful");
     } catch (e) {
       debugPrint("Google Sign-In initialization failed: $e");
@@ -450,10 +459,17 @@ class AuthController extends GetxController implements GetxService {
 
 
    try {
-      final GoogleSignInAccount googleAccount = await _googleSignIn
-          .authenticate();
+     print("serverClientId Id Form : ${AppConstants.serverClientId}");
+     _initializeGoogleSignIn();
+      final GoogleSignInAccount? googleAccount = await _googleSignIn
+          .authenticate(scopeHint: ['email', 'profile'],);
 
-      // Obtain the auth details
+      print("Google account is >> ${googleAccount?.email}");
+      if (googleAccount == null) {
+       return;
+     }
+
+     // Obtain the auth details
       final GoogleSignInAuthentication googleAuth =
           googleAccount.authentication;
 
@@ -462,7 +478,7 @@ class AuthController extends GetxController implements GetxService {
 
        Response? response = await authServiceInterface.googleLogin(idToken?? "Token not found");
 
-       debugPrint("Status Code: ${response?.statusCode}, Body: ${response?.body}");
+       debugPrint("Status Code: ${response?.statusCode}, Body SHow: ${response?.body}");
 
       // return _apiClient.post<AuthResponseEntity>(
       //   ApiConstants.auth.google,

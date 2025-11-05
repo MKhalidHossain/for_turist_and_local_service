@@ -5,7 +5,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services")
+    // id("com.google.gms.google-services")
 }
 
 val keystorePropertiesFile = rootProject.file("secrets.properties")
@@ -59,6 +59,6 @@ flutter {
 }
 
 dependencies {
-    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    //implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("com.stripe:stripe-android:20.46.0")
 }

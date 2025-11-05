@@ -1,4 +1,4 @@
-package com.example.kobeur
+package com.kobeur.hatchr
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
