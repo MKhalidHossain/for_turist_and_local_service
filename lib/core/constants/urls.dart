@@ -1,20 +1,23 @@
 class Urls {
   // ................................Auth...............................with local or server
 
-  // static const String baseUrl = 'http://10.0.2.2:5001/api/v1';// for android device in same wifi
-  // static const String baseUrl = 'http://10.10.5.85:5001/api/v1';  // for Ios simulator or real device
-  static const String baseUrl = 'https://api.hatchr.app/api/v1';  
+  // static const String baseUrl = 'http://10.0.2.2:5001/api/v1';// for no sure android device in same wifi
+  // static const String baseUrl = 'http://10.10.5.85:5001/api/v1';  // for android simulator or real device
+  // static const String baseUrl = 'https://kobeur.onrender.com/api/v1';
+   static const String baseUrl = 'https://api.hatchr.app/api/v1';
+
   // static const String baseUrl ='http://localhost:5001/api/v1';
   // 'https://subpeduncular-jed-increasingly.ngrok-free.dev/api/v1';
 
   // static const String socketBaseUrl = 'http://10.10.5.85:5001';
   static const String socketBaseUrl = 'https://api.hatchr.app';
+  // static const String socketBaseUrl = 'https://kobeur.onrender.com/api/v1';
 
   // Auth Module
   static const String register = '/auth/signup';
   static const String login = '/auth/login';
   static const String refreshAccessToken = '/auth/refresh-token';
-  static const String googleLogin = '/auth//google-login';
+  static const String googleLogin = '/auth/google-login';
   // static const String updateAccessAndRefreshToken = '/api/v1/auth/refresh-access-token';
   static const String changePassword = '/profile/change-password';
   static const String forgetPassword = '/auth/forgot-password';

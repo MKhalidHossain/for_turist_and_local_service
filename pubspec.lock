@@ -308,10 +308,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_ios
-      sha256: "4a9c1404347d495e4c98658860dbf7d80b35297efe92b5e7b9081d078fba56c5"
+      sha256: "0ba0b276c91e80edbe28570ee8c54237c095dd7b909db46011154a49f3af68a7"
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.2"
+    version: "6.2.3"
   google_sign_in_platform_interface:
     dependency: transitive
     description:

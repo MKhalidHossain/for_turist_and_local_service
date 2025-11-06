@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.kobeur">
+    package="com.kobeur.hatchr">
 
     <!-- 🔓 Permissions (outside <application>) -->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -82,7 +82,9 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme"/>
+
         </activity>
+
 
         <!-- Flutter engine -->
         <meta-data
