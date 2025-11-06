@@ -9,11 +9,13 @@ import 'package:kobeur/helpers/dependency_injection.dart';
 import 'package:kobeur/navigation/bottom_navigationber_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/constants/app_constants.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   Stripe.publishableKey =
-      'pk_test_51S6pMbRZVOYD6qjBukBi2VyPiTtIhzAyYzmfyAo4izzIwemOo7I3fUYELhxmTJeNln7zMiztFA4CKihsybqrJlo800nWzvIXZY';
+      AppConstants.publishableKey; // Your Publishable Key
 
   // Stripe.merchantIdentifier = 'merchant.kobeur.app';
   // Stripe.urlScheme = 'flutterstripe';

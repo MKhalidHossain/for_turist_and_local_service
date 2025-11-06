@@ -73,10 +73,11 @@ class ApiClient extends GetxService {
     try {
       print('====> API Body: $body');
       print('====> API Header: $_mainHeaders');
-      if (kDebugMode) {
+      if (true) {
         log('====> API Call: $appBaseUrln$uri\nHeader: $_mainHeaders');
         log('====> API Body: ${body}');
       }
+      // mobile theke koren to...
       http.Response response = await http
           .post(
             Uri.parse(appBaseUrln + uri),

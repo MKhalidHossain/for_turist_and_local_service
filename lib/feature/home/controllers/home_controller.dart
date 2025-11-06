@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -845,7 +846,6 @@ class HomeController extends GetxController implements GetxService {
         // Get.to(() => CreateFirstServiceScreen());
         print(' stripe url : ${connectAccountResponseModel.data!.url}');
 
-
         // await validateAccount(connectAccountResponseModel.data!.accountId.toString());
         Get.to(
           () => StripeConnectFullScreen(
@@ -967,49 +967,6 @@ class HomeController extends GetxController implements GetxService {
   //   }
   // }
 
-  Future<void> confirmPayment(
-    String paymentIntentId,
-    String paymentMethodId,
-  ) async {
-    try {
-      isLoading = true;
-      update();
-
-      final response = await homeServiceInterface.confirmPayment(
-        paymentIntentId,
-        paymentMethodId,
-      );
-
-      debugPrint("Status Code: ${response.statusCode}");
-      debugPrint("Response Body: ${response.body}");
-
-      if (response.statusCode == 200) {
-        print("✅ confirmPayment : for Tourist fetched successfully\n");
-        final rawBody = response.body;
-        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
-          decoded,
-        );
-        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
-
-        isLoading = false;
-        update();
-      } else {
-        final rawBody = response.body;
-        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
-        confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
-          decoded,
-        );
-        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
-      }
-    } catch (e) {
-      print("⚠️ Error fetching profile : confirmPayment : $e\n");
-    } finally {
-      isLoading = false;
-      update();
-    }
-  }
-
   Future<void> resendOnboarding(String localId) async {
     try {
       isLoading = true;
@@ -1069,6 +1026,7 @@ class HomeController extends GetxController implements GetxService {
 
       if (response.statusCode == 201) {
         print("✅ createBooking : for Tourist fetched successfully\n");
+        // showCustomSnackBar("Booking created Successfully");
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
         createBookingResponseModel = CreateBookingResponseModel.fromJson(
@@ -1104,6 +1062,7 @@ class HomeController extends GetxController implements GetxService {
 
       if (response.statusCode == 200) {
         print("✅ confirmBooking : for Tourist fetched successfully\n");
+
         final rawBody = response.body;
         final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
         confirmBookingResponseModel = ConfirmBookingResponseModel.fromJson(
@@ -1231,6 +1190,52 @@ class HomeController extends GetxController implements GetxService {
     }
   }
 
+  Future<void> confirmPayment(
+    String paymentIntentId,
+    String paymentMethodId,
+  ) async {
+    try {
+      isLoading = true;
+      update();
+
+      final response = await homeServiceInterface.confirmPayment(
+        paymentIntentId,
+        paymentMethodId,
+      );
+
+      debugPrint("Status Code: ${response.statusCode}");
+      debugPrint("Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        print("✅ confirmPayment : for Tourist fetched successfully\n");
+        showCustomSnackBar("Payment confirmed successfully");
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
+          decoded,
+        );
+        showCustomSnackBar(confirmPaymentResponseModel.message.toString());
+
+        isLoading = false;
+        update();
+      } else {
+        final rawBody = response.body;
+        final decoded = rawBody is String ? jsonDecode(rawBody) : rawBody;
+        confirmPaymentResponseModel = ConfirmPaymentResponseModel.fromJson(
+          decoded,
+        );
+        // showCustomSnackBar(confirmPaymentResponseModel.message.toString());
+      }
+    } catch (e) {
+      print("⚠️ Error fetching profile : confirmPayment : $e\n");
+      showCustomSnackBar("Error in confirming payment:", subMessage: "$e");
+    } finally {
+      isLoading = false;
+      update();
+    }
+  }
+  
+  
   // Future<void> cancelTrip(String localId, String comment, String rating) async {
   //   try {
   //     isLoading = true;
@@ -1330,7 +1335,8 @@ class HomeController extends GetxController implements GetxService {
             .initPaymentSheet(
               paymentSheetParameters: SetupPaymentSheetParameters(
                 paymentIntentClientSecret: clientSecret,
-                style: ThemeMode.system,
+                merchantDisplayName: 'hatchr',
+                style: ThemeMode.light,
               ),
             )
             .then((_) {
@@ -1345,37 +1351,303 @@ class HomeController extends GetxController implements GetxService {
 
   displayPaymentSheet() async {
     try {
-      await Stripe.instance.presentPaymentSheet().then((data) {
+      await Stripe.instance.presentPaymentSheet();
+
+      // ✅ Retrieve latest PaymentIntent to confirm final status
+      final paymentIntent = await Stripe.instance.retrievePaymentIntent(
+        createPaymentResponseModel.data!.clientSecret!,
+      );
+
+      debugPrint("paymentIntent from displayPaymentSheet: $paymentIntent");
+
+      if (paymentIntent.status == PaymentIntentsStatus.Succeeded) {
+        // ✅ Payment is confirmed successful
         confirmPayment(
-          createPaymentResponseModel.data!.transactionId ?? '',
+          paymentIntent.id,
+          // createPaymentResponseModel.data!.transactionId ?? '',
           "pm_card_visa",
         );
-        showCustomSnackBar('Please wait', subMessage: 'confirmimg Payment ...');
+
+        showCustomSnackBar(
+          'Payment Successful',
+          subMessage: 'Confirming payment...',
+        );
         isLoading = false;
         update();
-      });
-      Get.snackbar(
-        'Payment',
-        'Payment Successful',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Color(0xffFF3951),
-        colorText: Colors.white,
-        margin: const EdgeInsets.all(10),
-        duration: const Duration(seconds: 2),
-      );
-    } on Exception catch (e) {
-      if (e is StripeException) {
-        showCustomSnackBar("Error from Stripe: ", subMessage: "${e}");
-        print("Error from Stripe: ${e}");
+        showCustomSnackBar('Payment', subMessage: 'Payment Successful');
+        // Get.snackbar(
+        //   'Payment',
+        //   'Payment Successful',
+        //   snackPosition: SnackPosition.TOP,
+        //   backgroundColor: const Color(0xffFF3951),
+        //   colorText: Colors.white,
+        //   margin: const EdgeInsets.all(10),
+        //   duration: const Duration(seconds: 2),
+        // );
       } else {
-        showCustomSnackBar("Unforeseen error: ", subMessage: "${e}");
-        print("Unforeseen error: ${e}");
+        // ⚠️ Payment not yet succeeded
+        showCustomSnackBar(
+          'Payment Processing',
+          subMessage: 'Please wait a few moments...',
+        );
       }
+    } on StripeException catch (e) {
+      showCustomSnackBar("Payment Failed", subMessage: e.error.message ?? "$e");
+      isLoading = false;
+      update();
     } catch (e) {
-      showCustomSnackBar("Error: ", subMessage: "${e}");
-      print("exception:$e");
+      showCustomSnackBar("Unexpected Error", subMessage: "$e");
+      isLoading = false;
+      update();
     }
   }
+
+Future<void> makeGooglePayPayment({
+  required String bookingCode,
+  required String localId,
+  required String amount,
+  required String currency,
+  required BuildContext context,
+}) async {
+  try {
+    if (Platform.isIOS) {
+      showCustomSnackBar("Google Pay not supported on iOS", isError: true);
+      return;
+    }
+
+    isLoading = true;
+    update();
+
+    // 1. Create PaymentIntent (your backend)
+    final response = await homeServiceInterface.createPayment(
+      bookingCode,
+      amount,
+      localId,
+    );
+
+    if (response.statusCode != 200) {
+      final msg = jsonDecode(response.body)['message'] ?? 'Failed';
+      showCustomSnackBar('Error', subMessage: msg, isError: true);
+      return;
+    }
+
+    createPaymentResponseModel = CreatePaymentResponseModel.fromJson(response.body);
+    final clientSecret = createPaymentResponseModel.data?.clientSecret;
+    final paymentIntentId = createPaymentResponseModel.data?.transactionId;
+    
+    if (clientSecret == null) {
+      showCustomSnackBar('Error', subMessage: 'No client secret', isError: true);
+      return;
+    }
+
+    // 2. Check if Google Pay is supported
+    final isGooglePaySupported = await Stripe.instance.isPlatformPaySupported(
+      googlePay: IsGooglePaySupportedParams(),
+    );
+    
+    if (!isGooglePaySupported) {
+      debugPrint("⚠️ Google Pay is NOT supported on this device.");
+      showCustomSnackBar('Google Pay not supported', isError: true);
+      return;
+    }
+
+    debugPrint("✅ Google Pay is supported on this device.");
+
+    // 3. Directly confirm payment with Google Pay (no PaymentSheet)
+    await Stripe.instance.confirmPlatformPayPaymentIntent(
+      clientSecret: clientSecret,
+      confirmParams: PlatformPayConfirmParams.googlePay(
+        googlePay: GooglePayParams(
+          merchantCountryCode: "US",
+          currencyCode: currency.toUpperCase(),
+          testEnv: true,
+        ),
+      ),
+    );
+
+    // 4. Check payment result
+    final intent = await Stripe.instance.retrievePaymentIntent(clientSecret);
+    if (intent.status == PaymentIntentsStatus.Succeeded) {
+      // 5. Call your confirmPayment function with the payment intent ID
+      // Pass a dummy value for paymentMethodId since it's not used in the backend
+      await confirmPayment(paymentIntentId ?? "dummy_payment_method_id", "dummy_payment_method_id");
+      
+      showCustomSnackBar('Payment Successful!', isError: false);
+    } else {
+      showCustomSnackBar('Payment not completed', subMessage: intent.status.toString(), isError: true);
+    }
+
+  } on StripeException catch (e) {
+    showCustomSnackBar('Payment Failed', subMessage: e.error.localizedMessage ?? '', isError: true);
+  } catch (e, s) {
+    debugPrint('Error: $e\n$s');
+    showCustomSnackBar('Error', subMessage: e.toString(), isError: true);
+  } finally {
+    isLoading = false;
+    update();
+  }
+}
+ 
+  //   Future<void> makeGooglePayPayment({
+  //     required String bookingCode,
+  //     required String localId,
+  //     required String amount,
+  //     required String currency,
+  //     required BuildContext context,
+  //   }) async {
+  //     try {
+  //       isLoading = true;
+  //       update();
+
+  //       final response = await homeServiceInterface.createPayment(
+  //         bookingCode,
+  //         amount,
+  //         localId,
+  //       );
+  //       debugPrint("Status Code: ${response.statusCode}");
+  //       debugPrint("Response Body of makeGooglePayPayment: ${response.body}");
+  //       if (response.statusCode == 200) {
+  //         debugPrint(
+  //           "\n✅ makeGooglePayPayment: for Tourist fetched successfully\n",
+  //         );
+
+  //         showCustomSnackBar("G Payment has been successful");
+  //         final decoded = jsonDecode(response.body);
+
+  //         createPaymentResponseModel = CreatePaymentResponseModel.fromJson(
+  //           // response.body,
+  //           decoded
+  //         );
+
+  // final data = jsonDecode(response.body);
+  //     final clientSecret = createPaymentResponseModel.data!.clientSecret!;
+  //     // final paymentIntent = data['data']['transactionId'];
+  //     final paymentIntent = await Stripe.instance.retrievePaymentIntent(
+  //       createPaymentResponseModel.data!.clientSecret!,
+  //     );
+
+  //     // 2. Present Google Pay sheet
+  //     await Stripe.instance.initPaymentSheet(
+  //       paymentSheetParameters: SetupPaymentSheetParameters(
+  //         paymentIntentClientSecret: clientSecret,
+  //         merchantDisplayName: 'Your App Name',
+  //         style: ThemeMode.light,
+  //         googlePay: const PaymentSheetGooglePay(
+  //           merchantCountryCode: 'US',
+  //           currencyCode: 'USD',
+  //           testEnv: true, // set to false in production
+  //         ),
+  //       ),
+  //     );
+
+  //     // 3. Present payment sheet
+  //     await Stripe.instance.presentPaymentSheet();
+
+  //     // 4. Confirm payment on backend
+  //     // await confirmPayment(clientSecret);
+
+  //          confirmPayment(
+  //           paymentIntent.id,
+  //           // createPaymentResponseModel.data!.transactionId ?? '',
+  //           "pm_card_visa",
+  //         );
+
+  //         debugPrint("\n ✅ G Payment Success :${response.body['message']}\n");
+  //         showCustomSnackBar(
+  //           "Success",
+  //           subMessage: "${response.body['message'].toString()}",
+  //           isError: false,
+  //         );
+
+  //         isLoading = false;
+  //         update();
+  //       } else {
+  //         if (response.statusCode == 500) {
+  //           debugPrint(
+  //             "\n⚠️ Problem of payment: ${response.body['message']}\n form status 500",
+  //           );
+  //           showCustomSnackBar(
+  //             "Failure",
+  //             subMessage: "${response.body['message']}",
+  //             isError: true,
+  //           );
+  //         } else {
+  //           debugPrint(
+  //             "\n ⚠️ Problem of G payment: ${createPaymentResponseModel.message}\n",
+  //           );
+  //           showCustomSnackBar(
+  //             'Error',
+  //             subMessage: "${response.body['message']}",
+  //             isError: true,
+  //           );
+  //         }
+  //       }
+  // if (response != null) {
+  //   clientSecret = createPaymentResponseModel.data?.clientSecret.toString();
+  //   paymentIntentId = createPaymentResponseModel.data?.transactionId;
+  //   print("clientSecret : $clientSecret");
+  //   print("response!.data : $response!.data ");
+  //   await Stripe.instance
+  //       .initPaymentSheet(
+  //         paymentSheetParameters: SetupPaymentSheetParameters(
+  //           paymentIntentClientSecret: clientSecret,
+  //           merchantDisplayName: 'hatchr',
+  //           style: ThemeMode.system,
+  //         ),
+  //       )
+  //       .then((_) {
+  //         displayPaymentSheet();
+  //       });
+  // }
+  //   } catch (e, s) {
+  //     showCustomSnackBar('Error of makeGooglePayPayment:', subMessage: ' ${e}');
+  //     print('exception:$e$s');
+  //   }
+  // }
+
+  // Future<void> confirmPayment(String clientSecret) async {
+  //   // optionally confirm via backend /confirmPayment
+  //   final paymentIntentId = clientSecret.split('_secret')[0];
+  //   await http.post(
+  //     Uri.parse('https://yourapi.com/api/payments/confirm'),
+  //     headers: {'Authorization': 'Bearer $token'},
+  //     body: {'paymentIntentId': paymentIntentId},
+  //   );
+  // }
+
+  // displayPaymentSheet() async {
+  //   try {
+  //     await Stripe.instance.presentPaymentSheet().then((data) {
+  //       confirmPayment(
+  //         createPaymentResponseModel.data!.transactionId ?? '',
+  //         "pm_card_visa",
+  //       );
+  //       showCustomSnackBar('Please wait', subMessage: 'confirmimg Payment ...');
+  //       isLoading = false;
+  //       update();
+  //     });
+  //     Get.snackbar(
+  //       'Payment',
+  //       'Payment Successful',
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Color(0xffFF3951),
+  //       colorText: Colors.white,
+  //       margin: const EdgeInsets.all(10),
+  //       duration: const Duration(seconds: 2),
+  //     );
+  //   } on Exception catch (e) {
+  //     if (e is StripeException) {
+  //       showCustomSnackBar("Error from Stripe: ", subMessage: "${e}");
+  //       print("Error from Stripe: ${e}");
+  //     } else {
+  //       showCustomSnackBar("Unforeseen error: ", subMessage: "${e}");
+  //       print("Unforeseen error: ${e}");
+  //     }
+  //   } catch (e) {
+  //     showCustomSnackBar("Error: ", subMessage: "${e}");
+  //     print("exception:$e");
+  //   }
+  // }
 
   //  Future<Map<String, dynamic>>
   // Future<Response<dynamic>?> createPaymentIntent(
