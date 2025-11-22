@@ -1,4 +1,4 @@
-# for_turist_and_local_service
+# turist_and_local_service
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Language](https://img.shields.io/badge/Dart-96.9%25-blue)](https://dart.dev/)
