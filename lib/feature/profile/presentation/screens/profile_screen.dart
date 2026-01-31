@@ -189,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       profileController
                                           .getProfileResponseModel
                                           ?.data
-                                          ?.sId ??
+                                          ?.id ??
                                       '',
                                 )),
                               );

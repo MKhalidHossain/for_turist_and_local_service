@@ -7,6 +7,7 @@ abstract class AuthServiceInterface {
     String confirmPassword,
   );
   Future<dynamic> login(String email, String password);
+  Future<dynamic> googleLogin(String token);
   Future<dynamic> accessAndRefreshToken(String refreshToken);
   Future<dynamic> changePassword(
     String currentPassword,
@@ -39,5 +40,6 @@ abstract class AuthServiceInterface {
   Future<dynamic> chooseRole(String role, String token);
   Future<bool?> saveUserRole(String userRole);
   String getUserRole();
-    Future<Response> roleSwitch();
+  Future<Response> roleSwitch();
+  
 }

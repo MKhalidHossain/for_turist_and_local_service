@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import 'package:kobeur/core/extensions/text_extensions.dart';
 import 'package:kobeur/feature/offer/presentation/screens/common/category_selection_screen.dart';
 
+import '../../../../../navigation/bottom_navigationber_screen.dart';
+
 class CreateFirstServiceScreen extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +59,30 @@ class CreateFirstServiceScreen extends StatelessWidget {
                         SizedBox(width: 8),
                         'Create First Offer'.text16Grey500(),
                       ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Get.offAll(() => BottomNavbar(userRole: "Local"));
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Back to Home',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),

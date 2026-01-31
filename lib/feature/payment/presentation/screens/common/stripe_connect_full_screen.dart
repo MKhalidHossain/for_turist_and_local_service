@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kobeur/core/constants/app_colors.dart';
+import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
@@ -21,10 +22,12 @@ class _StripeConnectFullScreenState extends State<StripeConnectFullScreen> {
   late final WebViewController _controller;
   bool isLoading = true;
   String statusMessage = "Initializing WebView...";
+  late HomeController homeController;
 
   @override
   void initState() {
     super.initState();
+    homeController = Get.find<HomeController>();
 
     // ✅ For iOS WKWebView
     WebViewPlatform.instance = WebKitWebViewPlatform();
@@ -99,7 +102,11 @@ class _StripeConnectFullScreenState extends State<StripeConnectFullScreen> {
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),
+
+          // ✅ Loading indicator
           if (isLoading) const Center(child: CircularProgressIndicator()),
+
+          // ✅ Status overlay (bottom)
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -120,9 +127,17 @@ class _StripeConnectFullScreenState extends State<StripeConnectFullScreen> {
   }
 }
 
+
+
+
+
+
+
+
 // import 'package:flutter/material.dart';
 // import 'package:get/get.dart';
 // import 'package:kobeur/core/constants/app_colors.dart';
+// import 'package:kobeur/feature/home/controllers/home_controller.dart';
 
 // import 'package:webview_flutter/webview_flutter.dart';
 // import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -145,10 +160,12 @@ class _StripeConnectFullScreenState extends State<StripeConnectFullScreen> {
 //   late final WebViewController _controller;
 //   bool isLoading = true;
 //   String statusMessage = "Initializing WebView...";
+//   late HomeController homeController;
 
 //   @override
 //   void initState() {
 //     super.initState();
+//     homeController = Get.find<HomeController>();
 
 //     // ✅ For iOS WKWebView (already set globally in main.dart ideally)
 //     WebViewPlatform.instance = WebKitWebViewPlatform();
@@ -194,13 +211,49 @@ class _StripeConnectFullScreenState extends State<StripeConnectFullScreen> {
 //                 // showCustomSnackBar(msg);
 //                 setState(() => statusMessage = msg);
 
-//                 if (url.contains('stripe/success')) {
+//                 // if (url.contains('stripe/success')) {
+//                 if (url.endsWith('status=success')) {
 //                   final successMsg = "✅ Stripe connection successful!";
 //                   debugPrint(successMsg);
 //                   showCustomSnackBar(successMsg);
-//                   Get.offAll(() => CreateFirstServiceScreen());
+//                   // Get.offAll(() => CreateFirstServiceScreen());
+//                   // start async validation but don't await here (onNavigationRequest must return sync)
+//                   setState(() => isLoading = true);
+
+//                   homeController
+//                       .validateAccount(
+//                         homeController
+//                             .connectAccountResponseModel
+//                             .data!
+//                             .accountId
+//                             .toString(),
+//                       )
+//                       // .then((isValid) {
+//                       //   setState(() => isLoading = false);
+//                       //   // if (isValid == true) {
+//                       //   //   final successMsg2 = "✅ Account validated, continuing...";
+//                       //   //   debugPrint(successMsg2);
+//                       //   //   showCustomSnackBar(successMsg2);
+//                       //   //   // navigate after successful validation
+//                       //   //   Get.offAll(() => CreateFirstServiceScreen());
+//                       //   // } else {
+//                       //   //   final failMsg = "⚠️ Account validation failed";
+//                       //   //   debugPrint(failMsg);
+//                       //   //   showCustomSnackBar(failMsg, isError: true);
+//                       //   //   // optionally: Get.back();
+//                       //   // }
+//                       // })
+//                       .catchError((e) {
+//                         setState(() => isLoading = false);
+//                         debugPrint('Validation error: $e');
+//                         showCustomSnackBar('Validation error', isError: true);
+//                       });
+
 //                   return NavigationDecision.prevent;
-//                 } else if (url.contains('stripe/cancel')) {
+
+//                   // return NavigationDecision.prevent;
+//                   // } else if (url.contains('stripe/cancel')) {
+//                 } else if (url.contains('status=cencel')) {
 //                   final cancelMsg = "🚫 Stripe onboarding cancelled!";
 //                   debugPrint(cancelMsg);
 //                   showCustomSnackBar(cancelMsg, isError: true);

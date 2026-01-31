@@ -227,7 +227,10 @@ class _UploadProfilePictureState extends State<UploadProfilePicture> {
                                       () => CreateFirstServiceScreen(),
                                     ); // replace with your local screen
                                   } else {
-                                    Get.snackbar('Error', 'Unknown user role');
+                                    Get.snackbar(
+                                      'No picture',
+                                      'Please select a profile image or skip to continue.',
+                                    );
                                   }
                                 },
                                 style: OutlinedButton.styleFrom(

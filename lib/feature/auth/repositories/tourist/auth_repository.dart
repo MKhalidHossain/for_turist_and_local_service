@@ -239,6 +239,13 @@ class AuthRepository implements AuthRepositoryInterface {
     return await apiClient.postData(Urls.roleSwitch, {});
   }
   
+  @override
+  Future googleLogin(String token) async{
+    return await apiClient.postData(Urls.googleLogin, {
+      "token": token,
+    });
+  }
+  
 
 
 }

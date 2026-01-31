@@ -55,6 +55,8 @@ abstract class HomeServiceInterface {
   Future<Response> getMessages(String userId);
   Future<Response> getUserAssociatedWithChat();
   Future<Response> connectAccount();
+  Future<Response> validateAccount(String accountId);
+
   Future<Response> createPayment(
     String bookingCode,
     String amount,
