@@ -256,7 +256,7 @@ class _LocalsProfileForTouristScreenState
                                               (offer.photos != null &&
                                                       offer.photos!.isNotEmpty)
                                                   ? offer.photos![0]
-                                                  : "assets/icons/spa.png",
+                                                  : "assets/images/bannerPlaceholder.jpg",
                                               () {
                                                 Get.to(
                                                   () =>

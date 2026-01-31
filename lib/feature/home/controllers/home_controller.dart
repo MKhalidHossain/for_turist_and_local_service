@@ -11,6 +11,7 @@ import 'package:kobeur/feature/booking_module/domain/model/get_booking_by_status
 import 'package:kobeur/feature/booking_module/domain/model/get_booking_details_response_model.dart';
 import 'package:kobeur/feature/booking_module/domain/model/update_booking_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/cencel_booking_response_model.dart';
+import 'package:kobeur/feature/home/presentation/screens/tourist/tourist_home_screen.dart';
 import 'package:kobeur/feature/offer/domain/model/create_offer_response_model.dart';
 import 'package:kobeur/feature/home/domain/local/get_home_response_model.dart';
 import 'package:kobeur/feature/offer/domain/model/get_all_own_offer_response_model.dart';
@@ -47,6 +48,7 @@ class HomeController extends GetxController implements GetxService {
   final HomeServiceInterface homeServiceInterface;
 
   HomeController(this.homeServiceInterface);
+
   CreateOfferResponseModel createOfferResponseModel =
       CreateOfferResponseModel();
   UpdateOfferResponseModel updateOfferResponseModel =
@@ -1310,6 +1312,7 @@ class HomeController extends GetxController implements GetxService {
           debugPrint(
             "\n⚠️ Problem of payment: ${response.body['message']}\n form status 500",
           );
+
           showCustomSnackBar(
             "Failure",
             subMessage: "${response.body['message']}",
@@ -1344,8 +1347,9 @@ class HomeController extends GetxController implements GetxService {
             });
       }
     } catch (e, s) {
-      showCustomSnackBar('Error of create Payment:', subMessage: ' ${e}');
+      // showCustomSnackBar('Error of create Payment:', subMessage: ' ${e}');
       print('exception:$e$s');
+      Get.off(BottomNavbar(userRole: "Tourist"));
     }
   }
 

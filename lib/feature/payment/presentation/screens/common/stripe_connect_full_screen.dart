@@ -4,6 +4,7 @@ import 'package:kobeur/core/constants/app_colors.dart';
 import 'package:kobeur/feature/home/controllers/home_controller.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+
 import '../../../../../utils/display_helper.dart';
 import '../../../../offer/presentation/screens/common/create_first_service_screen.dart';
 
@@ -28,82 +29,64 @@ class _StripeConnectFullScreenState extends State<StripeConnectFullScreen> {
     super.initState();
     homeController = Get.find<HomeController>();
 
-    // ✅ For iOS WKWebView (required for newer versions)
+    // ✅ For iOS WKWebView
     WebViewPlatform.instance = WebKitWebViewPlatform();
 
-    _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(AppColors.background)
-      ..enableZoom(true)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onPageStarted: (url) {
-            debugPrint("➡️ Loading started: $url");
-            if (!mounted) return;
-            setState(() {
-              isLoading = true;
-              statusMessage = "Loading...";
-            });
-          },
-          onPageFinished: (url) {
-            debugPrint("✅ Finished loading: $url");
-            if (!mounted) return;
-            setState(() {
-              isLoading = false;
-              statusMessage = "Page loaded";
-            });
-          },
-          onWebResourceError: (error) {
-            final msg = "❌ WebView error: ${error.description}";
-            debugPrint(msg);
-            showCustomSnackBar(msg, isError: true);
-            if (!mounted) return;
-            setState(() => statusMessage = msg);
-          },
-          onNavigationRequest: (request) {
-            final url = request.url;
-            debugPrint("🔗 Navigating to: $url");
+    _controller =
+        WebViewController()
+          ..setJavaScriptMode(JavaScriptMode.unrestricted)
+          ..setBackgroundColor(AppColors.background)
+          ..enableZoom(true)
+          ..setNavigationDelegate(
+            NavigationDelegate(
+              onPageStarted: (url) {
+                debugPrint("➡️ Loading started: $url");
+                setState(() {
+                  isLoading = true;
+                  statusMessage = "Loading...";
+                });
+              },
+              onPageFinished: (url) {
+                debugPrint("✅ Finished loading: $url");
+                setState(() {
+                  isLoading = false;
+                  statusMessage = "Page loaded";
+                });
+              },
+              onWebResourceError: (error) {
+                final msg = "❌ WebView error: ${error.description}";
+                debugPrint(msg);
+                showCustomSnackBar(msg, isError: true);
+                setState(() => statusMessage = msg);
+              },
+              onNavigationRequest: (request) {
+                final url = request.url;
+                debugPrint("🔗 Navigating to: $url");
+                setState(() => statusMessage = url);
 
-            final uri = Uri.tryParse(url);
-            final status = uri?.queryParameters['status'];
+                // ✅ Handle Stripe deep link return (custom scheme)
+                if (url.startsWith('kobeur://stripe_return')) {
+                  debugPrint('✅ Stripe returned to app via deep link!');
+                  showCustomSnackBar("Stripe account connected successfully!");
+                  Get.offAll(() => CreateFirstServiceScreen());
+                  return NavigationDecision.prevent;
+                }
 
-            if (status == 'success') {
-              final successMsg = "✅ Stripe connection successful!";
-              debugPrint(successMsg);
-              showCustomSnackBar(successMsg);
+                // ✅ Optional: handle cancel URLs
+                if (url.contains('stripe/cancel')) {
+                  showCustomSnackBar(
+                    "Stripe onboarding cancelled!",
+                    isError: true,
+                  );
+                  Get.back();
+                  return NavigationDecision.prevent;
+                }
 
-              if (!mounted) return NavigationDecision.prevent;
-              setState(() => isLoading = true);
-
-              // 🔹 Call validateAccount() (does not return anything)
-              try {
-                homeController.validateAccount(
-                  homeController.connectAccountResponseModel.data?.accountId ?? "",
-                );
-              } catch (e) {
-                debugPrint('Validation error: $e');
-                showCustomSnackBar('Validation error', isError: true);
-              }
-
-              // ✅ Continue to next screen
-              if (!mounted) return NavigationDecision.prevent;
-              setState(() => isLoading = false);
-              Get.offAll(() => CreateFirstServiceScreen());
-
-              return NavigationDecision.prevent;
-            } else if (status == 'cancel') {
-              final cancelMsg = "🚫 Stripe onboarding cancelled!";
-              debugPrint(cancelMsg);
-              showCustomSnackBar(cancelMsg, isError: true);
-              Get.back();
-              return NavigationDecision.prevent;
-            }
-
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.connectUrl));
+                return NavigationDecision.navigate;
+              },
+            ),
+          )
+          ..loadRequest(Uri.parse(widget.connectUrl));
   }
 
   @override
