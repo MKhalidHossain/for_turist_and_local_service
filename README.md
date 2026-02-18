@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Kobeur
 
 Kobeur is a Flutter app that connects tourists with locals, enabling travelers to discover local offers, book experiences, and chat in real time while locals manage offers and trips. The app uses GetX for state management and dependency injection, a feature-first structure, and a service/repository layer to keep UI, business logic, and data access cleanly separated.
@@ -220,6 +219,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Local business partners and testers
 
 ---
-
-> _Empowering tourists and locals to connect, explore, and thrive together!_
->>>>>>> 5d820c077d3c9a90a6ca11375f9e2c961bb8d6c5
