@@ -219,6 +219,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Local business partners and testers
 
 ---
-
-> _Empowering tourists and locals to connect, explore, and thrive together!_
->>>>>>> 5d820c077d3c9a90a6ca11375f9e2c961bb8d6c5
